@@ -96,7 +96,7 @@ class cerrar_sesion(webapp2.RequestHandler):
 class formRegistro(webapp2.RequestHandler):
     
     def get(self):
-        
+         
         self.response.headers['Content-Type'] = 'text/html'
         template = JINJA_ENVIRONMENT.get_template('template/registro.html')
         self.response.write(template.render(message=""))
@@ -135,7 +135,7 @@ class editar_perfil(webapp2.RequestHandler):
     
     def get(self):
         
-        if self.request.cookies.get("logged") == "true":  #Si la cookie está activada
+        if self.request.cookies.get("username"):  #Si la cookie está activada
             
             username = str(self.request.cookies.get("username"))
             usuarios = []
@@ -153,11 +153,11 @@ class editar_perfil(webapp2.RequestHandler):
                 self.response.write(template.render(template_values,message=""))
         else:
             
-            self.redirect('/')
+            self.redirect('/login')
             
     def post(self):
         
-        if self.request.cookies.get("logged") == "true":
+        if self.request.cookies.get("username"):
             
             username = str(self.request.cookies.get("username"))
             result = model.Usuario.query()
@@ -174,6 +174,24 @@ class editar_perfil(webapp2.RequestHandler):
                             
                     us.put()
                     self.redirect('/')
+                    
+#Clase que gestiona las url erróneas
+             
+class ErrorPage(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username"):
+            
+            username = str(self.request.cookies.get("username"))
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'sesion':username}
+            template = JINJA_ENVIRONMENT.get_template('template/error.html')
+            self.response.write(template.render(template_values))
+            
+        else:
+            
+            self.redirect('/login')
             
 # Urls de la aplicación con sus clases asociadas.
 
@@ -182,8 +200,7 @@ urls = [('/', MainPage),
         ('/formRegistro',formRegistro),
         ('/logout', cerrar_sesion),
         ('/editar_perfil', editar_perfil),
-        
-        #('/.*', ErrorPage)
+        ('/.*', ErrorPage)
        ]
 
 # Creamos la aplicación asignando al URL Dispacher las urls previamente definidas.

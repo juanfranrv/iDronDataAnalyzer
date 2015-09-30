@@ -12,9 +12,15 @@
   padding: 50px;
 }
 
+#mensaje_url{
+
+  font-size:160%;
+}
+
 #form_edicion{
 
   font-size:160%;
+  float:right;
 }
 
 #idron{
