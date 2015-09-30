@@ -123,7 +123,7 @@ class formRegistro(webapp2.RequestHandler):
             self.redirect('/')
             
         else:
-             #Si el usuario existe, se muestra mensaje de error
+             #Si el usuario existe, se muestra un mensaje de error
 
             self.response.headers['Content-Type'] = 'text/html'
             template = JINJA_ENVIRONMENT.get_template('template/registro.html')
@@ -166,12 +166,18 @@ class editar_perfil(webapp2.RequestHandler):
                 
                 if us.usuario == username:            # Se introducen los nuevos datos modificados en la base de datos
                     
-                    us.password = self.request.get('password')
-                    us.nombre = self.request.get('nombre')
-                    us.apellido = self.request.get('apellido')
-                    us.correo = self.request.get('correo')
-                    us.telefono = self.request.get('telefono')
-                            
+                    password = self.request.get('password')
+                    name = self.request.get('nombre')
+                    lastname = self.request.get('apellido')
+                    email = self.request.get('correo')
+                    phone = self.request.get('telefono')
+                       
+                    if password != "": us.password = password   #Si no se modifica algun dato, es decir, esta vacio, se deja el dato anterior
+                    if name != "": us.nombre = name
+                    if lastname != "": us.apellido = lastname
+                    if email != "": us.correo = email
+                    if phone != "": us.telefono = phone
+                         
                     us.put()
                     self.redirect('/')
                     
