@@ -13,6 +13,13 @@ import urllib
 import sys
 import subprocess
 
+# Declaración del entorno de jinja2 y el sistema de templates.
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
+
 #Clase principal
 
 class MainPage(webapp2.RequestHandler):
@@ -34,7 +41,7 @@ class MainPage(webapp2.RequestHandler):
             template = JINJA_ENVIRONMENT.get_template('template/login.html')
             self.response.write(template.render(template_values))
             
-#Clase para gestionar el logueo del usuario.
+#Clase para gestionar el inicio de sesión del usuario.
 
 class Login(webapp2.RequestHandler):
     
@@ -44,8 +51,6 @@ class Login(webapp2.RequestHandler):
             template_values={}
             template = JINJA_ENVIRONMENT.get_template('template/login.html')
             self.response.write(template.render(template_values))
-            
-    #Implementa el login de usuarios guardando la sesión en una cookie.
     
     def post(self):
         
@@ -96,14 +101,14 @@ class formRegistro(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('template/registro.html')
         self.response.write(template.render(message=""))
 
-    #Método que registra al usuario si pasa las restricciones.
+    #Método que registra usuario si pasa las restricciones.
 
     def post(self):
         
         usuario_introducido = self.request.get('usuario')
         user = model.Usuario()
  
-        #Si no aparece se cogen los datos introducidos en el formulario y se introducen en la base de datos
+        #Si el usuario no existe, se introducen los datos en la base de datos
         
         if(model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None):
             
@@ -118,11 +123,57 @@ class formRegistro(webapp2.RequestHandler):
             self.redirect('/')
             
         else:
-             #Si el usuario aparece, se muestra mensaje de error: usuario existente
+             #Si el usuario existe, se muestra mensaje de error
 
             self.response.headers['Content-Type'] = 'text/html'
             template = JINJA_ENVIRONMENT.get_template('template/registro.html')
             self.response.write(template.render(message="El nombre de usuario se encuentra en uso"))
+
+#Clase para cambiar los datos de usuario
+
+class editar_perfil(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("logged") == "true":  #Si la cookie está activada
+            
+            username = str(self.request.cookies.get("username"))
+            usuarios = []
+            result= model.Usuario.query(model.Usuario.usuario==username)
+            
+            if result>0:    #Existe el usuario
+                
+                for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios
+                    
+                    usuarios.append(usuario)
+                    
+                self.response.headers['Content-Type'] = 'text/html'
+                template_values = {'usuarios':usuarios,'sesion':username}
+                template = JINJA_ENVIRONMENT.get_template('template/editar_perfil.html')
+                self.response.write(template.render(template_values,message=""))
+        else:
+            
+            self.redirect('/')
+            
+    def post(self):
+        
+        if self.request.cookies.get("logged") == "true":
+            
+            username = str(self.request.cookies.get("username"))
+            result = model.Usuario.query()
+            
+            for us in result:
+                
+                if us.usuario == username:            # Se introducen los nuevos datos modificados en la base de datos
+                    
+                    us.password = self.request.get('password')
+                    us.nombre = self.request.get('nombre')
+                    us.apellido = self.request.get('apellido')
+                    us.correo = self.request.get('correo')
+                    us.telefono = self.request.get('telefono')
+                            
+                    us.put()
+                    self.redirect('/')
             
 # Urls de la aplicación con sus clases asociadas.
 
@@ -130,21 +181,14 @@ urls = [('/', MainPage),
         ('/login', Login),
         ('/formRegistro',formRegistro),
         ('/logout', cerrar_sesion),
+        ('/editar_perfil', editar_perfil),
+        
         #('/.*', ErrorPage)
        ]
 
 # Creamos la aplicación asignando al URL Dispacher las urls previamente definidas.
 
 application = webapp2.WSGIApplication(urls, debug=True)
-
-# Declaración del entorno de jinja2 y el sistema de templates.
-
-JINJA_ENVIRONMENT = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
-    extensions=['jinja2.ext.autoescape'],
-    autoescape=True)
-
-# Despliega la aplicación al ejecutar el archivo como script. 
     
 def main():
     run_wsgi_app(application)
