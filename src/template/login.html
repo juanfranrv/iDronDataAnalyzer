@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>iDron Data Analyzer</title>
+
+    <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+
+    <link rel="stylesheet" href="static/css/style.css">
+   
+  </head>
+
+  <script type="text/javascript">
+  
+  function Valida(form) {
+  
+    var usuario = document.getElementById("user").value;
+    var password= document.getElementById("pass").value;
+      
+      if(usuario.length==0) { //¿Tiene 0 caracteres?
+        alert('No has escrito el nombre de usuario'); //Mostramos el mensaje
+    
+        return false; 
+      }
+      if(password.length==0) { //comprueba que no esté vacío
+      
+        alert('No has escrito tu contraseña');
+        return false;
+      }
+
+      return true; //Si ha llegado hasta aquí, es que todo es correcto
+  
+}
+    
+</script>
+
+  <body>
+
+    <div class="login-card">
+    <h1>Login</h1><br>
+  <form action="/login" onsubmit="return Valida(this);" role="form" method="post">
+    <p style="color:red;">{{mensaje}}</p>
+    <input type="text" id ="user" name="user" placeholder="Usuario">
+    <input type="password" id="pass" name="pass" placeholder="Contraseña">
+    <input type="submit" name="login" class="login login-submit" value="Login">
+  </form>
+    
+  <div class="login-help">
+    <a href="formRegistro">Registro</a> 
+  </div>
+</div>
+
+<!-- <div id="error"><img src="https://dl.dropboxusercontent.com/u/23299152/Delete-icon.png" /> Your caps-lock is on.</div> -->
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+    
+    
+   </body>
+</html>
