@@ -5,6 +5,13 @@
 *******Typography******
 **************************/
 
+#map-canvas{
+  height: 720px;
+  width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #formulario{
   margin: auto;
   width: 800px;
@@ -28,9 +35,9 @@
 }
 
 #logo-ugr{
-
-  width: 150px;
-  height: 65px;
+  float:left;
+  width: 160px;
+  height: 75px;
 }
 
 #boton-cerrar{

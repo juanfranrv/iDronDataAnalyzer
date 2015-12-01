@@ -141,7 +141,7 @@ class editar_perfil(webapp2.RequestHandler):
             usuarios = []
             result= model.Usuario.query(model.Usuario.usuario==username)
             
-            if result>0:    #Existe el usuario
+            if result is not None:    #Existe el usuario
                 
                 for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios
                     
@@ -198,6 +198,45 @@ class ErrorPage(webapp2.RequestHandler):
         else:
             
             self.redirect('/login')
+
+#Clase que gestiona el googlemap de geolocalización
+             
+class geolocation(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username"):
+            
+            username = str(self.request.cookies.get("username"))
+            
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'sesion':username}
+            template = JINJA_ENVIRONMENT.get_template('template/geolocalizacion.html')
+            self.response.write(template.render(template_values))
+            
+        else:
+            
+            self.redirect('/login')
+
+# Clase que genera las coordenadas del dron.
+
+lat = 37.19699469878369
+lng =  -3.6241040674591507
+grados = 0
+
+class coordenadas(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        global lat
+        global lng
+        global grados
+
+        grados+=5
+        lat += 0.00001 * math.cos(grados/180)   #Generación automática de coordenadas provisional
+        lng += 0.00001 * math.sin(grados/180)
+        latLng = [lat, lng]
+        self.response.write(json.dumps(latLng))
             
 # Urls de la aplicación con sus clases asociadas.
 
@@ -206,6 +245,8 @@ urls = [('/', MainPage),
         ('/formRegistro',formRegistro),
         ('/logout', cerrar_sesion),
         ('/editar_perfil', editar_perfil),
+        ('/geolocalizacion', geolocation),
+        ('/coordenadas', coordenadas),
         ('/.*', ErrorPage)
        ]
 
