@@ -12,6 +12,7 @@ import math
 import urllib
 import sys
 import subprocess
+import random
 
 # Declaración del entorno de jinja2 y el sistema de templates.
 
@@ -237,7 +238,33 @@ class coordenadas(webapp2.RequestHandler):
         lng += 0.00001 * math.sin(grados/180)
         latLng = [lat, lng]
         self.response.write(json.dumps(latLng))
+
+#Clase que gestiona el gráfico de monitorización de datos atmosféricos en tiempo real
+             
+class grafico(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username"):
             
+            username = str(self.request.cookies.get("username"))
+            
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'sesion':username}
+            template = JINJA_ENVIRONMENT.get_template('template/grafico.html')
+            self.response.write(template.render(template_values))
+            
+        else:
+            
+            self.redirect('/login') 
+            
+# Clase que genera datos aleatorios provisionales para el gráfico
+
+class datos_grafico(webapp2.RequestHandler):
+    def get(self):
+        num = int(random.random()*50)
+        self.response.write(json.dumps(num)) 
+                  
 # Urls de la aplicación con sus clases asociadas.
 
 urls = [('/', MainPage),
@@ -247,6 +274,8 @@ urls = [('/', MainPage),
         ('/editar_perfil', editar_perfil),
         ('/geolocalizacion', geolocation),
         ('/coordenadas', coordenadas),
+        ('/grafico', grafico),
+        ('/datos_grafico', datos_grafico),
         ('/.*', ErrorPage)
        ]
 

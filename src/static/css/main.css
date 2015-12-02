@@ -4,6 +4,23 @@
 /*************************
 *******Typography******
 **************************/
+#container-temp-grande{
+  width:99%;
+  margin-top:10%;
+}
+
+#tipoGrafica-temp{
+
+	margin-top:1.48%;
+	float:left;
+	margin-left:5%;
+}
+
+#tipoGrafica-temp1{
+
+	margin-left:3%;
+	float:left;
+}
 
 #map-canvas{
   height: 720px;
