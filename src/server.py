@@ -10,6 +10,7 @@ import jinja2
 import json
 import math
 import urllib
+import urllib2
 import sys
 import subprocess
 import random
@@ -259,11 +260,26 @@ class grafico(webapp2.RequestHandler):
             self.redirect('/login') 
             
 # Clase que genera datos aleatorios provisionales para el gráfico
+Api_key = 'fffa0ba60d5357235f5782313216b8ae'
 
 class datos_grafico(webapp2.RequestHandler):
     def get(self):
-        num = int(random.random()*50)
-        self.response.write(json.dumps(num)) 
+        #num = int(random.random()*50)
+        #self.response.write(json.dumps(num)) 
+        
+        url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
+        response = urllib2.urlopen(url).read()
+        r = urllib2.urlopen(url)
+
+        result = json.load(r)
+        
+        temp = result["main"]["temp"]           #temperatura
+        pres = result["main"]["pressure"]       #presion atmosferica
+        hum = result["main"]["humidity"]        #humedad
+        vel_win = result["wind"]["speed"]       #velocidad del viento
+        dir_win = result["wind"]["deg"]         #direccion del viento
+
+        self.response.write(json.dumps(temp)) 
                   
 # Urls de la aplicación con sus clases asociadas.
 

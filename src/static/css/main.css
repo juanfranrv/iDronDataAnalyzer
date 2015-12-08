@@ -6,19 +6,19 @@
 **************************/
 #container-temp-grande{
   width:99%;
-  margin-top:10%;
+  margin-top:6.5%;
 }
 
 #tipoGrafica-temp{
 
-	margin-top:1.48%;
+	margin-top:1.55%;
 	float:left;
 	margin-left:5%;
 }
 
 #tipoGrafica-temp1{
 
-	margin-left:3%;
+	margin-left:2%;
 	float:left;
 }
 
@@ -43,7 +43,7 @@
 }
 
 #form_edicion{
-  margin-left:30%;
+  margin-left:15%;
   font-size:160%; 
 }
 

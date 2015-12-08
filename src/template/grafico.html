@@ -259,16 +259,19 @@ $(function () {
                 },
             },
             title: {
-                text: 'Temperatura'
+                text: document.getElementById('tipoGrafica-temp1').value
             },
             xAxis: {
+		title: {
+                    text: 'Hora actual'
+                },
                 type: 'datetime',
                 text: 'Datetime',
                 tickPixelInterval: 150
             },
             yAxis: {
                 title: {
-                    text: 'Grados centigrados'
+                    text: 'Datos'
                 },
                 plotLines: [{
                     value: 0,
@@ -311,6 +314,10 @@ $(function () {
                 charts.series[0].update({
                     type: document.getElementById('tipoGrafica-temp').value
                 });
+            });
+
+	    $('#tipoGrafica-temp1').change(function () {
+                charts.setTitle({text: document.getElementById('tipoGrafica-temp1').value});
             });
         }); 
         
@@ -376,24 +383,27 @@ $(function () {
 		
     </header><!--/header-->
 
-   <div class="jumbotron">
+   <div style="background:transparent !important" class="jumbotron">
 	    
     <div class="panel panel-primary">
 	<select name="tipoGrafica-temp" id="tipoGrafica-temp" >    
 		<option value="column" selected="selected">Columnas</option>
 		<option value="spline">Lineas</option>
-		<option value="area">Area</option>
-		<option value="areaspline">Lineas con area</option>
 		<option value="scatter">Puntos</option>
+		<option value="area">Area</option>
+		<option value="areaspline">Lineas y Area</option>
+
 	</select>
      </div>
 
 
      <div class="panel panel-primary">
 	<select name="tipoGrafica-temp1" id="tipoGrafica-temp1" >    
-		<option value="temperatura" selected="selected">Temperatura</option>
-		<option value="presion">Presión Atmosférica</option>
-		<option value="humedad">Humedad</option>>
+		<option value="Temperatura" selected="selected">Temperatura</option>
+		<option value="Presion atmosferica">Presión Atmosférica</option>
+		<option value="Humedad">Humedad</option>>
+		<option value="Velocidad del viento">Velocidad del viento</option>
+		<option value="Direccion del viento">Dirección del viento</option>
 	</select>
       </div>	
 	
