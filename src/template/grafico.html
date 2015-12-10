@@ -231,7 +231,7 @@ $(function () {
           function callAjax() {
             $.ajax({
                           type: 'GET',
-                          url: '/datos_grafico',
+                          url: '/datos_grafico?dato=' + getDato(),
                           data: $(this).serialize(),
                           dataType: 'json',
                           success: function (data) {
@@ -293,7 +293,7 @@ $(function () {
                 enabled: false
             },
             series: [{
-                name: 'Temperatura',
+                name: document.getElementById('tipoGrafica-temp1').value,
                 data: (function () {
                     // generate an array of random data
                     var data = [],
@@ -310,6 +310,7 @@ $(function () {
             }],
         },
         function (charts) {
+
             $('#tipoGrafica-temp').change(function () {
                 charts.series[0].update({
                     type: document.getElementById('tipoGrafica-temp').value
@@ -318,12 +319,27 @@ $(function () {
 
 	    $('#tipoGrafica-temp1').change(function () {
                 charts.setTitle({text: document.getElementById('tipoGrafica-temp1').value});
+		charts.series[0].update({name: document.getElementById('tipoGrafica-temp1').value}, false);
+		var tipo_dato = document.getElementById('tipoGrafica-temp1').value;
+		setDato(tipo_dato);
             });
+
         }); 
         
     });
     
 });
+
+//Servicio para enviar los datos desde el change() hasta la función Ajax del highchart y pasarle el valor como argumento a la url para poder enviar un dato u otro
+var tipoDatoElegido;
+
+function setDato(tipoAasignar) {
+  tipoDatoElegido = tipoAasignar;
+}
+
+function getDato() {
+  return tipoDatoElegido;
+}
 
 </script>
 </head>
@@ -399,11 +415,11 @@ $(function () {
 
      <div class="panel panel-primary">
 	<select name="tipoGrafica-temp1" id="tipoGrafica-temp1" >    
-		<option value="Temperatura" selected="selected">Temperatura</option>
-		<option value="Presion atmosferica">Presión Atmosférica</option>
-		<option value="Humedad">Humedad</option>>
-		<option value="Velocidad del viento">Velocidad del viento</option>
-		<option value="Direccion del viento">Dirección del viento</option>
+		<option value="Temperatura" selected="selected">Temperatura (K)</option>
+		<option value="Presion atmosferica">Presión Atmosférica (hPa)</option>
+		<option value="Humedad">Humedad (%)</option>>
+		<option value="Velocidad del viento">Velocidad del viento (m/s)</option>
+		<option value="Direccion del viento">Dirección del viento (º)</option>
 	</select>
       </div>	
 	

@@ -203,7 +203,7 @@ class ErrorPage(webapp2.RequestHandler):
 
 #Clase que gestiona el googlemap de geolocalización
              
-class geolocation(webapp2.RequestHandler):
+class geolocalizacion(webapp2.RequestHandler):
     
     def get(self):
         
@@ -263,9 +263,12 @@ class grafico(webapp2.RequestHandler):
 Api_key = 'fffa0ba60d5357235f5782313216b8ae'
 
 class datos_grafico(webapp2.RequestHandler):
+    
     def get(self):
-        #num = int(random.random()*50)
-        #self.response.write(json.dumps(num)) 
+        
+        global lat
+        global lng              #random lat y long
+        lat += 0.1
         
         url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
         response = urllib2.urlopen(url).read()
@@ -278,8 +281,21 @@ class datos_grafico(webapp2.RequestHandler):
         hum = result["main"]["humidity"]        #humedad
         vel_win = result["wind"]["speed"]       #velocidad del viento
         dir_win = result["wind"]["deg"]         #direccion del viento
+        
+        dato_seleccionado = self.request.get('dato')
 
-        self.response.write(json.dumps(temp)) 
+        if dato_seleccionado == 'undefined' or dato_seleccionado == 'Temperatura':
+            datoAmostrar = temp;
+        elif dato_seleccionado == 'Presion atmosferica':
+            datoAmostrar = pres;
+        elif dato_seleccionado == 'Humedad':
+            datoAmostrar = hum;
+        elif dato_seleccionado == 'Velocidad del viento':
+            datoAmostrar = vel_win;
+        elif dato_seleccionado == 'Direccion del viento':
+            datoAmostrar = dir_win;
+        
+        self.response.write(json.dumps(datoAmostrar)) 
                   
 # Urls de la aplicación con sus clases asociadas.
 
@@ -288,7 +304,7 @@ urls = [('/', MainPage),
         ('/formRegistro',formRegistro),
         ('/logout', cerrar_sesion),
         ('/editar_perfil', editar_perfil),
-        ('/geolocalizacion', geolocation),
+        ('/geolocalizacion', geolocalizacion),
         ('/coordenadas', coordenadas),
         ('/grafico', grafico),
         ('/datos_grafico', datos_grafico),
