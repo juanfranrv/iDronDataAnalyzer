@@ -52,23 +52,21 @@
 }
 
 #logo-ugr{
-  float:left;
-  width: 160px;
+  width: 150px;
   height: 75px;
 }
 
 #boton-cerrar{
   margin-top:10px;
-  float: left;
+  float: right;
   margin-left:20px;
  
 }
 
 #mensaje_bienvenida{
-  float: left;
-  margin-left: 100px;
+  float: right;
+  margin-left: 30px;
   border: 2px;
-   margin-bottom:0px;
  
 }
 

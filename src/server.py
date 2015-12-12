@@ -276,12 +276,15 @@ class datos_grafico(webapp2.RequestHandler):
 
         result = json.load(r)
         
-        temp = result["main"]["temp"]           #temperatura
+        tempe = result["main"]["temp"]          #temperatura
         pres = result["main"]["pressure"]       #presion atmosferica
         hum = result["main"]["humidity"]        #humedad
-        vel_win = result["wind"]["speed"]       #velocidad del viento
+        vel_wind = result["wind"]["speed"]       #velocidad del viento
         dir_win = result["wind"]["deg"]         #direccion del viento
         
+        temp = tempe - 273.15                   #conversion de kelvin a celsius
+        vel_win = vel_wind + 3.6                #conversion de m/s a km/h
+
         dato_seleccionado = self.request.get('dato')
 
         if dato_seleccionado == 'undefined' or dato_seleccionado == 'Temperatura':
@@ -296,7 +299,25 @@ class datos_grafico(webapp2.RequestHandler):
             datoAmostrar = dir_win;
         
         self.response.write(json.dumps(datoAmostrar)) 
-                  
+
+#Clase que gestiona el pronóstico de datos atmosféricos en tiempo real
+             
+class pronostico(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username"):
+            
+            username = str(self.request.cookies.get("username"))
+            
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'sesion':username}
+            template = JINJA_ENVIRONMENT.get_template('template/pronostico.html')
+            self.response.write(template.render(template_values))
+            
+        else:
+            
+            self.redirect('/login')           
 # Urls de la aplicación con sus clases asociadas.
 
 urls = [('/', MainPage),
@@ -308,6 +329,7 @@ urls = [('/', MainPage),
         ('/coordenadas', coordenadas),
         ('/grafico', grafico),
         ('/datos_grafico', datos_grafico),
+        ('/pronostico', pronostico),
         ('/.*', ErrorPage)
        ]
 
