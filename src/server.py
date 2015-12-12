@@ -301,6 +301,8 @@ class datos_grafico(webapp2.RequestHandler):
         self.response.write(json.dumps(datoAmostrar)) 
 
 #Clase que gestiona el pronóstico de datos atmosféricos en tiempo real
+
+API_DARKSKY = '23e1861a710d58fb3a1f7ee15d438dd3'
              
 class pronostico(webapp2.RequestHandler):
     
@@ -317,7 +319,52 @@ class pronostico(webapp2.RequestHandler):
             
         else:
             
-            self.redirect('/login')           
+            self.redirect('/login')   
+            
+    def post(self):
+        
+        if self.request.cookies.get("username"):
+            
+            username = str(self.request.cookies.get("username"))
+            
+            latitud = self.request.get('latitud')
+            longitud = self.request.get('longitud')
+            radio_elegido = self.request.get('optradio');
+            
+            url = 'https://api.forecast.io/forecast/' + API_DARKSKY + '/' + str(latitud) + ',' + str(longitud)
+            response = urllib2.urlopen(url).read()
+            r = urllib2.urlopen(url)
+    
+            result = json.load(r)
+            array_datos = []
+
+            if radio_elegido == 'horas':
+                
+                for i in range(48):
+                    
+                    array_datos.append(result["hourly"]["data"][i])
+                
+            else: 
+                
+                for i in range(7):
+                                        
+                    array_datos.append(result["daily"]["data"][i])
+
+                
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'sesion':username, 
+                             'array_datos':array_datos,
+                             'radio_elegido':radio_elegido
+                             }
+            
+            template = JINJA_ENVIRONMENT.get_template('template/pronostico.html')
+            self.response.write(template.render(template_values))
+            
+        else:
+            
+            self.redirect('/login')
+            
+                     
 # Urls de la aplicación con sus clases asociadas.
 
 urls = [('/', MainPage),

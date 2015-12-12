@@ -4,6 +4,58 @@
 /*************************
 *******Typography******
 **************************/
+tr {
+  width: 98%;
+  display: inline-table;
+}
+
+td{
+	width:20%;
+}
+
+table{
+ height: 500px; 
+ margin-top: 250px;
+}
+
+tbody{
+  overflow-y: scroll;
+  height: 500px;
+  width: 96%;
+  position: absolute;
+}
+
+#latitud{
+   width:150px;
+}
+
+#leyenda{
+   float:left;
+   margin-left:100px;
+}
+
+#longitud{
+   width:150px;
+}
+
+#radiobuttons{
+   float:left;
+   margin-left: 100px;
+   margin-top: 20px;
+   font-size: 80%;
+}
+
+#inputs{
+   float:left;
+}
+
+#boton-enviar{
+   float:left;
+   width: 15%;
+   margin-top: 50px;
+   margin-left: 100px;
+}
+
 #container-temp-grande{
   width:99%;
   margin-top:6.5%;

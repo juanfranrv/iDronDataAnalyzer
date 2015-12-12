@@ -54,30 +54,73 @@
     </header><!--/header-->
 
    <div style="background:transparent !important" class="jumbotron">
-	    
-    <div class="panel panel-primary">
-	<select name="tipoGrafica-temp" id="tipoGrafica-temp" >    
-		<option value="column" selected="selected">Columnas</option>
-		<option value="spline">Lineas</option>
-		<option value="scatter">Puntos</option>
-		<option value="area">Area</option>
-		<option value="areaspline">Lineas y Area</option>
-
-	</select>
+   <form role="form" method="post" action="/pronostico">
+    <div id="inputs">
+	<label>Introduce latitud: </label>
+        <input id="latitud" type="text" class="form-control" name="latitud" placeholder="Latitud">
+	<label>Introduce longitud: </label>
+	<input id="longitud" type="text" class="form-control" name="longitud" placeholder="Longitud">
+    </div>
+    <div id="radiobuttons">
+	<div class="radio">
+	  <label><input type="radio" value="horas" name="optradio" checked="checked">Pronóstico por horas</label>
+	</div>
+	<div class="radio">
+	  <label><input type="radio" value="dias" name="optradio">Pronóstico por días</label>
+	</div>
      </div>
+    <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-success">Realizar pronóstico</button>
+    <div id="leyenda">
+	<p>Temperatura: Fahrenheit <br/></p>
+        <p>Humedad: Entre 0 y 1<br/></p>
+	<p>Velocidad Viento: m/s<br/></p>
+        <p>Dirección Viento: Grados º <br/></p>
+	<p>Probabilidad de precipitación: Entre 0 y 1 <br/></p>
+	<p>Visibilidad: Entre 0 y 10 <br/></p>
+
+    </div>
+   </form> 
+<table class="table table-striped">
+<thead><tr><th>Temperatura</th><th>Humedad</th><th>Velocidad Viento</th><th>Dirección Viento</th><th>Visibilidad</th><th>Precipitación</th></tr></thead>
+<tbody>
+  {% if radio_elegido == 'horas' %}
+
+	  {% for datos in array_datos %}
+
+	  <tr>
+	      <td>{{datos.temperature}}</td>
+	      <td>{{datos.humidity}}</td>
+              <td>{{datos.windSpeed}}</td>
+              <td>{{datos.windBearing}}</td>
+              <td>{{datos.visibility}}</td>
+              <td>{{datos.precipProbability}}</td>
+          </tr>
+
+	  {% endfor %}
+
+  {% endif %}
+
+  {% if radio_elegido == 'dias' %}
+
+	  {% for datos in array_datos %}
+
+	  <tr>
+		<td>{{datos.temperatureMax}}</td>
+		<td>{{datos.humidity}}</td>
+		<td>{{datos.windSpeed}}</td>
+		<td>{{datos.windBearing}}</td>
+		<td>{{datos.visibility}}</td>
+		<td>{{datos.precipProbability}}</td>
+          </tr>
+
+	  {% endfor %}
+
+  {% endif %}
+
+  </tbody>
+</table>
 
 
-     <div class="panel panel-primary">
-	<select name="tipoGrafica-temp1" id="tipoGrafica-temp1" >    
-		<option value="Temperatura" selected="selected">Temperatura (ºC)</option>
-		<option value="Presion atmosferica">Presión Atmosférica (hPa)</option>
-		<option value="Humedad">Humedad (%)</option>>
-		<option value="Velocidad del viento">Velocidad del viento (km/h)</option>
-		<option value="Direccion del viento">Dirección del viento (º)</option>
-	</select>
-      </div>	
-	
-      <div id="container-temp-grande"></div>
    </div>
 
     <footer id="footer" class="midnight-blue">
