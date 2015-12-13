@@ -15,6 +15,31 @@
 
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 </head>
+<script type="text/javascript">
+	
+	 function Valida(form) {
+
+		  var latitud = document.getElementById("latitud").value;
+		  var longitud = document.getElementById("longitud").value;
+			
+		  if(latitud.length == 0) { //¿Tiene 0 caracteres?
+		    alert('Introduce latitud'); //Mostramos el mensaje
+		
+		    return false; 
+		  }
+
+		  if(longitud.length == 0) { //¿Tiene 0 caracteres?
+		    alert('Introduce longitud'); //Mostramos el mensaje
+		
+		    return false; 
+		  }
+		
+		  return true; 
+  
+	 }
+	  
+
+</script>
 <body class="homepage">
        <header id="header">
         <div class="top-bar">
@@ -54,7 +79,7 @@
     </header><!--/header-->
 
    <div style="background:transparent !important" class="jumbotron">
-   <form role="form" method="post" action="/pronostico">
+   <form role="form" onsubmit="return Valida(this);" method="post" action="/pronostico">
     <div id="inputs">
 	<label>Introduce latitud: </label>
         <input id="latitud" type="text" class="form-control" name="latitud" placeholder="Latitud">
@@ -71,6 +96,7 @@
      </div>
     <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-success">Realizar pronóstico</button>
     <div id="leyenda">
+	<p><b>Medidas:</b></p>
 	<p>Temperatura: Fahrenheit <br/></p>
         <p>Humedad: Entre 0 y 1<br/></p>
 	<p>Velocidad Viento: m/s<br/></p>
@@ -83,12 +109,18 @@
 <table class="table table-striped">
 <thead><tr><th>Temperatura</th><th>Humedad</th><th>Velocidad Viento</th><th>Dirección Viento</th><th>Visibilidad</th><th>Precipitación</th></tr></thead>
 <tbody>
-  {% if radio_elegido == 'horas' %}
 
 	  {% for datos in array_datos %}
 
 	  <tr>
-	      <td>{{datos.temperature}}</td>
+	      {% if radio_elegido == 'horas' %}
+	      	<td>{{datos.temperature}}</td>
+	      {% endif %}
+
+	      {% if radio_elegido == 'dias' %}
+		<td>{{datos.temperatureMax}}</td>
+	      {% endif %}
+
 	      <td>{{datos.humidity}}</td>
               <td>{{datos.windSpeed}}</td>
               <td>{{datos.windBearing}}</td>
@@ -97,25 +129,6 @@
           </tr>
 
 	  {% endfor %}
-
-  {% endif %}
-
-  {% if radio_elegido == 'dias' %}
-
-	  {% for datos in array_datos %}
-
-	  <tr>
-		<td>{{datos.temperatureMax}}</td>
-		<td>{{datos.humidity}}</td>
-		<td>{{datos.windSpeed}}</td>
-		<td>{{datos.windBearing}}</td>
-		<td>{{datos.visibility}}</td>
-		<td>{{datos.precipProbability}}</td>
-          </tr>
-
-	  {% endfor %}
-
-  {% endif %}
 
   </tbody>
 </table>

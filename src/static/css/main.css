@@ -31,7 +31,10 @@ tbody{
 
 #leyenda{
    float:left;
-   margin-left:100px;
+   margin-left:230px;
+   font-size: 14px;
+   border:1px;
+   border-style: solid;
 }
 
 #longitud{
