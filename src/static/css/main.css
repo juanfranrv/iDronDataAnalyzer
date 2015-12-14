@@ -10,12 +10,12 @@ tr {
 }
 
 td{
-	width:20%;
+   width:20%;
 }
 
 table{
  height: 500px; 
- margin-top: 250px;
+ margin-top: 280px;
 }
 
 tbody{
@@ -31,8 +31,7 @@ tbody{
 
 #leyenda{
    float:left;
-   margin-left:230px;
-   font-size: 14px;
+   margin-left:100px;
    border:1px;
    border-style: solid;
 }

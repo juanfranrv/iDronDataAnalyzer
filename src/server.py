@@ -303,7 +303,7 @@ class datos_grafico(webapp2.RequestHandler):
 
 #Clase que gestiona el pronóstico de datos atmosféricos en tiempo real
 
-API_DARKSKY = '23e1861a710d58fb3a1f7ee15d438dd3'
+API_pronostico = 'c6f8c98fd1da5785'
              
 class pronostico(webapp2.RequestHandler):
     
@@ -332,26 +332,32 @@ class pronostico(webapp2.RequestHandler):
             longitud = self.request.get('longitud')
             radio_elegido = self.request.get('optradio');
             
-            url = 'https://api.forecast.io/forecast/' + API_DARKSKY + '/' + str(latitud) + ',' + str(longitud)
-            response = urllib2.urlopen(url).read()
-            r = urllib2.urlopen(url)
-    
-            result = json.load(r)
             array_datos = []
 
             if radio_elegido == 'horas':
                 
-                for i in range(48):
+                url_horas = 'http://api.wunderground.com/api/' + API_pronostico + '/hourly/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
+
+                response = urllib2.urlopen(url_horas).read()
+                r = urllib2.urlopen(url_horas)
+                result = json.load(r)
+                
+                for i in range(36):
                     
-                    array_datos.append(result["hourly"]["data"][i])
+                    array_datos.append(result["hourly_forecast"][i])
                 
             else: 
                 
-                for i in range(7):
-                                        
-                    array_datos.append(result["daily"]["data"][i])
+                url_dias = 'http://api.wunderground.com/api/' + API_pronostico + '/forecast10day/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
 
-                
+                response = urllib2.urlopen(url_dias).read()
+                r = urllib2.urlopen(url_dias)
+                result = json.load(r)
+
+                for i in range(10):
+                                        
+                    array_datos.append(result["forecast"]["simpleforecast"]["forecastday"][i])
+            
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'sesion':username, 
                              'array_datos':array_datos,

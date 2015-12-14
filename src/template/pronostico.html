@@ -96,36 +96,42 @@
      </div>
     <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-success">Realizar pronóstico</button>
     <div id="leyenda">
-	<p><b>Medidas:</b></p>
-	<p>Temperatura: Fahrenheit <br/></p>
-        <p>Humedad: Entre 0 y 1<br/></p>
-	<p>Velocidad Viento: m/s<br/></p>
-        <p>Dirección Viento: Grados º <br/></p>
-	<p>Probabilidad de precipitación: Entre 0 y 1 <br/></p>
-	<p>Visibilidad: Entre 0 y 10 <br/></p>
+	<img src="http://api.wunderground.com/api/c6f8c98fd1da5785/animatedradar/animatedsatellite/image.gif?num=5&delay=50&rad.maxlat=47.709&rad.maxlon=-69.263&rad.minlat=31.596&rad.minlon=-97.388&rad.width=640&rad.height=480&rad.rainsnow=1&rad.reproj.automerc=1&rad.num=5&sat.maxlat=47.709&sat.maxlon=-69.263&sat.minlat=31.596&sat.minlon=-97.388&sat.width=640&sat.height=480&sat.key=sat_ir4_bottom&sat.gtt=107&sat.proj=me&sat.timelabel=0&sat.num=5" style="width:300px;height:250px;">
+	
 
     </div>
    </form> 
 <table class="table table-striped">
-<thead><tr><th>Temperatura</th><th>Humedad</th><th>Velocidad Viento</th><th>Dirección Viento</th><th>Visibilidad</th><th>Precipitación</th></tr></thead>
+<thead><tr>
+{% if radio_elegido == 'horas' %}
+<th>Hora</th>
+{% endif %}
+
+{% if radio_elegido == 'dias' %}
+<th>Día</th>
+{% endif %}
+
+<th>Max/Min</th><th>Descripción</th><th>Viento</th><th>Humedad</th></tr></thead>
 <tbody>
 
 	  {% for datos in array_datos %}
 
 	  <tr>
 	      {% if radio_elegido == 'horas' %}
-	      	<td>{{datos.temperature}}</td>
+	      	      <td style="font-size:14px;">{{datos.FCTTIME.hour}}h {{datos.FCTTIME.weekday_name_abbrev}}, {{datos.FCTTIME.mday}}.{{datos.FCTTIME.month_name_abbrev}}</td>
+		      <td>{{datos.temp.metric}}/{{datos.dewpoint.metric}} ºC</td>
+		      <td style="font-size:16px;">{{datos.condition}} <img src="{{datos.icon_url}}" style="width:40px;height:40px;"></td>
+		      <td style="font-size:16px;">{{datos.wdir.dir}} - {{datos.wspd.metric}} kph - {{datos.wdir.degrees}}º</td>
+		      <td style="font-size:16px;">{{datos.humidity}} %</td>
 	      {% endif %}
 
 	      {% if radio_elegido == 'dias' %}
-		<td>{{datos.temperatureMax}}</td>
+		      <td style="font-size:14px;">{{datos.date.weekday}}, {{datos.date.day}} de {{datos.date.monthname}}</td>
+		      <td>{{datos.high.celsius}}/{{datos.low.celsius}} ºC</td>
+		      <td style="font-size:16px;">{{datos.conditions}} <img src="{{datos.icon_url}}" style="width:40px;height:40px;"></td>
+		      <td style="font-size:16px;">{{datos.avewind.dir}} - {{datos.avewind.kph}} kph - {{datos.avewind.degrees}}º</td>
+		      <td style="font-size:16px;">{{datos.avehumidity}} %</td>
 	      {% endif %}
-
-	      <td>{{datos.humidity}}</td>
-              <td>{{datos.windSpeed}}</td>
-              <td>{{datos.windBearing}}</td>
-              <td>{{datos.visibility}}</td>
-              <td>{{datos.precipProbability}}</td>
           </tr>
 
 	  {% endfor %}
