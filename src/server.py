@@ -333,35 +333,51 @@ class pronostico(webapp2.RequestHandler):
             radio_elegido = self.request.get('optradio');
             
             array_datos = []
-
-            if radio_elegido == 'horas':
-                
-                url_horas = 'http://api.wunderground.com/api/' + API_pronostico + '/hourly/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
-
-                response = urllib2.urlopen(url_horas).read()
-                r = urllib2.urlopen(url_horas)
-                result = json.load(r)
-                
-                for i in range(36):
-                    
-                    array_datos.append(result["hourly_forecast"][i])
-                
-            else: 
-                
-                url_dias = 'http://api.wunderground.com/api/' + API_pronostico + '/forecast10day/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
-
-                response = urllib2.urlopen(url_dias).read()
-                r = urllib2.urlopen(url_dias)
-                result = json.load(r)
-
-                for i in range(10):
-                                        
-                    array_datos.append(result["forecast"]["simpleforecast"]["forecastday"][i])
+            error = ''
+            latitud_actual = ''
+            longitud_actual = ''
             
+            try:
+                
+                if radio_elegido == 'horas':
+                    
+                    url_horas = 'http://api.wunderground.com/api/' + API_pronostico + '/hourly/conditions/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
+                    
+                    response = urllib2.urlopen(url_horas).read()
+                    r = urllib2.urlopen(url_horas)
+                    result = json.load(r)
+                        
+                    for i in range(36):
+                                
+                        array_datos.append(result["hourly_forecast"][i])
+                            
+    
+                        
+                else: 
+                    
+                    url_dias = 'http://api.wunderground.com/api/' + API_pronostico + '/forecast10day/conditions/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
+    
+                    response = urllib2.urlopen(url_dias).read()
+                    r = urllib2.urlopen(url_dias)
+                    result = json.load(r)
+                    
+                    for i in range(10):
+                                            
+                        array_datos.append(result["forecast"]["simpleforecast"]["forecastday"][i])
+                
+                latitud_actual = result["current_observation"]["display_location"]["latitude"]
+                longitud_actual = result["current_observation"]["display_location"]["longitude"]
+                
+            except KeyError, e:
+                error = 'No existe ninguna ciudad relacionada con esas coordenadas. Por favor consulta "https://www.google.es/maps" para verificar la zona.'
+                
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'sesion':username, 
                              'array_datos':array_datos,
-                             'radio_elegido':radio_elegido
+                             'radio_elegido':radio_elegido,
+                             'latitud_actual':latitud_actual,
+                             'longitud_actual':longitud_actual,
+                             'error':error
                              }
             
             template = JINJA_ENVIRONMENT.get_template('template/pronostico.html')

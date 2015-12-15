@@ -122,6 +122,16 @@ tbody{
  
 }
 
+#mensaje_error{
+  float: left;
+  margin-right:550px;
+  margin-top:50px;
+  border: 2px;
+  width: 1300px;
+ 
+}
+
+
 #titulo_form{
   font-size:30px;
 }

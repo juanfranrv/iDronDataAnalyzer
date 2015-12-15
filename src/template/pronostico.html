@@ -82,9 +82,9 @@
    <form id="form_pronos" role="form" onsubmit="return Valida(this);" method="post" action="/pronostico">
     <div id="inputs">
 	<label>Introduce latitud: </label>
-        <input id="latitud" type="text" class="form-control" name="latitud" placeholder="Latitud">
+        <input id="latitud" type="text" class="form-control" name="latitud" value="{{latitud_actual}}" placeholder="Latitud">
 	<label>Introduce longitud: </label>
-	<input id="longitud" type="text" class="form-control" name="longitud" placeholder="Longitud">
+	<input id="longitud" type="text" class="form-control" name="longitud" value="{{longitud_actual}}" placeholder="Longitud">
     </div>
     <div id="radiobuttons">
 	<div class="radio">
@@ -98,6 +98,12 @@
    </form> 
 
 <table class="table table-striped">
+{% if radio_elegido == 'horas' or radio_elegido == 'dias' %}
+
+{% if error != '' %}
+<div id="mensaje_error" class="alert alert-danger">{{error}}</div>
+{% endif %}
+
 <thead><tr>
 {% if radio_elegido == 'horas' %}
 <th>Hora</th>
@@ -133,6 +139,7 @@
 	  {% endfor %}
 
   </tbody>
+{% endif %}
 </table>
 
 
