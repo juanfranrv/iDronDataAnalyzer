@@ -98,21 +98,21 @@
    </form> 
 
 <table class="table table-striped">
-<thead><tr style="margin-left:30px">
+<thead><tr>
 {% if radio_elegido == 'horas' %}
-<th>Fecha: Hora</th>
+<th>Hora</th>
 {% endif %}
 
 {% if radio_elegido == 'dias' %}
-<th>Fecha: Día</th>
+<th>Día</th>
 {% endif %}
 
-<th>Temp. Máx/Mín</th><th>Descripción</th><th>Datos viento</th><th>Humedad</th></tr></thead>
+<th>Máx/Mín</th><th>Descripción</th><th>Viento</th><th>Humedad</th></tr></thead>
 <tbody>
 
 	  {% for datos in array_datos %}
 
-	  <tr style="margin-left:100px">
+	  <tr>
 	      {% if radio_elegido == 'horas' %}
 	      	      <td style="font-size:14px;">{{datos.FCTTIME.hour}}h {{datos.FCTTIME.weekday_name_abbrev}}, {{datos.FCTTIME.mday}}.{{datos.FCTTIME.month_name_abbrev}}</td>
 		      <td>{{datos.temp.metric}}/{{datos.dewpoint.metric}} ºC</td>
