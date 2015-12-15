@@ -79,7 +79,7 @@
     </header><!--/header-->
 
    <div style="background:transparent !important" class="jumbotron">
-   <form role="form" onsubmit="return Valida(this);" method="post" action="/pronostico">
+   <form id="form_pronos" role="form" onsubmit="return Valida(this);" method="post" action="/pronostico">
     <div id="inputs">
 	<label>Introduce latitud: </label>
         <input id="latitud" type="text" class="form-control" name="latitud" placeholder="Latitud">
@@ -95,28 +95,24 @@
 	</div>
      </div>
     <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-success">Realizar pronóstico</button>
-    <div id="leyenda">
-	<img src="http://api.wunderground.com/api/c6f8c98fd1da5785/animatedradar/animatedsatellite/image.gif?num=5&delay=50&rad.maxlat=47.709&rad.maxlon=-69.263&rad.minlat=31.596&rad.minlon=-97.388&rad.width=640&rad.height=480&rad.rainsnow=1&rad.reproj.automerc=1&rad.num=5&sat.maxlat=47.709&sat.maxlon=-69.263&sat.minlat=31.596&sat.minlon=-97.388&sat.width=640&sat.height=480&sat.key=sat_ir4_bottom&sat.gtt=107&sat.proj=me&sat.timelabel=0&sat.num=5" style="width:300px;height:250px;">
-	
-
-    </div>
    </form> 
+
 <table class="table table-striped">
-<thead><tr>
+<thead><tr style="margin-left:30px">
 {% if radio_elegido == 'horas' %}
-<th>Hora</th>
+<th>Fecha: Hora</th>
 {% endif %}
 
 {% if radio_elegido == 'dias' %}
-<th>Día</th>
+<th>Fecha: Día</th>
 {% endif %}
 
-<th>Max/Min</th><th>Descripción</th><th>Viento</th><th>Humedad</th></tr></thead>
+<th>Temp. Máx/Mín</th><th>Descripción</th><th>Datos viento</th><th>Humedad</th></tr></thead>
 <tbody>
 
 	  {% for datos in array_datos %}
 
-	  <tr>
+	  <tr style="margin-left:100px">
 	      {% if radio_elegido == 'horas' %}
 	      	      <td style="font-size:14px;">{{datos.FCTTIME.hour}}h {{datos.FCTTIME.weekday_name_abbrev}}, {{datos.FCTTIME.mday}}.{{datos.FCTTIME.month_name_abbrev}}</td>
 		      <td>{{datos.temp.metric}}/{{datos.dewpoint.metric}} ºC</td>
@@ -126,7 +122,7 @@
 	      {% endif %}
 
 	      {% if radio_elegido == 'dias' %}
-		      <td style="font-size:14px;">{{datos.date.weekday}}, {{datos.date.day}} de {{datos.date.monthname}}</td>
+		      <td style="font-size:14px;">{{datos.date.weekday_short}}, {{datos.date.day}} de {{datos.date.monthname_short}}</td>
 		      <td>{{datos.high.celsius}}/{{datos.low.celsius}} ºC</td>
 		      <td style="font-size:16px;">{{datos.conditions}} <img src="{{datos.icon_url}}" style="width:40px;height:40px;"></td>
 		      <td style="font-size:16px;">{{datos.avewind.dir}} - {{datos.avewind.kph}} kph - {{datos.avewind.degrees}}º</td>

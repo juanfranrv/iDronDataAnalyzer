@@ -9,13 +9,18 @@ tr {
   display: inline-table;
 }
 
+
+#form_pronos{
+  margin-left:100px;
+}
+
 td{
    width:20%;
 }
 
 table{
  height: 500px; 
- margin-top: 280px;
+ margin-top: 250px;
 }
 
 tbody{
@@ -27,13 +32,6 @@ tbody{
 
 #latitud{
    width:150px;
-}
-
-#leyenda{
-   float:left;
-   margin-left:100px;
-   border:1px;
-   border-style: solid;
 }
 
 #longitud{
