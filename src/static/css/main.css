@@ -4,18 +4,19 @@
 /*************************
 *******Typography******
 **************************/
-tr {
-  width: 98%;
-  display: inline-table;
-}
-
 
 #form_pronos{
   margin-left:100px;
 }
 
-td{
-   width:20%;
+thead{
+  background: #99FF66;
+  font-weight: bold;
+  display:block;
+}
+
+td,th{
+   width:250px;
 }
 
 table{
@@ -26,8 +27,7 @@ table{
 tbody{
   overflow-y: scroll;
   height: 500px;
-  width: 96%;
-  position: absolute;
+  display: block;
 }
 
 #latitud{

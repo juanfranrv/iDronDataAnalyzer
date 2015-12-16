@@ -269,7 +269,6 @@ class datos_grafico(webapp2.RequestHandler):
         global lat
         global lng              #random lat y long
         lat += 0.05
-        lng += 0.05
         
         url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
         response = urllib2.urlopen(url).read()
