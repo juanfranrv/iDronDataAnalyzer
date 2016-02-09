@@ -283,7 +283,7 @@ class datos_grafico(webapp2.RequestHandler):
         dir_win = result["wind"]["deg"]         #direccion del viento
         
         temp = tempe - 273.15                   #conversion de kelvin a celsius
-        vel_win = vel_wind + 3.6                #conversion de m/s a km/h
+        vel_win = vel_wind * 3.6                #conversion de m/s a km/h
 
         dato_seleccionado = self.request.get('dato')
 
@@ -349,9 +349,7 @@ class pronostico(webapp2.RequestHandler):
                     for i in range(36):
                                 
                         array_datos.append(result["hourly_forecast"][i])
-                            
-    
-                        
+                                         
                 else: 
                     
                     url_dias = 'http://api.wunderground.com/api/' + API_pronostico + '/forecast10day/conditions/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
@@ -386,7 +384,74 @@ class pronostico(webapp2.RequestHandler):
             
             self.redirect('/login')
             
-                     
+# Clase que genera los datos atmosféricos obtenidos de aeropuertos como son el TAF y METAR
+
+class METAR_TAF(webapp2.RequestHandler):
+    
+    def get(self):
+                    
+        global lat
+        global lng              #random lat y long
+        
+        if self.request.cookies.get("username"):
+            
+            username = str(self.request.cookies.get("username")) 
+            error = ''
+            
+            try:
+                
+                url_metar = 'http://avwx.rest/api/metar.php?lat=' + str(lat) + '&lon=' + str(lng) + '&format=JSON'
+            
+                r_metar = urllib2.urlopen(url_metar)
+                result_metar = json.load(r_metar)
+                                    
+                metar = result_metar["Raw-Report"]
+                temperatura = result_metar["Temperature"]
+                fecha_captura = result_metar["Time"]
+                visibilidad = result_metar["Visibility"]
+                direccion_viento = result_metar["Wind-Direction"]
+                rafaga_viento = result_metar["Wind-Gust"]
+                velocidad_viento = result_metar["Wind-Speed"]
+                
+                if rafaga_viento == '':
+                    rafaga_viento = 'Sin informacion asociada'
+                if temperatura == '':
+                    temperatura = 'Sin informacion asociada'
+                if visibilidad == '':
+                    visibilidad = 'Sin informacion asociada'
+                if direccion_viento == '':
+                    direccion_viento = 'Sin informacion asociada'
+                if rafaga_viento == '':
+                    rafaga_viento = 'Sin informacion asociada'
+                if velocidad_viento == '':
+                    velocidad_viento = 'Sin informacion asociada'
+                    
+                                    
+                url_taf = 'http://avwx.rest/api/taf.php?lat=' + str(lat) + '&lon=' + str(lng) + '&format=JSON'
+                                                           
+                r_taf = urllib2.urlopen(url_taf)
+                result_taf = json.load(r_taf)
+                
+                taf = result_taf["Raw-Report"]
+                
+            except KeyError, e:
+                error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
+                
+        self.response.headers['Content-Type'] = 'text/html'
+        template_values={'sesion':username, 
+                        'metar':metar,
+                        'taf':taf,
+                        'temperatura':temperatura,
+                        'fecha_captura':fecha_captura,
+                        'visibilidad':visibilidad,
+                        'direccion_viento':direccion_viento,
+                        'rafaga_viento':rafaga_viento,
+                        'velocidad_viento':velocidad_viento
+                        }
+            
+        template = JINJA_ENVIRONMENT.get_template('template/pronostico_aeropuertos.html')
+        self.response.write(template.render(template_values)) 
+              
 # Urls de la aplicación con sus clases asociadas.
 
 urls = [('/', MainPage),
@@ -399,6 +464,7 @@ urls = [('/', MainPage),
         ('/grafico', grafico),
         ('/datos_grafico', datos_grafico),
         ('/pronostico', pronostico),
+        ('/METAR_TAF', METAR_TAF),
         ('/.*', ErrorPage)
        ]
 
