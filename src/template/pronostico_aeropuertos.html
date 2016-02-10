@@ -54,17 +54,25 @@
     </header><!--/header-->
 
    <div style="background:transparent !important" class="jumbotron">
+
+{% if error != '' %}
+<div id="mensaje_error" class="alert alert-danger">{{error}}</div>
+</br>
+</br>
+</br>
+{% endif %}
+
    <div class="panel panel-primary">
       <h2 class="panel-heading"><b> METAR (Obtenido del aeropuerto más cercano) </b></h2>
       <div class="panel-body">
-	   <label>{{metar}} </label><br/>
+      <label>{{metar}} </label><br/>
       <div style="font-size:80%">
       <dl class="dl-horizontal">
         <label>El informe se hizo el día {{dia}} a las {{hora}} </label><br/>
         <dt>Temperatura: </dt>
-        <dd>{{temperatura}} ºC</dd>
+        <dd>{{temperatura}}</dd>
         <dt>Presión atmosf.:</dt>
-        <dd>{{presion_atmosferica}} hPa </dd>
+        <dd>{{presion_atmosferica}} </dd>
         <dt>Nubosidad: </dt>
 
   	   {% for nube in array_nubes %}
@@ -78,7 +86,7 @@
 	<dt>Ráfaga viento:</dt>
 	<dd>{{rafaga_viento}} </dd>
 	<dt>Velocidad viento: </dt>
-	<dd>{{velocidad_viento}} kt</dd>
+	<dd>{{velocidad_viento}} </dd>
 
       </dl>
      </div>
@@ -86,12 +94,77 @@
    </div>
    <br/>
    <div class="panel panel-primary">
-      <h2 class="panel-heading"><b> TAF (Obtenido del aeropuerto más cercano)  </b></h2>
+      <h2 class="panel-heading"><b> TAF (Obtenido del aeropuerto más cercano) </b></h2>
       <div class="panel-body">
-         <label>{{taf}} </label>
-      </div>
+      <label>{{taf}} </label><br/>
+      <div style="font-size:80%">
+      <dl class="dl-horizontal">
+
+        <dt>Máx. temperatura:</dt>
+	{% if max_temp == '' %}
+		<dd>No hay informacion asociada </dd>
+	{% else %}
+		<dd>{{max_temp}} ºC </dd>
+	{% endif %}
+		<dt>Min. temperatura:</dt>
+	{% if min_temp == '' %}
+		<dd>No hay informacion asociada </dd>
+	{% else %}
+		<dd>{{min_temp}} ºC </dd>
+	{% endif %}
+
+{% for taf in array_taf %}
+
+        <label>Pronóstico desde {{taf["Start-Time"][:2]}}:{{taf["Start-Time"][2:4]}} hasta {{taf["End-Time"][:2]}}:{{taf["End-Time"][2:4]}} </label></br>
+        <dt>Presión atmosf.:</dt>
+	{% if taf.Altimeter == '' %}
+		<dd>No hay informacion asociada </dd>
+	{% else %}
+		<dd>{{taf.Altimeter}}</dd>
+	{% endif %}
+
+		<dt>Visibilidad:</dt>
+	{% if taf.Visibility == '' %}
+		<dd>No hay informacion asociada </dd>
+	{% else %}
+		<dd>{{taf.Visibility}}</dd>
+	{% endif %}
+
+        <dt>Nubosidad: </dt>
+
+  	   {% for nube in array_nubes_taf %}
+	   <dd> {{nube}} </dd>
+           {% endfor %}
+
+	<dt>Dirección viento:</dt>
+	{% if taf["Wind-Direction"] == '' %}
+		<dd>No hay informacion asociada </dd>
+	{% else %}
+		<dd>{{taf["Wind-Direction"]}}</dd>
+	{% endif %}
+
+		<dt>Ráfaga viento:</dt>
+	{% if taf["Wind-Gust"] == '' %}
+		<dd>No hay informacion asociada </dd>
+	{% else %}
+		<dd>{{taf["Wind-Gust"]}}</dd>
+	{% endif %}
+
+		<dt>Velocidad viento: </dt>
+	{% if taf["Wind-Speed"] == '' %}
+		<dd>No hay informacion asociada </dd>
+	{% else %}
+		<dd>{{taf["Wind-Speed"]}}</dd>
+	{% endif %}
+
+
+{% endfor %}
+
+      </dl>
+     </div>
+     </div>
    </div>
-   </div>
+  </div>
 
     <footer id="footer" class="midnight-blue">
         <div class="container">

@@ -419,6 +419,8 @@ class METAR_TAF(webapp2.RequestHandler):
             username = str(self.request.cookies.get("username")) 
             error = ''
             array_nubes = []
+            array_taf = []
+            array_nubes_taf = []
             
             try:
                 
@@ -428,8 +430,8 @@ class METAR_TAF(webapp2.RequestHandler):
                 result_metar = json.load(r_metar)
                                     
                 metar = result_metar["Raw-Report"]
-                temperatura = result_metar["Temperature"]
-                presion_atmosferica = result_metar["Altimeter"]
+                temperatura = result_metar["Temperature"] + ' grados'
+                presion_atmosferica = result_metar["Altimeter"] + ' hPa'
                 nubes = result_metar["Cloud-List"]
                 
                 for nube in nubes:                          #Recorremos el array de nubes obtenidas
@@ -444,8 +446,11 @@ class METAR_TAF(webapp2.RequestHandler):
                     visibilidad = '10km o mas'
                     
                 direccion_viento = result_metar["Wind-Direction"]
+                if direccion_viento == '000':                #No hay viento
+                    direccion_viento = 'No existe presencia de viento'
+                    
                 rafaga_viento = result_metar["Wind-Gust"]
-                velocidad_viento = result_metar["Wind-Speed"]
+                velocidad_viento = result_metar["Wind-Speed"] + ' kt'
                 
                 if rafaga_viento == '':
                     rafaga_viento = 'Sin informacion asociada'
@@ -460,7 +465,6 @@ class METAR_TAF(webapp2.RequestHandler):
                 if velocidad_viento == '':
                     velocidad_viento = 'Sin informacion asociada'
                     
-                                    
                 url_taf = 'http://avwx.rest/api/taf.php?lat=' + str(lat) + '&lon=' + str(lng) + '&format=JSON'
                                                            
                 r_taf = urllib2.urlopen(url_taf)
@@ -468,17 +472,35 @@ class METAR_TAF(webapp2.RequestHandler):
                 
                 taf = result_taf["Raw-Report"]
                 
+                fecha_captura_taf = result_taf["Time"]        #Parseo para obtener del string el dia y hora
+                dia_taf = fecha_captura_taf[:2]
+                hora_taf = fecha_captura_taf[2:4] + ':' + fecha_captura_taf[4:6]
+                max_temp = result_taf["Max-Temp"]
+                min_temp = result_taf["Min-Temp"]
+                
+                for i in range(len(result_taf["Forecast"])):
+                    array_taf.append(result_taf["Forecast"][i])
+                    for nube in result_taf["Forecast"][i]["Cloud-List"]:                          #Recorremos el array de nubes obtenidas
+                        array_nubes_taf.append(getInfoNubosidad(nube[0]))                
+                    
             except KeyError, e:
                 error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
                 
         self.response.headers['Content-Type'] = 'text/html'
-        template_values={'sesion':username, 
+        template_values={'sesion':username,
+                         'error':error, 
                         'metar':metar,
                         'taf':taf,
                         'temperatura':temperatura,
+                        'max_temp':max_temp,
+                        'min_temp':min_temp,
                         'dia':dia,
                         'hora':hora,
+                        'dia_taf':dia_taf,
+                        'hora_taf':hora_taf,
+                        'array_nubes_taf':array_nubes_taf,
                         'array_nubes':array_nubes,
+                        'array_taf':array_taf,
                         'presion_atmosferica':presion_atmosferica,
                         'visibilidad':visibilidad,
                         'direccion_viento':direccion_viento,
