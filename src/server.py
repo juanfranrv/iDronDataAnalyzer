@@ -346,8 +346,7 @@ class pronostico(webapp2.RequestHandler):
                     r = urllib2.urlopen(url_horas)
                     result = json.load(r)
                         
-                    for i in range(36):
-                                
+                    for i in range(36):                                
                         array_datos.append(result["hourly_forecast"][i])
                                          
                 else: 
@@ -358,8 +357,7 @@ class pronostico(webapp2.RequestHandler):
                     r = urllib2.urlopen(url_dias)
                     result = json.load(r)
                     
-                    for i in range(10):
-                                            
+                    for i in range(10):                          
                         array_datos.append(result["forecast"]["simpleforecast"]["forecastday"][i])
                 
                 latitud_actual = result["current_observation"]["display_location"]["latitude"]
@@ -383,7 +381,30 @@ class pronostico(webapp2.RequestHandler):
         else:
             
             self.redirect('/login')
-            
+       
+#Obtiene la descripción de cada nubosidad para el METAR
+
+def getInfoNubosidad(nube): 
+    
+    if(nube == 'SKC'):
+        result = 'SKC - Cielo despejado de nubes (sky clear). Cielo limpio por debajo de 12.000 para ASOS/AWOS.'
+    elif(nube == 'FEW'):
+        result = 'FEW - Nubes escasas. Las nubes cubre entre 1/8 y 2/8 del cielo.'
+    elif(nube == 'SCT'):   
+        result = 'SCT - Nubes dispersas (scatered). Los nubes cubre entre 3/8 y 4/8 del cielo.' 
+    elif(nube == 'BKN'): 
+        result = 'BKN - Cielo quebradizo, nubosidad abundante (broken). Las nubes cubren entre 5/8 y 7/8 del cielo.'  
+    elif(nube == 'OVC'):
+        result = 'OVC - Cielo cubierto (overcast). Cielo totalmente cubierto por nubes.'    
+    elif(nube == 'TCU'): 
+        result = 'TCU - Desarrollandose cumulonimbos (towering cumulus).'  
+    elif(nube == 'CB'):
+        result = 'CB - Cumulonimbos (cumulonimbus). Los cumulonimbos son densas formaciones de nubes verticales que pueden provocar fuertes precipitaciones, tormentas eléctricas o granizadas.'
+    elif(nube == 'CAVOK'): 
+        result = 'CAVOK - Techo y visibilidad OK (Condiciones perfectas para el vuelo)'
+        
+    return result;
+
 # Clase que genera los datos atmosféricos obtenidos de aeropuertos como son el TAF y METAR
 
 class METAR_TAF(webapp2.RequestHandler):
@@ -397,6 +418,7 @@ class METAR_TAF(webapp2.RequestHandler):
             
             username = str(self.request.cookies.get("username")) 
             error = ''
+            array_nubes = []
             
             try:
                 
@@ -407,8 +429,20 @@ class METAR_TAF(webapp2.RequestHandler):
                                     
                 metar = result_metar["Raw-Report"]
                 temperatura = result_metar["Temperature"]
-                fecha_captura = result_metar["Time"]
-                visibilidad = result_metar["Visibility"]
+                presion_atmosferica = result_metar["Altimeter"]
+                nubes = result_metar["Cloud-List"]
+                
+                for nube in nubes:                          #Recorremos el array de nubes obtenidas
+                    array_nubes.append(getInfoNubosidad(nube[0]))
+   
+                fecha_captura = result_metar["Time"]        #Parseo para obtener del string el dia y hora
+                dia = fecha_captura[:2]
+                hora = fecha_captura[2:4] + ':' + fecha_captura[4:6]
+                
+                visibilidad = result_metar["Visibility"] + ' m'
+                if visibilidad == '9999 m':                #Si la visibilidad es 9999 significa que hay 10km o mas
+                    visibilidad = '10km o mas'
+                    
                 direccion_viento = result_metar["Wind-Direction"]
                 rafaga_viento = result_metar["Wind-Gust"]
                 velocidad_viento = result_metar["Wind-Speed"]
@@ -442,7 +476,10 @@ class METAR_TAF(webapp2.RequestHandler):
                         'metar':metar,
                         'taf':taf,
                         'temperatura':temperatura,
-                        'fecha_captura':fecha_captura,
+                        'dia':dia,
+                        'hora':hora,
+                        'array_nubes':array_nubes,
+                        'presion_atmosferica':presion_atmosferica,
                         'visibilidad':visibilidad,
                         'direccion_viento':direccion_viento,
                         'rafaga_viento':rafaga_viento,

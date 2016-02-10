@@ -55,22 +55,38 @@
 
    <div style="background:transparent !important" class="jumbotron">
    <div class="panel panel-primary">
-      <h2 class="panel-heading"><b> METAR </b></h2>
+      <h2 class="panel-heading"><b> METAR (Obtenido del aeropuerto más cercano) </b></h2>
       <div class="panel-body">
 	   <label>{{metar}} </label><br/>
       <div style="font-size:80%">
-	   <label>El informe se hizó {{fecha_captura}} </label><br/>
-	   <label>Temperatura: {{temperatura}} ºC </label><br/>
-	   <label>Visiblidad: {{visibilidad}} m </label><br/>
-	   <label>Dirección del viento: {{direccion_viento}} </label><br/>
-	   <label>Ráfaga de viento: {{rafaga_viento}} </label><br/>
-	   <label>Velocidad del viento: {{velocidad_viento}} kt </label><br/>
+      <dl class="dl-horizontal">
+        <label>El informe se hizo el día {{dia}} a las {{hora}} </label><br/>
+        <dt>Temperatura: </dt>
+        <dd>{{temperatura}} ºC</dd>
+        <dt>Presión atmosf.:</dt>
+        <dd>{{presion_atmosferica}} hPa </dd>
+        <dt>Nubosidad: </dt>
+
+  	   {% for nube in array_nubes %}
+	   <dd> {{nube}} </dd>
+           {% endfor %}
+
+	<dt>Visibilidad:</dt>
+	<dd>{{visibilidad}} </dd>
+	<dt>Dirección viento:</dt>
+	<dd> {{direccion_viento}} </dd>
+	<dt>Ráfaga viento:</dt>
+	<dd>{{rafaga_viento}} </dd>
+	<dt>Velocidad viento: </dt>
+	<dd>{{velocidad_viento}} kt</dd>
+
+      </dl>
      </div>
      </div>
    </div>
    <br/>
    <div class="panel panel-primary">
-      <h2 class="panel-heading"><b> TAF </b></h2>
+      <h2 class="panel-heading"><b> TAF (Obtenido del aeropuerto más cercano)  </b></h2>
       <div class="panel-body">
          <label>{{taf}} </label>
       </div>
