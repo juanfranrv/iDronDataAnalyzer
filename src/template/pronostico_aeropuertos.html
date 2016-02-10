@@ -102,13 +102,13 @@
 
         <dt>Máx. temperatura:</dt>
 	{% if max_temp == '' %}
-		<dd>No hay informacion asociada </dd>
+		<dd>No hay información asociada </dd>
 	{% else %}
 		<dd>{{max_temp}} ºC </dd>
 	{% endif %}
 		<dt>Min. temperatura:</dt>
 	{% if min_temp == '' %}
-		<dd>No hay informacion asociada </dd>
+		<dd>No hay información asociada </dd>
 	{% else %}
 		<dd>{{min_temp}} ºC </dd>
 	{% endif %}
@@ -118,16 +118,18 @@
         <label>Pronóstico desde {{taf["Start-Time"][:2]}}:{{taf["Start-Time"][2:4]}} hasta {{taf["End-Time"][:2]}}:{{taf["End-Time"][2:4]}} </label></br>
         <dt>Presión atmosf.:</dt>
 	{% if taf.Altimeter == '' %}
-		<dd>No hay informacion asociada </dd>
+		<dd>No hay información asociada </dd>
 	{% else %}
 		<dd>{{taf.Altimeter}}</dd>
 	{% endif %}
 
 		<dt>Visibilidad:</dt>
-	{% if taf.Visibility == '' %}
-		<dd>No hay informacion asociada </dd>
+	{% if taf.Visibility == '9999' %}
+		<dd>10km o más </dd>
+	{% elif taf.Visibility == '' %}
+		<dd>No hay información asociada</dd>
 	{% else %}
-		<dd>{{taf.Visibility}}</dd>
+		<dd>{{taf.Visibility}} m</dd>
 	{% endif %}
 
         <dt>Nubosidad: </dt>
@@ -138,21 +140,21 @@
 
 	<dt>Dirección viento:</dt>
 	{% if taf["Wind-Direction"] == '' %}
-		<dd>No hay informacion asociada </dd>
+		<dd>No hay información asociada </dd>
 	{% else %}
 		<dd>{{taf["Wind-Direction"]}}</dd>
 	{% endif %}
 
 		<dt>Ráfaga viento:</dt>
 	{% if taf["Wind-Gust"] == '' %}
-		<dd>No hay informacion asociada </dd>
+		<dd>No hay información asociada </dd>
 	{% else %}
 		<dd>{{taf["Wind-Gust"]}}</dd>
 	{% endif %}
 
 		<dt>Velocidad viento: </dt>
 	{% if taf["Wind-Speed"] == '' %}
-		<dd>No hay informacion asociada </dd>
+		<dd>No hay información asociada </dd>
 	{% else %}
 		<dd>{{taf["Wind-Speed"]}}</dd>
 	{% endif %}
