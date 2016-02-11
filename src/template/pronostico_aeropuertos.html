@@ -64,6 +64,7 @@
 
    <div class="panel panel-primary">
       <h2 class="panel-heading"><b> METAR (Obtenido del aeropuerto más cercano) </b></h2>
+{% if error == '' %}
       <div class="panel-body">
       <label>{{metar}} </label><br/>
       <div style="font-size:80%">
@@ -91,15 +92,18 @@
       </dl>
      </div>
      </div>
+
+{% endif %}
    </div>
    <br/>
    <div class="panel panel-primary">
       <h2 class="panel-heading"><b> TAF (Obtenido del aeropuerto más cercano) </b></h2>
+{% if error == '' %}
       <div class="panel-body">
       <label>{{taf}} </label><br/>
       <div style="font-size:80%">
       <dl class="dl-horizontal">
-
+	<label>El informe se hizo el día {{dia_taf}} a las {{hora_taf}} </label><br/>
         <dt>Máx. temperatura:</dt>
 	{% if max_temp == '' %}
 		<dd>No hay información asociada </dd>
@@ -114,7 +118,6 @@
 	{% endif %}
 
 {% for taf in array_taf %}
-
         <label>Pronóstico desde {{taf["Start-Time"][:2]}}:{{taf["Start-Time"][2:4]}} hasta {{taf["End-Time"][:2]}}:{{taf["End-Time"][2:4]}} </label></br>
         <dt>Presión atmosf.:</dt>
 	{% if taf.Altimeter == '' %}
@@ -135,7 +138,7 @@
         <dt>Nubosidad: </dt>
 
   	   {% for nube in array_nubes_taf %}
-	   <dd> {{nube}} </dd>
+	   <dd> {{nube['0']}} </dd>
            {% endfor %}
 
 	<dt>Dirección viento:</dt>
@@ -161,8 +164,8 @@
 
 
 {% endfor %}
-
       </dl>
+{% endif %}
      </div>
      </div>
    </div>

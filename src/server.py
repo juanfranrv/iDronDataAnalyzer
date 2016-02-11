@@ -420,9 +420,10 @@ class METAR_TAF(webapp2.RequestHandler):
             error = ''
             array_nubes = []
             array_taf = []
-            array_nubes_taf = []
+            array_nubes_taf = {}
             
             try:
+                #Gestion del METAR y parseo de la información para su interpretación
                 
                 url_metar = 'http://avwx.rest/api/metar.php?lat=' + str(lat) + '&lon=' + str(lng) + '&format=JSON'
             
@@ -450,7 +451,10 @@ class METAR_TAF(webapp2.RequestHandler):
                     direccion_viento = 'No existe presencia de viento'
                     
                 rafaga_viento = result_metar["Wind-Gust"]
+                
                 velocidad_viento = result_metar["Wind-Speed"] + ' kt'
+                if direccion_viento == '000 kt':                #No hay viento
+                    direccion_viento = 'No existe presencia de viento'
                 
                 if rafaga_viento == '':
                     rafaga_viento = 'Sin informacion asociada'
@@ -464,7 +468,9 @@ class METAR_TAF(webapp2.RequestHandler):
                     rafaga_viento = 'Sin informacion asociada'
                 if velocidad_viento == '':
                     velocidad_viento = 'Sin informacion asociada'
-                    
+                
+                #Gestion del TAF y parseo de alguna de la información para su interpretación. La otra parte esta en el template interpretada
+                 
                 url_taf = 'http://avwx.rest/api/taf.php?lat=' + str(lat) + '&lon=' + str(lng) + '&format=JSON'
                                                            
                 r_taf = urllib2.urlopen(url_taf)
@@ -475,13 +481,19 @@ class METAR_TAF(webapp2.RequestHandler):
                 fecha_captura_taf = result_taf["Time"]        #Parseo para obtener del string el dia y hora
                 dia_taf = fecha_captura_taf[:2]
                 hora_taf = fecha_captura_taf[2:4] + ':' + fecha_captura_taf[4:6]
+                
                 max_temp = result_taf["Max-Temp"]
                 min_temp = result_taf["Min-Temp"]
+                j=0
                 
                 for i in range(len(result_taf["Forecast"])):
                     array_taf.append(result_taf["Forecast"][i])
-                    for nube in result_taf["Forecast"][i]["Cloud-List"]:                          #Recorremos el array de nubes obtenidas
-                        array_nubes_taf.append(getInfoNubosidad(nube[0]))                
+                    
+                    for nube in result_taf["Forecast"][i]["Cloud-List"]:               #Recorremos el array de nubes obtenidas
+                        array_nubes_taf[j] = getInfoNubosidad(nube[0]) 
+                              
+                    j+=1
+                print array_nubes_taf  
                     
             except KeyError, e:
                 error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
