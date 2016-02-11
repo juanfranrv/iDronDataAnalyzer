@@ -108,13 +108,13 @@
 	{% if max_temp == '' %}
 		<dd>No hay información asociada </dd>
 	{% else %}
-		<dd>{{max_temp}} ºC </dd>
+		<dd>{{max_temp[2:4]}} ºC </dd>
 	{% endif %}
 		<dt>Min. temperatura:</dt>
 	{% if min_temp == '' %}
 		<dd>No hay información asociada </dd>
 	{% else %}
-		<dd>{{min_temp}} ºC </dd>
+		<dd>{{min_temp[2:4]}} ºC </dd>
 	{% endif %}
 
 {% set count = 0 %}
@@ -148,21 +148,21 @@
 	{% if taf["Wind-Direction"] == '' %}
 		<dd>No hay información asociada </dd>
 	{% else %}
-		<dd>{{taf["Wind-Direction"]}}</dd>
+		<dd>{{taf["Wind-Direction"]}} º</dd>
 	{% endif %}
 
 		<dt>Ráfaga viento:</dt>
 	{% if taf["Wind-Gust"] == '' %}
 		<dd>No hay información asociada </dd>
 	{% else %}
-		<dd>{{taf["Wind-Gust"]}}</dd>
+		<dd>{{taf["Wind-Gust"]}} nudos (KT)</dd>
 	{% endif %}
 
 		<dt>Velocidad viento: </dt>
 	{% if taf["Wind-Speed"] == '' %}
 		<dd>No hay información asociada </dd>
 	{% else %}
-		<dd>{{taf["Wind-Speed"]}}</dd>
+		<dd>{{taf["Wind-Speed"]}} nudos (KT)</dd>
 	{% endif %}
 
 

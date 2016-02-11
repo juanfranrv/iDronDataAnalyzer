@@ -448,28 +448,26 @@ class METAR_TAF(webapp2.RequestHandler):
                 if visibilidad == '9999 m':                #Si la visibilidad es 9999 significa que hay 10km o mas
                     visibilidad = '10km o mas'
                     
-                direccion_viento = result_metar["Wind-Direction"]
-                if direccion_viento == '000':                #No hay viento
+                direccion_viento = result_metar["Wind-Direction"] + ' grados'
+                if direccion_viento == '000 º':                #No hay viento
                     direccion_viento = 'No existe presencia de viento'
                     
-                rafaga_viento = result_metar["Wind-Gust"]
+                rafaga_viento = result_metar["Wind-Gust"] + ' nudos (KT)'
                 
-                velocidad_viento = result_metar["Wind-Speed"] + ' kt'
+                velocidad_viento = result_metar["Wind-Speed"] + ' nudos (KT)'
                 if direccion_viento == '000 kt':                #No hay viento
                     direccion_viento = 'No existe presencia de viento'
                 
-                if rafaga_viento == '':
+                if rafaga_viento == ' nudos (KT)':
                     rafaga_viento = 'Sin informacion asociada'
-                if temperatura == '':
+                if temperatura == ' grados':
                     temperatura = 'Sin informacion asociada'
-                if visibilidad == '':
+                if visibilidad == ' m':
                     visibilidad = 'Sin informacion asociada'
-                if direccion_viento == '':
+                if direccion_viento == ' grados':
                     direccion_viento = 'Sin informacion asociada'
-                if rafaga_viento == '':
+                if velocidad_viento == ' nudos (KT)':
                     rafaga_viento = 'Sin informacion asociada'
-                if velocidad_viento == '':
-                    velocidad_viento = 'Sin informacion asociada'
                 
                 #Gestion del TAF y parseo de alguna de la información para su interpretación. La otra parte esta en el template interpretada
                  
