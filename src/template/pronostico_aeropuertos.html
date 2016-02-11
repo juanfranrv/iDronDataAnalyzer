@@ -117,6 +117,7 @@
 		<dd>{{min_temp}} ºC </dd>
 	{% endif %}
 
+{% set count = 0 %}
 {% for taf in array_taf %}
         <label>Pronóstico desde {{taf["Start-Time"][:2]}}:{{taf["Start-Time"][2:4]}} hasta {{taf["End-Time"][:2]}}:{{taf["End-Time"][2:4]}} </label></br>
         <dt>Presión atmosf.:</dt>
@@ -137,9 +138,11 @@
 
         <dt>Nubosidad: </dt>
 
-  	   {% for nube in array_nubes_taf %}
-	   <dd> {{nube['0']}} </dd>
+	   {% for j in range(2) %}
+	   <dd> {{array_nubes_taf[count][j]}} </dd>
            {% endfor %}
+
+	{% set count = count + 1 %}
 
 	<dt>Dirección viento:</dt>
 	{% if taf["Wind-Direction"] == '' %}

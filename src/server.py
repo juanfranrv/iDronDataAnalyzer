@@ -3,6 +3,7 @@
 
 from google.appengine.ext import ndb
 from google.appengine.ext.webapp.util import run_wsgi_app
+from collections import defaultdict
 import os
 import model
 import webapp2
@@ -420,7 +421,7 @@ class METAR_TAF(webapp2.RequestHandler):
             error = ''
             array_nubes = []
             array_taf = []
-            array_nubes_taf = {}
+            array_nubes_taf = defaultdict(list)
             
             try:
                 #Gestion del METAR y parseo de la información para su interpretación
@@ -484,17 +485,13 @@ class METAR_TAF(webapp2.RequestHandler):
                 
                 max_temp = result_taf["Max-Temp"]
                 min_temp = result_taf["Min-Temp"]
-                j=0
-                
+
                 for i in range(len(result_taf["Forecast"])):
                     array_taf.append(result_taf["Forecast"][i])
                     
                     for nube in result_taf["Forecast"][i]["Cloud-List"]:               #Recorremos el array de nubes obtenidas
-                        array_nubes_taf[j] = getInfoNubosidad(nube[0]) 
-                              
-                    j+=1
-                print array_nubes_taf  
-                    
+                        array_nubes_taf[i].append(getInfoNubosidad(nube[0]))
+                
             except KeyError, e:
                 error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
                 
