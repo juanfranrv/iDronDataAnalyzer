@@ -493,11 +493,11 @@ class METAR_TAF(webapp2.RequestHandler):
                     for nube in result_taf["Forecast"][i]["Cloud-List"]:               #Recorremos el array de nubes obtenidas
                         array_nubes_taf[i].append(getInfoNubosidad(nube[0]))
             
-            except KeyError,Exception as e:
+            except KeyError as e:
                 error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
                 
-        self.response.headers['Content-Type'] = 'text/html'
-        template_values={'sesion':username,
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'sesion':username,
                          'error':error, 
                         'metar':metar,
                         'taf':taf,
@@ -518,8 +518,12 @@ class METAR_TAF(webapp2.RequestHandler):
                         'velocidad_viento':velocidad_viento
                         }
             
-        template = JINJA_ENVIRONMENT.get_template('template/pronostico_aeropuertos.html')
-        self.response.write(template.render(template_values)) 
+            template = JINJA_ENVIRONMENT.get_template('template/pronostico_aeropuertos.html')
+            self.response.write(template.render(template_values)) 
+            
+        else:
+            
+            self.redirect('/login')
               
 # Urls de la aplicación con sus clases asociadas.
 
