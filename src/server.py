@@ -449,18 +449,18 @@ class METAR_TAF(webapp2.RequestHandler):
                     visibilidad = '10km o mas'
                     
                 direccion_viento = result_metar["Wind-Direction"] + ' grados'
-                if direccion_viento == '000 º':                #No hay viento
+                if direccion_viento == '000 grados':       #No hay viento
                     direccion_viento = 'No existe presencia de viento'
                     
                 rafaga_viento = result_metar["Wind-Gust"] + ' nudos (KT)'
                 
                 velocidad_viento = result_metar["Wind-Speed"] + ' nudos (KT)'
-                if direccion_viento == '000 kt':                #No hay viento
+                if direccion_viento == '000 nudos (KT)':                #No hay viento
                     direccion_viento = 'No existe presencia de viento'
                 
                 if rafaga_viento == ' nudos (KT)':
                     rafaga_viento = 'Sin informacion asociada'
-                if temperatura == ' grados':
+                if temperatura == ' grados celsius':
                     temperatura = 'Sin informacion asociada'
                 if visibilidad == ' m':
                     visibilidad = 'Sin informacion asociada'
