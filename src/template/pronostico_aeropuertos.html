@@ -103,7 +103,7 @@
       <label>{{taf}} </label><br/>
       <div style="font-size:80%">
       <dl class="dl-horizontal">
-	<label>El informe se hizo el día {{dia_taf}} a las {{hora_taf}} </label><br/>
+	<label>El informe se hizo el día {{dia_taf}} a las {{hora_taf}} UTC </label><br/>
         <dt>Máx. temperatura:</dt>
 	{% if max_temp == '' %}
 		<dd>No hay información asociada </dd>
@@ -119,7 +119,7 @@
 
 {% set count = 0 %}
 {% for taf in array_taf %}
-        <label>Pronóstico desde {{taf["Start-Time"][:2]}}:{{taf["Start-Time"][2:4]}} hasta {{taf["End-Time"][:2]}}:{{taf["End-Time"][2:4]}} </label></br>
+        <label>Pronóstico válido del día {{taf["Start-Time"][:2]}} a las {{taf["Start-Time"][2:4]}} UTC hasta el día {{taf["End-Time"][:2]}} a las {{taf["End-Time"][2:4]}} UTC </label></br>
         <dt>Presión atmosf.:</dt>
 	{% if taf.Altimeter == '' %}
 		<dd>No hay información asociada </dd>

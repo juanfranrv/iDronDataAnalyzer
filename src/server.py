@@ -433,7 +433,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 result_metar = json.load(r_metar)
                                     
                 metar = result_metar["Raw-Report"]
-                temperatura = result_metar["Temperature"] + ' grados'
+                temperatura = result_metar["Temperature"] + ' grados celsius'
                 presion_atmosferica = result_metar["Altimeter"] + ' hPa'
                 nubes = result_metar["Cloud-List"]
                 
@@ -442,7 +442,7 @@ class METAR_TAF(webapp2.RequestHandler):
    
                 fecha_captura = result_metar["Time"]        #Parseo para obtener del string el dia y hora
                 dia = fecha_captura[:2]
-                hora = fecha_captura[2:4] + ':' + fecha_captura[4:6]
+                hora = fecha_captura[2:4] + ':' + fecha_captura[4:6] + ' UTC'
                 
                 visibilidad = result_metar["Visibility"] + ' m'
                 if visibilidad == '9999 m':                #Si la visibilidad es 9999 significa que hay 10km o mas
