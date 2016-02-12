@@ -1,3 +1,6 @@
 [submodule "google_appengine"]
 	path = google_appengine
 	url = https://github.com/juanfranrv/GoogleAppEngine
+[submodule "GoogleAppEngineSDK"]
+	path = GoogleAppEngineSDK
+	url = https://github.com/juanfranrv/GoogleAppEngineSDK
