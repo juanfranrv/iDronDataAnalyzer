@@ -4,7 +4,8 @@
 from google.appengine.ext import ndb
 from google.appengine.ext.webapp.util import run_wsgi_app
 from collections import defaultdict
-from google.appengine.runtime import apiproxy_errors
+from google.appengine.runtime import DeadlineExceededError
+from google.appengine.api import urlfetch
 import os
 import model
 import webapp2
@@ -423,6 +424,7 @@ class METAR_TAF(webapp2.RequestHandler):
             array_nubes = []
             array_taf = []
             array_nubes_taf = defaultdict(list)
+            taf = ''
             
             try:
                 #Gestion del METAR y parseo de la información para su interpretación
@@ -490,8 +492,8 @@ class METAR_TAF(webapp2.RequestHandler):
                     
                     for nube in result_taf["Forecast"][i]["Cloud-List"]:               #Recorremos el array de nubes obtenidas
                         array_nubes_taf[i].append(getInfoNubosidad(nube[0]))
-                
-            except (KeyError, apiproxy_errors.DeadlineExceededError) as e:
+            
+            except KeyError,Exception as e:
                 error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
                 
         self.response.headers['Content-Type'] = 'text/html'
