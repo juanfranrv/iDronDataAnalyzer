@@ -385,26 +385,35 @@ class pronostico(webapp2.RequestHandler):
             
             self.redirect('/login')
        
-#Obtiene la descripción de cada nubosidad para el METAR
+#Obtiene la descripción de cada nubosidad para el METAR y TAF parseando el resultado
 
-def getInfoNubosidad(nube): 
+def getInfoNubosidad(nube, altura): 
     
-    if(nube == 'SKC'):
-        result = 'SKC - Cielo despejado de nubes (sky clear). Cielo limpio por debajo de 12.000 para ASOS/AWOS.'
-    elif(nube == 'FEW'):
-        result = 'FEW - Nubes escasas. Las nubes cubre entre 1/8 y 2/8 del cielo.'
-    elif(nube == 'SCT'):   
-        result = 'SCT - Nubes dispersas (scatered). Los nubes cubre entre 3/8 y 4/8 del cielo.' 
-    elif(nube == 'BKN'): 
-        result = 'BKN - Cielo quebradizo, nubosidad abundante (broken). Las nubes cubren entre 5/8 y 7/8 del cielo.'  
-    elif(nube == 'OVC'):
-        result = 'OVC - Cielo cubierto (overcast). Cielo totalmente cubierto por nubes.'    
-    elif(nube == 'TCU'): 
-        result = 'TCU - Desarrollandose cumulonimbos (towering cumulus).'  
-    elif(nube == 'CB'):
-        result = 'CB - Cumulonimbos (cumulonimbus). Los cumulonimbos son densas formaciones de nubes verticales que pueden provocar fuertes precipitaciones, tormentas eléctricas o granizadas.'
-    elif(nube == 'CAVOK'): 
-        result = 'CAVOK - Techo y visibilidad OK (Condiciones perfectas para el vuelo)'
+    str_altura = list(altura)
+    
+    if altura[:1] == '0':
+        str_altura.remove('0')
+        if altura[:2] == '00':
+            str_altura.remove('0')
+
+    altura = ''.join(str_altura)
+        
+    if nube == 'SKC':
+        result = 'SKC - Cielo despejado de nubes a ' + altura + '00 pies (sky clear). Cielo limpio por debajo de 12.000 para ASOS/AWOS.'
+    elif nube == 'FEW':
+        result = 'FEW - Nubes escasas a ' + altura + '00 pies. Las nubes cubre entre 1/8 y 2/8 del cielo.'
+    elif nube == 'SCT':   
+        result = 'SCT - Nubes dispersas a ' + altura + '00 pies (scatered). Los nubes cubre entre 3/8 y 4/8 del cielo.' 
+    elif nube == 'BKN': 
+        result = 'BKN - Cielo quebradizo, nubosidad abundante a  ' + altura + '00 pies (broken). Las nubes cubren entre 5/8 y 7/8 del cielo.'  
+    elif nube == 'OVC':
+        result = 'OVC - Cielo cubierto a ' + altura + '00 pies (overcast). Cielo totalmente cubierto por nubes.'    
+    elif nube == 'TCU': 
+        result = 'TCU - Desarrollandose cumulonimbos a ' + altura + '00 pies  (towering cumulus).'  
+    elif nube == 'CB':
+        result = 'CB - Cumulonimbos a ' + altura + '00 pies (cumulonimbus). Los cumulonimbos son densas formaciones de nubes verticales que pueden provocar fuertes precipitaciones, tormentas eléctricas o granizadas.'
+    elif nube == 'CAVOK': 
+        result = 'CAVOK - Techo y visibilidad OK a ' + altura + '00 pies  (Condiciones perfectas para el vuelo)'
         
     return result;
 
@@ -440,7 +449,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 nubes = result_metar["Cloud-List"]
                 
                 for nube in nubes:                          #Recorremos el array de nubes obtenidas
-                    array_nubes.append(getInfoNubosidad(nube[0]))
+                    array_nubes.append(getInfoNubosidad(nube[0], nube[1]))
    
                 fecha_captura = result_metar["Time"]        #Parseo para obtener del string el dia y hora
                 dia = fecha_captura[:2]
@@ -491,7 +500,7 @@ class METAR_TAF(webapp2.RequestHandler):
                     array_taf.append(result_taf["Forecast"][i])
                     
                     for nube in result_taf["Forecast"][i]["Cloud-List"]:               #Recorremos el array de nubes obtenidas
-                        array_nubes_taf[i].append(getInfoNubosidad(nube[0]))
+                        array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
             
             except KeyError as e:
                 error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
