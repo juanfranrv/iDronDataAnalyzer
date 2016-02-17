@@ -21,7 +21,7 @@
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="http://getbootstrap.com/assets/js/ie-emulation-modes-warning.js"></script>
-
+    <script type='text/javascript' src='../static/iDronDataAnalyzer_utils.js'></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -29,72 +29,6 @@
     <![endif]-->
 
 </head>
-<script type="text/javascript">
-	
-	function seguridad() { // Seguridad para contraseñas
-	   var longitud = document.getElementById('strength');
-	   var longitud_alta = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
-	   var longitud_mediana = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
-	   var password = document.getElementById("password").value;
-	
-	   if (longitud_alta.test(password)) {
-	      longitud.innerHTML = '<span style="color:green">Contraseña muy segura</span>';
-	   } else if (longitud_mediana.test(password)) {
-	      longitud.innerHTML = '<span style="color:orange">Contraseña normal</span>';
-	   } else {
-	    longitud.innerHTML = '<span style="color:red">Contraseña débil</span>';
-	   }
-	
-	}
-	
-	function Valida(form) {
-	
-		var usuario = document.getElementById("usuario").value;
-		var password= document.getElementById("password").value;
-		var nombre= document.getElementById("nombre").value;
-		var apellido= document.getElementById("apellido").value;
-		var email= document.getElementById("correo").value;
-		var telefono= document.getElementById("telefono").value;
-		
-			
-		  if(usuario.length==0) { //¿Tiene 0 caracteres?
-		    alert('No has escrito el nombre de usuario'); //Mostramos el mensaje
-		
-		    return false; 
-		  }
-
-		  if(password.length==0) { //¿Tiene 0 caracteres?
-		    alert('No has escrito la contraseña'); //Mostramos el mensaje
-		
-		    return false; 
-		  }
-		  if(email.length==0) { //comprueba que no esté vacío
-		  
-		    alert('No has escrito tu e-Mail');
-		    return false;
-		  }
-		  if(telefono.length==0) { //comprueba que no esté vacío
-		  
-		    alert('No has escrito tu teléfono');
-		    return false;
-		  }
-		  
-		  if( !(/^\d{9}$/.test(telefono)) ) {
-		   alert('No has introducido un número de teléfono correcto');
-			return false;
-		  }
-		  
-		  if( !(/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/.test(email)) ) {
-			alert('El formato de email introducido no es el correcto');
-			return false;
-		  }  
-		
-		  return true; //Si ha llegado hasta aquí, es que todo es correcto
-  
-}
-	  
-
-</script>
 <body  class="jumbotron">
 
     <nav class="navbar navbar-inverse navbar-fixed-top">

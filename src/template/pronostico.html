@@ -1,44 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../static/images/dron_geo.png" type="image/x-icon" />
-    <title>iDron Data Analyzer</title>
-	
-	<!-- core CSS -->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../static/css/animate.min.css" rel="stylesheet">
-    <link href="../static/css/main.css" rel="stylesheet">
 
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-</head>
-<script type="text/javascript">
-	
-	 function Valida(form) {
+{{head|safe}}
 
-		  var latitud = document.getElementById("latitud").value;
-		  var longitud = document.getElementById("longitud").value;
-			
-		  if(latitud.length == 0) { //¿Tiene 0 caracteres?
-		    alert('Introduce latitud'); //Mostramos el mensaje
-		
-		    return false; 
-		  }
-
-		  if(longitud.length == 0) { //¿Tiene 0 caracteres?
-		    alert('Introduce longitud'); //Mostramos el mensaje
-		
-		    return false; 
-		  }
-		
-		  return true; 
-  
-	 }	  
-
-</script>
 <body class="homepage">
        <header id="header">
         <div class="top-bar">
@@ -78,7 +42,7 @@
     </header><!--/header-->
 
    <div style="background:transparent !important" class="jumbotron">
-   <form id="form_pronos" role="form" onsubmit="return Valida(this);" method="post" action="/pronostico">
+   <form id="form_pronos" role="form" onsubmit="return Valida_pronostico(this);" method="post" action="/pronostico">
     <div id="inputs">
 	<label>Introduce latitud: </label>
         <input id="latitud" type="text" class="form-control" name="latitud" value="{{latitud_actual}}" placeholder="Latitud">
@@ -141,21 +105,8 @@
 {% endif %}
 </table>
  </div>
-    <footer id="footer" class="midnight-blue">
-	<img style="float:left;height:50px;margin-left:20px;" src="../static/images/dron_geo.png">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6">
-                    &copy; 2015 iDron Data Analyzer  
-                </div>
-                <div class="col-sm-6">
-                 <div class="pull-right">
-                   <p> Juan Francisco Rodríguez Vílchez </p>
-                 </div>
-                </div>
 
-            </div>
-        </div>
-    </footer><!--/#footer-->
+{{footer|safe}}
+
 </body>
 </html>

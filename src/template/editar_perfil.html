@@ -1,39 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../static/images/dron_geo.png" type="image/x-icon" />
-    <title>iDron Data Analyzer</title>
-	
-	<!-- core CSS -->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../static/css/animate.min.css" rel="stylesheet">
-    <link href="../static/css/main.css" rel="stylesheet">
-     
-</head><!--/head-->
 
- <script type="text/javascript">
-    
-    function seguridad() { // Seguridad para contraseñas
-       var longitud = document.getElementById('strength');
-       var longitud_alta = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
-       var longitud_mediana = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
-       var password = document.getElementById("password").value;
-    
-       if (longitud_alta.test(password)) {
-          longitud.innerHTML = '<span style="color:green">Contraseña muy segura</span>';
-       } else if (longitud_mediana.test(password)) {
-          longitud.innerHTML = '<span style="color:orange">Contraseña normal</span>';
-       } else {
-        longitud.innerHTML = '<span style="color:red">Contraseña débil</span>';
-       }
-    
-    }   
-
-</script>
+{{head|safe}}
 
 <body class="homepage">
 
@@ -126,22 +94,8 @@
 
       </div>
     </div>
-    <footer id="footer" class="midnight-blue">
-	<img style="float:left;height:50px;margin-left:20px;" src="../static/images/dron_geo.png">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6">
-                    &copy; 2015 iDron Data Analyzer  
-                </div>
-                <div class="col-sm-6">
-                 <div class="pull-right">
-                   <p> Juan Francisco Rodríguez Vílchez </p>
-                 </div>
-                </div>
 
-            </div>
-        </div>
-    </footer><!--/#footer-->
+{{footer|safe}}
 
 </body>
 </html>

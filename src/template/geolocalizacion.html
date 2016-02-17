@@ -1,58 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../static/images/dron_geo.png" type="image/x-icon" />
-    <title>iDron Data Analyzer</title>
-	
-	<!-- core CSS -->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../static/css/animate.min.css" rel="stylesheet">
-    <link href="../static/css/main.css" rel="stylesheet">
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLweM-83sN7E&sensor=true"> </script>
-    <script>
-	var coordenadas;
-	var marker;
-	var map;
 
-	function actualizarMapa() {
-	  $.ajax({
-		        type: 'GET',
-		        url: '/coordenadas',
-		        data: $(this).serialize(),
-		        dataType: 'json',
-		        success: function (data) {
-		          coordenadas = data;
-		          var latlng = new google.maps.LatLng(coordenadas[0], coordenadas[1]);
-		          marker.setPosition(latlng);
-		          map.setCenter(latlng); 
-		        }
-           });
-	}
-
-	function initialize() {
-	  var myLatlng = new google.maps.LatLng(37.19699469878369, -3.6241040674591507);
-	  var mapOptions = {
-	    zoom: 18,
-	    center: myLatlng
-	  }
-	  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-	  marker = new google.maps.Marker({
-	      position: myLatlng,
-	      map: map,
-	      title: 'Map',
-	      icon: '../static/images/dron_geo.png'
-	  });
-	}
-	google.maps.event.addDomListener(window, 'load', initialize);
-	setInterval(actualizarMapa, 1000);
-     </script>
-     
-</head><!--/head-->
+{{head|safe}}
 
 <body class="homepage">
        <header id="header">
@@ -96,22 +45,7 @@
     <div id="map-canvas" class="jumbotron"></div>
     </div>
 
-    <footer id="footer" class="midnight-blue">
-	<img style="float:left;height:50px;margin-left:20px;" src="../static/images/dron_geo.png">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6">
-                    &copy; 2015 iDron Data Analyzer  
-                </div>
-                <div class="col-sm-6">
-                 <div class="pull-right">
-                   <p> Juan Francisco Rodríguez Vílchez </p>
-                 </div>
-                </div>
-
-            </div>
-        </div>
-    </footer><!--/#footer-->
+{{footer|safe}}
 
 </body>
 </html>

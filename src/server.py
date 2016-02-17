@@ -6,17 +6,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from collections import defaultdict
 from google.appengine.runtime import DeadlineExceededError
 from google.appengine.api import urlfetch
-import os
-import model
-import webapp2
-import jinja2
-import json
-import math
-import urllib
-import urllib2
-import sys
-import subprocess
-import random
+import os, model, webapp2, jinja2, json, math, urllib, urllib2, sys, subprocess, random
 
 # Declaración del entorno de jinja2 y el sistema de templates.
 
@@ -24,6 +14,12 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
+
+#Cabecera y pie de pagina del html
+
+head = JINJA_ENVIRONMENT.get_template('template/head.html').render()
+footer = JINJA_ENVIRONMENT.get_template('template/footer.html').render()
+
 
 #Clase principal
 
@@ -35,7 +31,7 @@ class MainPage(webapp2.RequestHandler):
             
             user=self.request.cookies.get("username")
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':user}
+            template_values={'sesion':user,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/index.html')
             self.response.write(template.render(template_values))
             
@@ -72,7 +68,7 @@ class Login(webapp2.RequestHandler):
                 
                 self.response.headers.add_header('Set-Cookie',"username="+str(usur.usuario))
         
-                template_values={'sesion':usur.usuario}
+                template_values={'sesion':usur.usuario,'head':head}
                 template = JINJA_ENVIRONMENT.get_template('template/index.html')
                 self.response.write(template.render(template_values))                
                 
@@ -103,8 +99,9 @@ class formRegistro(webapp2.RequestHandler):
     def get(self):
          
         self.response.headers['Content-Type'] = 'text/html'
+        template_values={'message':"",'head':head}
         template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-        self.response.write(template.render(message=""))
+        self.response.write(template.render(template_values))
 
     #Método que registra usuario si pasa las restricciones.
 
@@ -153,7 +150,7 @@ class editar_perfil(webapp2.RequestHandler):
                     usuarios.append(usuario)
                     
                 self.response.headers['Content-Type'] = 'text/html'
-                template_values = {'usuarios':usuarios,'sesion':username}
+                template_values = {'usuarios':usuarios,'sesion':username, 'footer': footer,'head':head}
                 template = JINJA_ENVIRONMENT.get_template('template/editar_perfil.html')
                 self.response.write(template.render(template_values,message=""))
         else:
@@ -196,7 +193,7 @@ class ErrorPage(webapp2.RequestHandler):
             
             username = str(self.request.cookies.get("username"))
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username}
+            template_values={'sesion':username,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/error.html')
             self.response.write(template.render(template_values))
             
@@ -215,7 +212,7 @@ class geolocalizacion(webapp2.RequestHandler):
             username = str(self.request.cookies.get("username"))
             
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username}
+            template_values={'sesion':username,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/geolocalizacion.html')
             self.response.write(template.render(template_values))
             
@@ -254,7 +251,7 @@ class grafico(webapp2.RequestHandler):
             username = str(self.request.cookies.get("username"))
             
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username}
+            template_values={'sesion':username,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/grafico.html')
             self.response.write(template.render(template_values))
             
@@ -316,7 +313,7 @@ class pronostico(webapp2.RequestHandler):
             username = str(self.request.cookies.get("username"))
             
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username}
+            template_values={'sesion':username,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/pronostico.html')
             self.response.write(template.render(template_values))
             
@@ -345,7 +342,6 @@ class pronostico(webapp2.RequestHandler):
                     
                     url_horas = 'http://api.wunderground.com/api/' + API_pronostico + '/hourly/conditions/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
                     
-                    response = urllib2.urlopen(url_horas).read()
                     r = urllib2.urlopen(url_horas)
                     result = json.load(r)
                         
@@ -356,7 +352,6 @@ class pronostico(webapp2.RequestHandler):
                     
                     url_dias = 'http://api.wunderground.com/api/' + API_pronostico + '/forecast10day/conditions/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
     
-                    response = urllib2.urlopen(url_dias).read()
                     r = urllib2.urlopen(url_dias)
                     result = json.load(r)
                     
@@ -375,7 +370,9 @@ class pronostico(webapp2.RequestHandler):
                              'radio_elegido':radio_elegido,
                              'latitud_actual':latitud_actual,
                              'longitud_actual':longitud_actual,
-                             'error':error
+                             'error':error,
+                             'head':head,
+                             'footer':footer
                              }
             
             template = JINJA_ENVIRONMENT.get_template('template/pronostico.html')
@@ -470,6 +467,8 @@ class METAR_TAF(webapp2.RequestHandler):
                 if direccion_viento == '000 nudos (KT)':                #No hay viento
                     direccion_viento = 'No existe presencia de viento'
                 
+                if len(array_nubes) is 0:
+                    array_nubes.append('Sin informacion asociada')
                 if rafaga_viento == ' nudos (KT)':
                     rafaga_viento = 'Sin informacion asociada'
                 if temperatura == ' grados celsius':
@@ -525,7 +524,9 @@ class METAR_TAF(webapp2.RequestHandler):
                         'visibilidad':visibilidad,
                         'direccion_viento':direccion_viento,
                         'rafaga_viento':rafaga_viento,
-                        'velocidad_viento':velocidad_viento
+                        'velocidad_viento':velocidad_viento,
+                        'footer': footer,
+                        'head':head
                         }
             
             template = JINJA_ENVIRONMENT.get_template('template/pronostico_aeropuertos.html')
