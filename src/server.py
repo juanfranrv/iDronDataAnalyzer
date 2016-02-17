@@ -431,7 +431,9 @@ class METAR_TAF(webapp2.RequestHandler):
             array_taf = []
             array_nubes_taf = defaultdict(list)
             taf = ''
-            metar= ''
+            metar = ''
+            max_temp = ''
+            min_temp = ''
             
             try:
                 #Gestion del METAR y parseo de la información para su interpretación
