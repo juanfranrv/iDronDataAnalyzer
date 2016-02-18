@@ -126,10 +126,15 @@
 
         <dt>Nubosidad: </dt>
 
+	{% if array_nubes_taf[0][0] != '' %}
 	   {% for j in range(2) %}
 	   <dd> {{array_nubes_taf[count][j]}} </dd>
            {% endfor %}
 
+	{% else %}
+		<dd>No hay información asociada</dd>
+	{% endif %}
+	   
 	{% set count = count + 1 %}
 
 	<dt>Dirección viento:</dt>
@@ -160,7 +165,7 @@
      </div>
      </div>
    </div>
-   <p style="margin-top:50px"> Para cualquier duda relacionada con la interpretación del METAR y TAFOR anteriores, consulte el siguiente <a href="http://www.proteccioncivil.es/catalogo/carpeta02/carpeta24/vademecum12/vdm043.htm">enlace</a>
+   <p style="margin-top:50px"> Para cualquier duda relacionada con la interpretación del METAR y TAFOR anteriores, consulte el siguiente <a href="http://www.proteccioncivil.es/catalogo/carpeta02/carpeta24/vademecum12/vdm043.htm">enlace.</a>
   </div>
 
 {{footer|safe}}

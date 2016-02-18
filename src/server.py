@@ -434,6 +434,14 @@ class METAR_TAF(webapp2.RequestHandler):
             metar = ''
             max_temp = ''
             min_temp = ''
+            temperatura = ''
+            presion_atmosferica = ''
+            nubes = ''
+            fecha_captura = ''
+            visibilidad = ''
+            direccion_viento = ''
+            velocidad_viento = ''
+            rafaga_viento = ''
             
             try:
                 #Gestion del METAR y parseo de la información para su interpretación
@@ -466,8 +474,8 @@ class METAR_TAF(webapp2.RequestHandler):
                 rafaga_viento = result_metar["Wind-Gust"] + ' nudos (KT)'
                 
                 velocidad_viento = result_metar["Wind-Speed"] + ' nudos (KT)'
-                if direccion_viento == '000 nudos (KT)':                #No hay viento
-                    direccion_viento = 'No existe presencia de viento'
+                if velocidad_viento == '00 nudos (KT)':                #No hay viento
+                    velocidad_viento = 'No existe presencia de viento'
                 
                 if len(array_nubes) is 0:
                     array_nubes.append('Sin informacion asociada')
@@ -504,7 +512,7 @@ class METAR_TAF(webapp2.RequestHandler):
                     for nube in result_taf["Forecast"][i]["Cloud-List"]:               #Recorremos el array de nubes obtenidas
                         array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
             
-            except KeyError as e:
+            except KeyError, e:
                 error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
                 
             self.response.headers['Content-Type'] = 'text/html'
