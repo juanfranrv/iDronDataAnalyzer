@@ -68,7 +68,7 @@ class Login(webapp2.RequestHandler):
                 
                 self.response.headers.add_header('Set-Cookie',"username="+str(usur.usuario))
         
-                template_values={'sesion':usur.usuario,'head':head}
+                template_values={'sesion':usur.usuario,'head':head,'footer':footer}
                 template = JINJA_ENVIRONMENT.get_template('template/index.html')
                 self.response.write(template.render(template_values))                
                 
