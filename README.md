@@ -1,6 +1,6 @@
 # iDronDataAnalyzer (Seguridad para drones)
 
-## Proyecto de fin de grado UGR && Talentum Telefónica ##
+## Proyecto de fin de grado UGR || Talentum Telefónica ##
 
 Actualmente está muy de moda el uso de drones para fines muy variados, desde misiones de reconocimiento hasta misiones de ataque. Cuando un drone está en movimiento, es conveniente tener una serie de personas encargadas de estudiar y observar los diversos datos que presenta la zona por la que va circulando, como la humedad, la temperatura, la velocidad del viento o la trayectoria, que son datos necesarios para decidir, por ejemplo, si cambiar la trayectoria del drone o ver si está en peligro. Para realizar estas tareas sería de gran utilidad la disposición de un sistema web que nos permita monitorizar y analizar dichos datos de suma importancia para el desarrollo con éxito de la misión.
 
