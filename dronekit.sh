@@ -15,6 +15,8 @@ else
 		apt-get install -y --force-yes python-pip
 	fi
 
+	apt-get install python-dev
+
 	pip install dronekit
 
 	pip install dronekit-sitl
