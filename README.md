@@ -22,6 +22,16 @@ La aplicación tendrá que cumplir los siguientes requisitos:
 * [X] Detección de los datos atmosféricos procedentes del METAR y TAF del aeropuerto más cercano por el que vaya circulando el drone en ese momento.
 * [ ] Detección de zonas restringidas para el drone, prohibiendole el acceso.
 * [ ] Incorporación de infraestructura virtual para automatizar varios aspectos del sistema: integración continua, entorno de pruebas, aprovisionamiento, instalación automática y despliegue automático.
+ 
 
+### Requisitos: Conexión con drone ###
+
+1. Con la aplicación web lanzada, las herramientas instaladas y el drone simulado junto con mavproxy (comunicación entre drone y aplicación) en el servidor (Azure), podemos comenzar a hacer pruebas y comprobar que los datos obtenidos son correctos.
+
+2. El siguiente paso, sería probarlo con la IP del drone real y ver que sigue funcionando correctamente. Si esto ocurre, la aplicación funcionaría con datos reales aunque tenemos el problema del alcance y la distancia (zona wifi del drone limitada).
+
+3. Una vez comprobado todo esto, pasaremos a estudiar dónde colocar mavproxy para que esté siempre al alcance de la zona wifi del drone.
+
+4. Finalmente, ya tendremos todo funcionando con datos reales y una distancia prudente, por lo que pasaremos al desarrollo de las zonas restrictivas para el drone y a la comprobación del correcto funcionamiento de todas las herramientas implementadas utilizando datos reales extraídos de este.
 
 
