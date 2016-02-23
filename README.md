@@ -23,8 +23,9 @@ La aplicación tendrá que cumplir los siguientes requisitos:
 * [ ] Detección de zonas restringidas para el drone, prohibiendole el acceso.
 * [ ] Incorporación de infraestructura virtual para automatizar varios aspectos del sistema: integración continua, entorno de pruebas, aprovisionamiento, instalación automática y despliegue automático.
  
+***
 
-### Requisitos: Conexión con drone ###
+## Requisitos: Conexión con drone ##
 
 1. Con la aplicación web lanzada, las herramientas instaladas y el drone simulado junto con mavproxy (comunicación entre drone y aplicación) en el servidor (Azure), podemos comenzar a hacer pruebas y comprobar que los datos obtenidos son correctos.
 
