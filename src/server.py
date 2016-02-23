@@ -7,6 +7,7 @@ from collections import defaultdict
 from google.appengine.runtime import DeadlineExceededError
 from google.appengine.api import urlfetch
 import os, model, webapp2, jinja2, json, math, urllib, urllib2, sys, subprocess, random
+#import drone_utils
 
 # Declaración del entorno de jinja2 y el sistema de templates.
 
@@ -412,7 +413,7 @@ def getInfoNubosidad(nube, altura):
     elif nube == 'CAVOK': 
         result = 'CAVOK - Techo y visibilidad OK a ' + altura + '00 pies  (Condiciones perfectas para el vuelo)'
         
-    return result;
+    return result
 
 # Clase que genera los datos atmosféricos obtenidos de aeropuertos como son el TAF y METAR
 
@@ -568,6 +569,7 @@ application = webapp2.WSGIApplication(urls, debug=True)
     
 def main():
     run_wsgi_app(application)
+    #drone_utils.conexion_drone()
 
 if __name__ == "__main__":
     main()
