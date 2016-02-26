@@ -235,9 +235,9 @@ class coordenadas(webapp2.RequestHandler):
         global lng
         global grados
 
-        grados+=5
-        lat += 0.00001 * math.cos(grados/180)   #Generación automática de coordenadas provisional
-        lng += 0.00001 * math.sin(grados/180)
+        grados+=10
+        lat += 0.0001 * math.cos(grados/180)   #Generación automática de coordenadas provisional
+        lng += 0.0001 * math.sin(grados/180)
         latLng = [lat, lng]
         self.response.write(json.dumps(latLng))
 
