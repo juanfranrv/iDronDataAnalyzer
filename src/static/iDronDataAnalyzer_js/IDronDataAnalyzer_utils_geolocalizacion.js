@@ -37,27 +37,54 @@ function initialize() {
 
   var elevator = new google.maps.ElevationService;
   var infowindow = new google.maps.InfoWindow({map: map});
+  // Creamos el servicio PlaceService y enviamos la petición.
+  var service = new google.maps.places.PlacesService(map);
+ 
 
-  // Add a listener for the click event. Display the elevation for the LatLng of
-  // the click inside the infowindow.
+  // Lanza la elevación del terreno al dar click a una zona
   map.addListener('click', function(event) {
-    displayLocationElevation(event.latLng, elevator, infowindow);
+     displayLocationElevation(event.latLng, elevator, infowindow);
   });
+
+   // Especificamos la localización, el radio y el tipo de lugares que queremos obtener
+   var request = {
+     location: myLatlng,
+     radius: 50000,
+     types: ['airport']
+   };
+ 
+   service.nearbySearch(request, function(results, status) {
+     if (status === google.maps.places.PlacesServiceStatus.OK) {
+       for (var i = 0; i < results.length; i++) {
+         crearMarcador(results[i]);
+       }
+     }
+   });
 
   google.maps.event.addDomListener(window, 'load', initialize);
   setInterval(actualizarMapa, 1000);
 }
 
+function crearMarcador(place){
+   // Creamos un marcador para los aeropuertos
+   var marker = new google.maps.Marker({
+     map: map,
+     position: place.geometry.location,
+     title: 'Aeropuerto',
+     icon: '../static/images/airport.png'
+   });
+}
+
 function displayLocationElevation(location, elevator, infowindow) {
-  // Initiate the location request
+  // Petición de localización
   elevator.getElevationForLocations({
     'locations': [location]
   }, function(results, status) {
     infowindow.setPosition(location);
     if (status === google.maps.ElevationStatus.OK) {
-      // Retrieve the first result
+      // Cogemos el primer resultado
       if (results[0]) {
-        // Open the infowindow indicating the elevation at the clicked position.
+        // Abrimos la infowindow para mostrar la elevación en el punto deseado
         infowindow.setContent('La elevación en este punto <br>es ' +
             results[0].elevation + ' metros.');
       } else {
