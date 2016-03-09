@@ -236,8 +236,8 @@ class coordenadas(webapp2.RequestHandler):
         global grados
 
         grados+=5
-        lat += 0.0001 * math.cos(grados/180)   #Generación automática de coordenadas provisional
-        lng += 0.0001 * math.sin(grados/180)
+        lat += 0.001  # * math.cos(grados/180)   #Generación automática de coordenadas provisional
+        #lng += 0.0001 * math.sin(grados/180)
         latLng = [lat, lng]
         self.response.write(json.dumps(latLng))
 
@@ -387,7 +387,7 @@ class pronostico(webapp2.RequestHandler):
 
 def getInfoNubosidad(nube, altura): 
     
-    str_altura = list(altura)
+    str_altura = list(altura)   #Pasamos a lista para borrar los 0, y luego volvemos a convertir a string
     
     if altura[:1] == '0':
         str_altura.remove('0')
@@ -445,7 +445,7 @@ class METAR_TAF(webapp2.RequestHandler):
             rafaga_viento = ''
             
             try:
-                #Gestion del METAR y parseo de la información para su interpretación
+                #Gestión del METAR y parseo de la información para su interpretación
                 
                 url_metar = 'http://avwx.rest/api/metar.php?lat=' + str(lat) + '&lon=' + str(lng) + '&format=JSON'
             
@@ -491,7 +491,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 if velocidad_viento == ' nudos (KT)':
                     rafaga_viento = 'Sin informacion asociada'
                 
-                #Gestion del TAF y parseo de alguna de la información para su interpretación. La otra parte esta en el template interpretada
+                #Gestión del TAF y parseo de alguna de la información para su interpretación. La otra parte esta en el template interpretada
                  
                 url_taf = 'http://avwx.rest/api/taf.php?lat=' + str(lat) + '&lon=' + str(lng) + '&format=JSON'
                                                            

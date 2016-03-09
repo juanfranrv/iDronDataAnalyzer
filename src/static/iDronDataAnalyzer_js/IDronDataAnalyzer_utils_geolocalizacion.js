@@ -12,10 +12,26 @@ function actualizarMapa() {
 	        data: $(this).serialize(),
 	        dataType: 'json',
 	        success: function (data) {
-	          coordenadas = data;
+	          coordenadas = data;	//Cogemos coordenadas del drone del servidor y vamos actualizando la posición en el mapa
 	          var latlng = new google.maps.LatLng(coordenadas[0], coordenadas[1]);
 	          marker.setPosition(latlng);
 	          map.setCenter(latlng); 
+
+		   // Especificamos la localización, el radio y el tipo de lugares que queremos obtener para que se vaya actualizando a medida que avanza el drone
+		  var service = new google.maps.places.PlacesService(map);
+		  var request = {
+		     location: latlng,
+		     radius: 50000,
+		     types: ['airport']
+		   };
+		 
+		   service.nearbySearch(request, function(results, status) {
+		     if (status === google.maps.places.PlacesServiceStatus.OK) {
+		       for (var i = 0; i < results.length; i++) {
+			 crearMarcador(results[i]);
+		       }
+		     }
+		   });
 	        }
    });
 }
@@ -70,7 +86,7 @@ function crearMarcador(place){
    var marker = new google.maps.Marker({
      map: map,
      position: place.geometry.location,
-     title: 'Aeropuerto',
+     title: 'Aeropuerto detectado',
      icon: '../static/images/airport.png'
    });
 }
@@ -91,7 +107,7 @@ function displayLocationElevation(location, elevator, infowindow) {
         infowindow.setContent('No se han obtenido resultados');
       }
     } else {
-      infowindow.setContent('El servicio de elevación ha fallaod debido a: ' + status);
+      infowindow.setContent('El servicio de elevación ha fallado debido a: ' + status);
     }
   });
 }
