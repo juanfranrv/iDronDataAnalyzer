@@ -36,14 +36,19 @@ La aplicación tendrá que cumplir los siguientes requisitos:
 
 4. Finalmente, ya tendremos todo funcionando con datos reales y una distancia prudente, por lo que pasaremos al desarrollo de las zonas restrictivas para el drone y a la comprobación del correcto funcionamiento de todas las herramientas implementadas utilizando datos reales extraídos de este.
 
+***
 
 ## Para instalar la aplicación automáticamente: ##
 
 Dar permisos y ejecutar el script [despliegue_azure.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/despliegue_azure.sh). Inmediatamente, tendremos la aplicación lanzada en el puerto 8080.
 
+***
+
 ## Para desplegar la aplicación en la nube automáticamente: ##
 
 Dar permisos y ejecutar el script [despliegue_automatico_gae.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/despliegue_automatico_gae.sh). Inmediatamente, tendremos la aplicación desplegada en la nube de Google App Engine.
+
+***
 
 ## Para lanzar el simulador del drone: ##
 
@@ -52,6 +57,8 @@ Dar permisos y ejecutar el script [despliegue_automatico_gae.sh](https://github.
 2. Lanzar el script [mavproxy.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/mavproxy.sh). De esta forma, tendremos el proxy activado para interpretar los mensajes MAVLINK que vamos a enviar al drone. Este proxy se conectará al drone simulado en el paso anterior.
 
 3. Ejecutar el script de python [vehicle_state.py](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/src/iDronDataAnalyzer/vehicle_state.py) para comprobar que se muestran los datos deseados obtenidos del drone simulado.
+
+***
 
 ## Noticias interesantes: ##
 
