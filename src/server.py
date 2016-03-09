@@ -235,7 +235,7 @@ class coordenadas(webapp2.RequestHandler):
         global lng
         global grados
 
-        grados+=5
+        grados += 5
         lat += 0.001  # * math.cos(grados/180)   #Generación automática de coordenadas provisional
         #lng += 0.0001 * math.sin(grados/180)
         latLng = [lat, lng]
@@ -269,7 +269,7 @@ class datos_grafico(webapp2.RequestHandler):
         
         global lat
         global lng              #random lat y long
-        lat += 0.05
+        lat += 0.01
         
         url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
         response = urllib2.urlopen(url).read()
