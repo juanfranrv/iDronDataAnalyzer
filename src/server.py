@@ -6,7 +6,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from collections import defaultdict
 from google.appengine.runtime import DeadlineExceededError
 from google.appengine.api import urlfetch
-import os, model, webapp2, jinja2, json, math, urllib, urllib2, sys, subprocess, random
+import os, model, webapp2, jinja2, json, math, urllib, urllib2, sys, subprocess, random, datetime,time
 #import drone_utils
 
 # Declaración del entorno de jinja2 y el sistema de templates.
@@ -262,6 +262,7 @@ class grafico(webapp2.RequestHandler):
             
 # Clase que genera datos aleatorios provisionales para el gráfico
 Api_key = 'fffa0ba60d5357235f5782313216b8ae'
+contador = 0
 
 class datos_grafico(webapp2.RequestHandler):
     
@@ -269,7 +270,10 @@ class datos_grafico(webapp2.RequestHandler):
         
         global lat
         global lng              #random lat y long
+        global contador
         lat += 0.01
+        
+        data = model.DatosAtmosfericos()
         
         url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
         response = urllib2.urlopen(url).read()
@@ -299,8 +303,43 @@ class datos_grafico(webapp2.RequestHandler):
         elif dato_seleccionado == 'Direccion del viento':
             datoAmostrar = dir_win;
         
+        if contador is 4:
+            
+            data.fecha = time.strftime("%d-%m-%Y")   
+            data.temperatura = temp
+            data.pres_atmos = pres
+            data.humedad = hum
+            data.vel_viento = vel_win
+            data.dir_viento = dir_win
+                            
+            data.put()
+            
+            contador = 0
+        
+        else:
+            contador = contador + 1
+        
         self.response.write(json.dumps(datoAmostrar)) 
 
+#Clase que gestiona las estadisticas de la monitorización de datos atmosféricos obtenida
+
+class estadisticas(webapp2.RequestHandler):
+    
+    def get(self):
+                
+        if self.request.cookies.get("username"):
+            
+            username = str(self.request.cookies.get("username"))
+            
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'sesion':username,'footer': footer,'head':head}
+            template = JINJA_ENVIRONMENT.get_template('template/estadisticas.html')
+            self.response.write(template.render(template_values))
+            
+        else:
+            
+            self.redirect('/login') 
+        
 #Clase que gestiona el pronóstico de datos atmosféricos en tiempo real
 
 API_pronostico = 'c6f8c98fd1da5785'
@@ -557,6 +596,7 @@ urls = [('/', MainPage),
         ('/geolocalizacion', geolocalizacion),
         ('/coordenadas', coordenadas),
         ('/grafico', grafico),
+        ('/estadisticas', estadisticas),
         ('/datos_grafico', datos_grafico),
         ('/pronostico', pronostico),
         ('/METAR_TAF', METAR_TAF),

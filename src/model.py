@@ -12,3 +12,13 @@ class Usuario(ndb.Model):
     apellido = ndb.StringProperty()
     correo = ndb.StringProperty()
     telefono = ndb.StringProperty()
+
+#Clase donde se define el modelo de los datos atmosféricos monitorizados por el drone.
+
+class DatosAtmosfericos(ndb.Model):
+    fecha = ndb.StringProperty()
+    temperatura = ndb.FloatProperty()
+    pres_atmos = ndb.FloatProperty()
+    humedad = ndb.FloatProperty()
+    vel_viento = ndb.FloatProperty()
+    dir_viento = ndb.FloatProperty()
