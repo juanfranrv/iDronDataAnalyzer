@@ -42,77 +42,77 @@
     </header><!--/header-->
 
    <div style="background:transparent !important" class="jumbotron">
-   <form id="form_pronos" role="form" onsubmit="return Valida_pronostico(this);" method="post" action="/pronostico">
     <div id="inputs">
     	<p>Fecha: <input type="text" id="datepicker" /></p>
     </div>
-<script>
-$(document).ready(
-  
-  /* This is the function that will get executed after the DOM is fully loaded */
+   <script>
+	$(document).ready(
+	  
+	  function () {
 
-  function () {
+	    $( "#datepicker" ).datepicker({
+	      dateFormat: "dd-mm-yy",
+	      changeMonth: true,
+	      changeYear: true 
+	    });
+	  }
 
-    $( "#datepicker" ).datepicker({
-      dateFormat: "dd-mm-yy",
-      changeMonth: true,//this option for allowing user to select month
-      changeYear: true //this option for allowing user to select from year range
-    });
-  }
+	);
 
-);
-</script>
-    <div id="radiobuttons">
+       $('#datepicker').change(function () {
 
-     </div>
-    <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-success">Realizar pronóstico</button>
-   </form> 
+	  var tipo_dato = document.getElementById('datepicker').value;
 
+	  $.ajax({
+		  type: 'GET',
+		  url: '/getDatosAtmosfericos?fecha=' + tipo_dato,
+		  data: $(this).serialize(),
+		  dataType: 'json',
+		  success: function (data) {
+			 $('table').html(
+			    function(){
+				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión Atmosf.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>'; 
+				for(var i = 0; i < data.length; i++){
+				      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + '</td>';
+				      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
+				      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
+				      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
+				      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
+				}
+
+				content = content + '</tr></tbody></table>';
+
+				return content;
+			    }
+			)
+
+		  }
+          });
+       });
+
+   </script>
+ 
 <table class="table table-striped">
-{% if radio_elegido == 'horas' or radio_elegido == 'dias' %}
-
-{% if error != '' %}
-<div id="mensaje_error" class="alert alert-danger">{{error}}</div>
-{% endif %}
 
 <thead><tr>
-{% if radio_elegido == 'horas' %}
-<th>Hora</th>
-{% endif %}
-
-{% if radio_elegido == 'dias' %}
-<th>Día</th>
-{% endif %}
-
-<th>Máx/Mín</th><th>Descripción</th><th>Viento</th><th>Humedad</th></tr></thead>
+<th>Fecha</th><th>Temperatura</th><th>Presión Atmosf.</th><th>Viento</th><th>Humedad</th></tr></thead>
 <tbody>
 
-	  {% for datos in array_datos %}
+	  {% for datos in datos_atmos %}
 
 	  <tr>
-	      {% if radio_elegido == 'horas' %}
-	      	      <td style="font-size:14px;">{{datos.FCTTIME.hour}}h {{datos.FCTTIME.weekday_name_abbrev}}, {{datos.FCTTIME.mday}}.{{datos.FCTTIME.month_name_abbrev}}</td>
-		      <td>{{datos.temp.metric}}/{{datos.dewpoint.metric}} ºC</td>
-		      <td style="font-size:16px;">{{datos.condition}} <img src="{{datos.icon_url}}" style="width:40px;height:40px;"></td>
-		      <td style="font-size:16px;">{{datos.wdir.dir}} - {{datos.wspd.metric}} kph - {{datos.wdir.degrees}}º</td>
-		      <td style="font-size:16px;">{{datos.humidity}} %</td>
-	      {% endif %}
-
-	      {% if radio_elegido == 'dias' %}
-		      <td style="font-size:14px;">{{datos.date.weekday_short}}, {{datos.date.day}} de {{datos.date.monthname_short}}</td>
-		      <td>{{datos.high.celsius}}/{{datos.low.celsius}} ºC</td>
-		      <td style="font-size:16px;">{{datos.conditions}} <img src="{{datos.icon_url}}" style="width:40px;height:40px;"></td>
-		      <td style="font-size:16px;">{{datos.avewind.dir}} - {{datos.avewind.kph}} kph - {{datos.avewind.degrees}}º</td>
-		      <td style="font-size:16px;">{{datos.avehumidity}} %</td>
-	      {% endif %}
+	      <td style="font-size:14px;">{{datos.fecha}}</td>
+	      <td style="font-size:16px;">{{datos.temperatura}} ºC</td>
+	      <td style="font-size:16px;">{{datos.presion}} hPa </td>
+	      <td style="font-size:16px;">{{datos.vel_viento}} kph - {{datos.dir_viento}} º</td>
+	      <td style="font-size:16px;">{{datos.humedad}} %</td>
           </tr>
 
 	  {% endfor %}
 
-  </tbody>
-{% endif %}
+</tbody>
 </table>
- </div>
+</div>
 
 {{footer|safe}}
 

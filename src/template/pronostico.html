@@ -57,23 +57,23 @@
 	  <label><input type="radio" value="dias" name="optradio">Pronóstico por días</label>
 	</div>
      </div>
-    <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-success">Realizar pronóstico</button>
+    <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-danger">Realizar pronóstico</button>
    </form> 
 
 <table class="table table-striped">
 {% if radio_elegido == 'horas' or radio_elegido == 'dias' %}
 
 {% if error != '' %}
-<div id="mensaje_error" class="alert alert-danger">{{error}}</div>
+  <div id="mensaje_error" class="alert alert-danger">{{error}}</div>
 {% endif %}
 
 <thead><tr>
 {% if radio_elegido == 'horas' %}
-<th>Hora</th>
+  <th>Hora</th>
 {% endif %}
 
 {% if radio_elegido == 'dias' %}
-<th>Día</th>
+  <th>Día</th>
 {% endif %}
 
 <th>Máx/Mín</th><th>Descripción</th><th>Viento</th><th>Humedad</th></tr></thead>

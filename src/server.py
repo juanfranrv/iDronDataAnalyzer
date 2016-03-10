@@ -142,12 +142,11 @@ class editar_perfil(webapp2.RequestHandler):
             
             username = str(self.request.cookies.get("username"))
             usuarios = []
-            result= model.Usuario.query(model.Usuario.usuario==username)
+            result= model.Usuario.query(model.Usuario.usuario == username)
             
             if result is not None:    #Existe el usuario
                 
-                for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios
-                    
+                for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
                     usuarios.append(usuario)
                     
                 self.response.headers['Content-Type'] = 'text/html'
@@ -261,6 +260,7 @@ class grafico(webapp2.RequestHandler):
             self.redirect('/login') 
             
 # Clase que genera datos aleatorios provisionales para el gráfico
+
 Api_key = 'fffa0ba60d5357235f5782313216b8ae'
 contador = 0
 
@@ -303,7 +303,7 @@ class datos_grafico(webapp2.RequestHandler):
         elif dato_seleccionado == 'Direccion del viento':
             datoAmostrar = dir_win;
         
-        if contador is 4:
+        if contador is 10:                       #Cada 10 datos obtenidos, almacenamos en la base de datos
             
             data.fecha = time.strftime("%d-%m-%Y")   
             data.temperatura = temp
@@ -330,7 +330,7 @@ class estadisticas(webapp2.RequestHandler):
         if self.request.cookies.get("username"):
             
             username = str(self.request.cookies.get("username"))
-            
+                        
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'sesion':username,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/estadisticas.html')
@@ -339,7 +339,37 @@ class estadisticas(webapp2.RequestHandler):
         else:
             
             self.redirect('/login') 
+            
+
+#Clase que devuelve los datos atmosféricos almacenados en la base de datos
+
+class getDatosAtmosfericos(webapp2.RequestHandler):
+    
+    def get(self):
         
+        if self.request.cookies.get("username"):
+            
+            datos_atmos = list(dict())
+            fecha_elegida = self.request.get('fecha')
+            result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.fecha == fecha_elegida)
+            
+            if result is not None:          #Existe la fecha
+                for dato in result:         #Lo buscamos y lo añadimos al array de datos   
+                          
+                     datos_atmos.append( {'fecha': dato.fecha,
+                                    'temperatura': dato.temperatura,
+                                    'presion': dato.pres_atmos,
+                                    'humedad': dato.humedad,
+                                    'vel_viento': dato.vel_viento,
+                                    'dir_viento': dato.dir_viento
+                                    })
+
+                self.response.write(json.dumps(datos_atmos)) 
+                        
+        else:
+            
+            self.redirect('/login') 
+                       
 #Clase que gestiona el pronóstico de datos atmosféricos en tiempo real
 
 API_pronostico = 'c6f8c98fd1da5785'
@@ -597,6 +627,7 @@ urls = [('/', MainPage),
         ('/coordenadas', coordenadas),
         ('/grafico', grafico),
         ('/estadisticas', estadisticas),
+        ('/getDatosAtmosfericos', getDatosAtmosfericos),
         ('/datos_grafico', datos_grafico),
         ('/pronostico', pronostico),
         ('/METAR_TAF', METAR_TAF),
