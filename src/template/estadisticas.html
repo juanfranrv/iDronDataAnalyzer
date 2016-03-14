@@ -47,16 +47,16 @@
     </div>
      <div class="panel panel-primary">
 	<select name="tiempo" id="tiempo" >    
-		<option value="ario" selected="selected">Diario</option>
-		<option value="semanal">Semanal</option>
+		<option value="diario" selected="selected">Diario</option>
 		<option value="mensual">Mensual</option>>
 		<option value="anual">Anual</option>
 	</select>
       </div>	
+
    <script>
 	$(document).ready(
 	  
-	  function () {
+	function () {
 	    $( "#datepicker" ).datepicker({
 	      dateFormat: "dd-mm-yy",
 	      changeMonth: true,
@@ -67,15 +67,45 @@
 
        $('#tiempo').change(function(){
 	  var tipo_tiempo = document.getElementById('tiempo').value;
-	  console.log(tipo_tiempo);
-	});
-       $('#datepicker').change(function () {
-
-	  var tipo_dato = document.getElementById('datepicker').value;
+	  window.tiempo = tipo_tiempo;      //Almacenamos la variable para poder usarla en el evento de abajo
+          var tipo_dat = window.fecha;
 
 	  $.ajax({
 		  type: 'GET',
-		  url: '/getDatosAtmosfericos?fecha=' + tipo_dato,
+		  url: '/getDatosAtmosfericos?fecha=' + tipo_dat + '&tiempo=' + tipo_tiempo,
+		  data: $(this).serialize(),
+		  dataType: 'json',
+		  success: function (data) {
+			 $('table').html(
+			    function(){
+				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión Atmosf.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>'; 
+				for(var i = 0; i < data.length; i++){
+				      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + '</td>';
+				      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
+				      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
+				      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
+				      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
+				}
+
+				content = content + '</tr></tbody></table>';
+
+				return content;
+			    }
+			)
+
+		  }
+          });
+       });
+
+       $('#datepicker').change(function () {		//Actualiza los datos al cambiar de fecha,sin recargar la página, utilizando AJAX
+
+	  var tipo_dato = document.getElementById('datepicker').value;
+	  window.fecha = tipo_dato;
+	  var tipo_tiem = window.tiempo;		//Recuperamos la variable anteriormente almacenada
+
+	  $.ajax({
+		  type: 'GET',
+		  url: '/getDatosAtmosfericos?fecha=' + tipo_dato + '&tiempo=' + tipo_tiem,
 		  data: $(this).serialize(),
 		  dataType: 'json',
 		  success: function (data) {
@@ -102,7 +132,7 @@
 
    </script>
  
-<table class="table table-striped">
+<table class="table1 table-striped">
 
 <thead><tr>
 <th>Fecha</th><th>Temperatura</th><th>Presión Atmosf.</th><th>Viento</th><th>Humedad</th></tr></thead>

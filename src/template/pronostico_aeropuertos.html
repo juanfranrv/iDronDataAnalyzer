@@ -140,6 +140,8 @@
 	<dt>Dirección viento:</dt>
 	{% if taf["Wind-Direction"] == '' %}
 		<dd>No hay información asociada </dd>
+	{% elif taf["Wind-Direction"] == 'VRB'%}
+		<dd>Viento en todas las direcciones </dd>
 	{% else %}
 		<dd>{{taf["Wind-Direction"]}} º</dd>
 	{% endif %}

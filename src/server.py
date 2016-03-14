@@ -303,14 +303,16 @@ class datos_grafico(webapp2.RequestHandler):
         elif dato_seleccionado == 'Direccion del viento':
             datoAmostrar = dir_win;
         
-        if contador is 10:                       #Cada 10 datos obtenidos, almacenamos en la base de datos
+        if contador is 10:               #Cada 10 datos obtenidos, almacenamos en la base de datos
             
-            data.fecha = time.strftime("%d-%m-%Y")   
-            data.temperatura = temp
-            data.pres_atmos = pres
+            data.fecha = time.strftime("%d-%m-%Y") 
+            data.mes = datetime.date.today().strftime("%m")
+            data.anio = datetime.date.today().strftime("%Y")  
+            data.temperatura = round(temp,2)
+            data.pres_atmos = round(pres,2)
             data.humedad = hum
-            data.vel_viento = vel_win
-            data.dir_viento = dir_win
+            data.vel_viento = round(vel_win,2)
+            data.dir_viento = round(dir_win,2)
                             
             data.put()
             
@@ -340,7 +342,6 @@ class estadisticas(webapp2.RequestHandler):
             
             self.redirect('/login') 
             
-
 #Clase que devuelve los datos atmosféricos almacenados en la base de datos
 
 class getDatosAtmosfericos(webapp2.RequestHandler):
@@ -351,20 +352,28 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
             
             datos_atmos = list(dict())
             fecha_elegida = self.request.get('fecha')
-            result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.fecha == fecha_elegida)
+            tiempo_elegido = self.request.get('tiempo')
             
-            if result is not None:          #Existe la fecha
-                for dato in result:         #Lo buscamos y lo añadimos al array de datos   
-                          
-                     datos_atmos.append( {'fecha': dato.fecha,
-                                    'temperatura': dato.temperatura,
-                                    'presion': dato.pres_atmos,
-                                    'humedad': dato.humedad,
-                                    'vel_viento': dato.vel_viento,
-                                    'dir_viento': dato.dir_viento
-                                    })
+            if tiempo_elegido == 'mensual':     #Si el tiempo es mensual, comprobamos el mes antes de añadir
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.mes == fecha_elegida[3:5], model.DatosAtmosfericos.anio == fecha_elegida[6:11])
+                                                  
+            elif tiempo_elegido == 'anual':     #Si el tiempo es anual, comprobamos el año antes de añadir
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11])
 
-                self.response.write(json.dumps(datos_atmos)) 
+            else:                
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.fecha == fecha_elegida)
+                
+            if result is not None:          
+                for dato in result:         
+                         datos_atmos.append( {'fecha': dato.fecha,
+                                        'temperatura': dato.temperatura,
+                                        'presion': dato.pres_atmos,
+                                        'humedad': dato.humedad,
+                                        'vel_viento': dato.vel_viento,
+                                        'dir_viento': dato.dir_viento
+                                        })
+
+            self.response.write(json.dumps(datos_atmos)) 
                         
         else:
             
@@ -432,7 +441,7 @@ class pronostico(webapp2.RequestHandler):
                 longitud_actual = result["current_observation"]["display_location"]["longitude"]
                 
             except KeyError, e:
-                error = 'No existe ninguna ciudad relacionada con esas coordenadas. Por favor consulta "https://www.google.es/maps" para verificar la zona.'
+                error = 'No existe ninguna ciudad relacionada con esas coordenadas. Por favor, verifique la zona.'
                 
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'sesion':username, 
@@ -540,6 +549,8 @@ class METAR_TAF(webapp2.RequestHandler):
                 direccion_viento = result_metar["Wind-Direction"] + ' grados'
                 if direccion_viento == '000 grados':       #No hay viento
                     direccion_viento = 'No existe presencia de viento'
+                elif direccion_viento == "VRB grados":
+                    direccion_viento = 'Viento en todas las direcciones'
                     
                 rafaga_viento = result_metar["Wind-Gust"] + ' nudos (KT)'
                 

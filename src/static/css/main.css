@@ -24,6 +24,11 @@ table{
  margin-top: 250px;
 }
 
+.table1{
+ height: 500px; 
+ margin-top: 150px;
+}
+
 tbody{
   overflow-y: scroll;
   height: 500px;
@@ -141,7 +146,7 @@ tbody{
   margin-right:550px;
   margin-top:50px;
   border: 2px;
-  width: 1300px;
+  width: 1200px;
  
 }
 

@@ -17,6 +17,8 @@ class Usuario(ndb.Model):
 
 class DatosAtmosfericos(ndb.Model):
     fecha = ndb.StringProperty()
+    mes = ndb.StringProperty()
+    anio = ndb.StringProperty()
     temperatura = ndb.FloatProperty()
     pres_atmos = ndb.FloatProperty()
     humedad = ndb.FloatProperty()
