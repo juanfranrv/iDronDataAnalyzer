@@ -61,17 +61,31 @@ tbody{
   margin-top:6.5%;
 }
 
-#tipoGrafica-temp{
+.ui-datepicker{ 
+    width: 16em;
+    height: 16em;
+    overflow:hidden
+}
 
-	margin-top:1.55%;
-	float:left;
-	margin-left:5%;
+#tipoGrafica-temp{
+   margin-top:1.55%;
+   float:left;
+   margin-left:5%;
+}
+
+#datepicker{
+   margin-top:1.55%;
+}
+
+#tiempo{
+  margin-top:0.5%;
+  float:left;
+  margin-left:5%;
 }
 
 #tipoGrafica-temp1{
-
-	margin-left:2%;
-	float:left;
+  margin-left:2%;
+  float:left;
 }
 
 #map-canvas{

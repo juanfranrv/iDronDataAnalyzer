@@ -45,20 +45,30 @@
     <div id="inputs">
     	<p>Fecha: <input type="text" id="datepicker" /></p>
     </div>
+     <div class="panel panel-primary">
+	<select name="tiempo" id="tiempo" >    
+		<option value="ario" selected="selected">Diario</option>
+		<option value="semanal">Semanal</option>
+		<option value="mensual">Mensual</option>>
+		<option value="anual">Anual</option>
+	</select>
+      </div>	
    <script>
 	$(document).ready(
 	  
 	  function () {
-
 	    $( "#datepicker" ).datepicker({
 	      dateFormat: "dd-mm-yy",
 	      changeMonth: true,
 	      changeYear: true 
 	    });
 	  }
-
 	);
 
+       $('#tiempo').change(function(){
+	  var tipo_tiempo = document.getElementById('tiempo').value;
+	  console.log(tipo_tiempo);
+	});
        $('#datepicker').change(function () {
 
 	  var tipo_dato = document.getElementById('datepicker').value;
