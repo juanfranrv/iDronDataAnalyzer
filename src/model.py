@@ -17,6 +17,7 @@ class Usuario(ndb.Model):
 
 class DatosAtmosfericos(ndb.Model):
     fecha = ndb.StringProperty()
+    dia = ndb.StringProperty()
     mes = ndb.StringProperty()
     anio = ndb.StringProperty()
     temperatura = ndb.FloatProperty()

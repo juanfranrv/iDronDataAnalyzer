@@ -284,11 +284,11 @@ class datos_grafico(webapp2.RequestHandler):
         tempe = result["main"]["temp"]          #temperatura
         pres = result["main"]["pressure"]       #presion atmosferica
         hum = result["main"]["humidity"]        #humedad
-        vel_wind = result["wind"]["speed"]       #velocidad del viento
+        vel_wind = result["wind"]["speed"]      #velocidad del viento
         dir_win = result["wind"]["deg"]         #direccion del viento
         
-        temp = tempe - 273.15                   #conversion de kelvin a celsius
-        vel_win = vel_wind * 3.6                #conversion de m/s a km/h
+        temp = tempe - 273.15                   #conversión de kelvin a celsius
+        vel_win = vel_wind * 3.6                #conversión de m/s a km/h
 
         dato_seleccionado = self.request.get('dato')
 
@@ -306,6 +306,7 @@ class datos_grafico(webapp2.RequestHandler):
         if contador is 10:               #Cada 10 datos obtenidos, almacenamos en la base de datos
             
             data.fecha = time.strftime("%d-%m-%Y") 
+            data.dia = datetime.date.today().strftime("%d")
             data.mes = datetime.date.today().strftime("%m")
             data.anio = datetime.date.today().strftime("%Y")  
             data.temperatura = round(temp,2)
