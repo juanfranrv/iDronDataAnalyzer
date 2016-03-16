@@ -356,10 +356,10 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
             tiempo_elegido = self.request.get('tiempo')
             
             if tiempo_elegido == 'mensual':     #Si el tiempo es mensual, comprobamos el mes antes de añadir
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.mes == fecha_elegida[3:5], model.DatosAtmosfericos.anio == fecha_elegida[6:11])
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.mes == fecha_elegida[3:5], model.DatosAtmosfericos.anio == fecha_elegida[6:11]).order(model.DatosAtmosfericos.fecha)
                                                   
             elif tiempo_elegido == 'anual':     #Si el tiempo es anual, comprobamos el año antes de añadir
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11])
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11]).order(model.DatosAtmosfericos.fecha)
 
             else:                
                 result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.fecha == fecha_elegida)
@@ -504,7 +504,7 @@ class METAR_TAF(webapp2.RequestHandler):
         global lng              #random lat y long
         
         if self.request.cookies.get("username"):
-            
+            #Inicialización de variables para que siga funcionando en el que caso de que no exista alguna
             username = str(self.request.cookies.get("username")) 
             error = ''
             array_nubes = []
