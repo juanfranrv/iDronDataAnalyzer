@@ -474,7 +474,8 @@ def getInfoNubosidad(nube, altura):
             str_altura.remove('0')
 
     altura = ''.join(str_altura)
-        
+    result = ''
+    
     if nube == 'SKC':
         result = 'SKC - Cielo despejado de nubes a ' + altura + '00 pies (sky clear). Cielo limpio por debajo de 12.000 para ASOS/AWOS.'
     elif nube == 'FEW':

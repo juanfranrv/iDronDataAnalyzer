@@ -104,8 +104,13 @@ tbody{
 #formulario{
   margin: auto;
   width: 800px;
-  border: solid 1px;
+  border: solid 2px;
   padding: 50px;
+}
+
+::-webkit-input-placeholder {
+    color: red;
+    font-weight: bold;
 }
 
 #mensaje_url{
@@ -116,6 +121,7 @@ tbody{
 #form_edicion{
   margin-left:15%;
   font-size:160%; 
+  margin-bottom:10%;
 }
 
 #idron{

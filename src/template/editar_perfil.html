@@ -42,18 +42,8 @@
 		
     </header><!--/header-->
 
-    <section id="main-slider" class="no-margin">
-        <div class="carousel slide">
-            <div class="carousel-inner">
-
-               
-      </section>
-
-     <div class="jumbotron">
-      <div class="container" id="formulario">
-        <img src="../static/images/edicionPerfil_logo.png" id="form_edicion" name="form_edicion">
-        <p id="mensaje">{{message}}</p>
-        <br/>
+    <div style="background:transparent !important" class="jumbotron">
+      <div id="formulario">
          {% for n in usuarios %}
             <form action="/editar_perfil" method="post" role="form">
               <div class="form-group">
@@ -63,32 +53,32 @@
               </div>
               <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" onkeyup="return seguridad()" class="form-control" id="password"  name="password"
+                <input  style="background-color:#E6E6E6;" type="password" onkeyup="return seguridad()" class="form-control" id="password"  name="password"
                        placeholder="{{n.password}}">
                  <p id='strength'></p>
               </div>
               <div class="form-group">
                  <label for="nombre">Nombre</label>
-                 <input type="text" class="form-control"  id="nombre"  name="nombre"
+                 <input style="background-color:#E6E6E6;" type="text" class="form-control"  id="nombre"  name="nombre"
                        placeholder="{{n.nombre}}">
               </div>
               <div class="form-group">
                 <label for="apellido">Apellidos</label>
-                <input type="text" class="form-control"  id="apellido"  name="apellido"
+                <input style="background-color:#E6E6E6;" type="text" class="form-control"  id="apellido"  name="apellido"
                        placeholder="{{n.apellido}}">
               </div>
               <div class="form-group">
                 <label for="correo">Correo electrónico</label>
-                <input type="email" class="form-control" id="correo" name="correo"
+                <input style="background-color:#E6E6E6;" type="email" class="form-control" id="correo" name="correo"
                        placeholder="{{n.correo}}">
               </div>
     
               <div class="form-group">
                 <label for="telefono">Teléfono</label>
-                <input type="tel" class="form-control"  id="telefono" name="telefono" 
+                <input style="background-color:#E6E6E6;" type="tel" class="form-control"  id="telefono" name="telefono" 
                 placeholder="{{n.telefono}}">
               </div>
-              <button type="submit" class="btn btn-default">Actualizar</button>
+              <button type="submit" style="margin-top:5%;" class="btn btn-danger">Actualizar</button>
             </form>
              {% endfor %}
 
