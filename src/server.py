@@ -276,7 +276,6 @@ class datos_grafico(webapp2.RequestHandler):
         data = model.DatosAtmosfericos()
         
         url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
-        response = urllib2.urlopen(url).read()
         r = urllib2.urlopen(url)
 
         result = json.load(r)

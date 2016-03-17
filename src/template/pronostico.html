@@ -43,21 +43,25 @@
 
    <div style="background:transparent !important" class="jumbotron">
    <form id="form_pronos" role="form" onsubmit="return Valida_pronostico(this);" method="post" action="/pronostico">
-    <div id="inputs">
+    <div class="row">
+	<div class="col-md-3">
 	<label>Introduce latitud: </label>
         <input id="latitud" type="text" class="form-control" name="latitud" value="{{latitud_actual}}" placeholder="Latitud">
+	</div>
+        <div class="col-md-3">
 	<label>Introduce longitud: </label>
 	<input id="longitud" type="text" class="form-control" name="longitud" value="{{longitud_actual}}" placeholder="Longitud">
+	</div>
+    <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-danger">Realizar pronóstico</button>
     </div>
-    <div id="radiobuttons">
-	<div class="radio">
+    <div style="margin-top:3%;font-size:90%;" class="row">
+	<div class="col-md-3">
 	  <label><input type="radio" value="horas" name="optradio" checked="checked">Pronóstico por horas</label>
 	</div>
-	<div class="radio">
+	<div class="col-md-3">
 	  <label><input type="radio" value="dias" name="optradio">Pronóstico por días</label>
 	</div>
      </div>
-    <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-danger">Realizar pronóstico</button>
    </form> 
 
 <table class="table table-striped">
