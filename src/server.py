@@ -306,7 +306,8 @@ class datos_grafico(webapp2.RequestHandler):
         if contador is 10:               #Cada 10 datos obtenidos, almacenamos en la base de datos
             
             data.fecha = time.strftime("%d-%m-%Y") 
-            data.dia = datetime.date.today().strftime("%d")
+            #Obtiene el número de la semana 
+            data.dia = datetime.date.today().strftime("%V")
             data.mes = datetime.date.today().strftime("%m")
             data.anio = datetime.date.today().strftime("%Y")  
             data.temperatura = round(temp,2)
@@ -354,10 +355,15 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
             datos_atmos = []
             fecha_elegida = self.request.get('fecha')
             tiempo_elegido = self.request.get('tiempo')
+            distancia = 0
             
             if tiempo_elegido == 'mensual':     #Si el tiempo es mensual, comprobamos el mes antes de añadir
                 result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.mes == fecha_elegida[3:5], model.DatosAtmosfericos.anio == fecha_elegida[6:11]).order(model.DatosAtmosfericos.fecha)
-                                                  
+            
+            elif tiempo_elegido == 'semanal':
+                num_semana = datetime.date(int(fecha_elegida[6:11]), int(fecha_elegida[3:5]), int(fecha_elegida[0:2])).strftime("%V") 
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.dia == num_semana, model.DatosAtmosfericos.anio == fecha_elegida[6:11]).order(model.DatosAtmosfericos.fecha)
+                                                
             elif tiempo_elegido == 'anual':     #Si el tiempo es anual, comprobamos el año antes de añadir
                 result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11]).order(model.DatosAtmosfericos.fecha)
 

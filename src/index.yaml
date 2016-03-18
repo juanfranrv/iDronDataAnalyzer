@@ -32,3 +32,8 @@ indexes:
   - name: mes
   - name: fecha
     direction: desc
+
+- kind: DatosAtmosfericos
+  properties:
+  - name: dia
+  - name: fecha
