@@ -46,10 +46,7 @@ class MainPage(webapp2.RequestHandler):
             
         else:
             
-            self.response.headers['Content-Type'] = 'text/html'
-            template_values={}
-            template = JINJA_ENVIRONMENT.get_template('template/login.html')
-            self.response.write(template.render(template_values))
+            self.redirect('/login')
             
 #Clase para gestionar el inicio de sesión del usuario.
 
@@ -67,19 +64,19 @@ class Login(webapp2.RequestHandler):
         usu=self.request.get('user')
         result=model.Usuario.query(model.Usuario.usuario==usu)
         usur=result.get()
+        pas=self.request.get('pass')
         
         if usur is not None:
-            
-            usur=result.get()
-            pas=self.request.get('pass')
-            
+
             if usur.password==pas:
                 
                 self.response.headers.add_header('Set-Cookie',"username="+str(usur.usuario))
         
                 template_values={'sesion':usur.usuario,'head':head,'footer':footer}
                 template = JINJA_ENVIRONMENT.get_template('template/index.html')
-                self.response.write(template.render(template_values))                
+                self.response.write(template.render(template_values))
+                                
+                self.redirect('/')
                 
             else:
         
@@ -131,6 +128,7 @@ class formRegistro(webapp2.RequestHandler):
             user.telefono = self.request.get('telefono')
                         
             user.put()
+            
             self.redirect('/')
             
         else:
@@ -239,9 +237,10 @@ class coordenadas(webapp2.RequestHandler):
         global grados
 
         grados += 5
-        lat += 0.001  # * math.cos(grados/180)   #Generación automática de coordenadas provisional
-        #lng += 0.0001 * math.sin(grados/180)
+        lat += 0.001       #Generación automática de coordenadas provisional
+
         latLng = [lat, lng]
+        
         self.response.write(json.dumps(latLng))
 
 #Clase que gestiona el gráfico de monitorización de datos atmosféricos en tiempo real
