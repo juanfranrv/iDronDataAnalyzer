@@ -21,6 +21,14 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 head = JINJA_ENVIRONMENT.get_template('template/head.html').render()
 footer = JINJA_ENVIRONMENT.get_template('template/footer.html').render()
 
+#Variables globales
+
+API_pronostico = 'c6f8c98fd1da5785'             #Key para la API del pronóstico
+Api_key = 'fffa0ba60d5357235f5782313216b8ae'    #Key para la API del gráfico de monitorización
+contador = 0                                    #Variable que lleva la cuenta para la inserción de datos en la base de datos
+lat = 37.19699469878369                         #Variables que generan coordenadas aleatorias utilizadas en la mayoría de las clases
+lng =  -3.6241040674591507
+grados = 0
 
 #Clase principal
 
@@ -222,10 +230,6 @@ class geolocalizacion(webapp2.RequestHandler):
 
 # Clase que genera las coordenadas del dron.
 
-lat = 37.19699469878369
-lng =  -3.6241040674591507
-grados = 0
-
 class coordenadas(webapp2.RequestHandler):
     
     def get(self):
@@ -260,9 +264,6 @@ class grafico(webapp2.RequestHandler):
             self.redirect('/login') 
             
 # Clase que genera datos aleatorios provisionales para el gráfico
-
-Api_key = 'fffa0ba60d5357235f5782313216b8ae'
-contador = 0
 
 class datos_grafico(webapp2.RequestHandler):
     
@@ -364,7 +365,7 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
                 result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.fecha == fecha_elegida)
                 
             if result is not None:          
-                for dato in result:         
+                for dato in result:             #Crear un array de tipo json para parsear en el cliente    
                          datos_atmos.append( {'fecha': dato.fecha,
                                         'temperatura': dato.temperatura,
                                         'presion': dato.pres_atmos,
@@ -380,8 +381,6 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
             self.redirect('/login') 
                        
 #Clase que gestiona el pronóstico de datos atmosféricos en tiempo real
-
-API_pronostico = 'c6f8c98fd1da5785'
              
 class pronostico(webapp2.RequestHandler):
     
@@ -494,6 +493,187 @@ def getInfoNubosidad(nube, altura):
         
     return result
 
+#Parsea la información obtenida y devuelve un JSON con el METAR legible
+
+def parseoMETAR(result_metar):
+    
+    #Inicialización de variables
+    array_nubes = []
+    metar = ''
+    temperatura = ''
+    presion_atmosferica = ''
+    nubes = ''
+    fecha_captura = ''
+    visibilidad = ''
+    direccion_viento = ''
+    velocidad_viento = ''
+    rafaga_viento = ''
+    datos_metar = []
+
+    #Inicio del parseo
+    metar = result_metar["Raw-Report"]
+    temperatura = result_metar["Temperature"] + ' grados celsius'
+    presion_atmosferica = result_metar["Altimeter"] + ' hPa'
+    nubes = result_metar["Cloud-List"]
+     
+    for nube in nubes:                          #Recorremos el array de nubes obtenidas
+        array_nubes.append(getInfoNubosidad(nube[0], nube[1]))
+
+    fecha_captura = result_metar["Time"]        #Parseo para obtener del string el dia y hora
+    dia = fecha_captura[:2]
+    hora = fecha_captura[2:4] + ':' + fecha_captura[4:6] + ' UTC'
+     
+    visibilidad = result_metar["Visibility"] + ' m'
+    if visibilidad == '9999 m':                #Si la visibilidad es 9999 significa que hay 10km o mas
+        visibilidad = '10km o mas'
+         
+    direccion_viento = result_metar["Wind-Direction"] + ' grados'
+    if direccion_viento == '000 grados':       #No hay viento
+        direccion_viento = 'No existe presencia de viento'
+    elif direccion_viento == "VRB grados":
+        direccion_viento = 'Viento en todas las direcciones'
+         
+    rafaga_viento = result_metar["Wind-Gust"] + ' nudos (KT)'
+     
+    velocidad_viento = result_metar["Wind-Speed"] + ' nudos (KT)'
+    if velocidad_viento == '00 nudos (KT)':                #No hay viento
+        velocidad_viento = 'No existe presencia de viento'
+     
+    if len(array_nubes) is 0:
+        array_nubes.append('Sin informacion asociada')
+    if rafaga_viento == ' nudos (KT)':
+        rafaga_viento = 'Sin informacion asociada'
+    if temperatura == ' grados celsius':
+        temperatura = 'Sin informacion asociada'
+    if visibilidad == ' m':
+        visibilidad = 'Sin informacion asociada'
+    if direccion_viento == ' grados':
+        direccion_viento = 'Sin informacion asociada'
+    if velocidad_viento == ' nudos (KT)':
+        rafaga_viento = 'Sin informacion asociada'
+     
+    #Devolución de JSON con los datos parseados      
+    datos_metar.append({'presion_atmosferica':presion_atmosferica,
+                        'visibilidad':visibilidad,
+                        'direccion_viento':direccion_viento,
+                        'rafaga_viento':rafaga_viento,
+                        'velocidad_viento':velocidad_viento,
+                        'temperatura':temperatura,
+                        'metar':metar,
+                        'array_nubes':array_nubes,
+                        'dia':dia,
+                        'hora':hora,
+                       })
+    
+    return datos_metar
+
+#Parsea la información obtenida (no repetida) y devuelve un JSON con el TAFOR legible
+
+def parseoTAFOR_noRepeatInfo(result_taf):
+
+    #Inicialización de variables
+    datos_taf = []
+    array_nubes_taf = defaultdict(list)
+    taf = ''
+    max_temp = ''
+    min_temp = ''
+  
+    taf = result_taf["Raw-Report"]
+    
+    fecha_captura_taf = result_taf["Time"]        #Parseo para obtener del string el dia y hora
+    dia_taf = fecha_captura_taf[:2]
+    hora_taf = fecha_captura_taf[2:4] + ':' + fecha_captura_taf[4:6]
+    
+    max_temp = result_taf["Max-Temp"]
+    min_temp = result_taf["Min-Temp"]
+
+    if max_temp == '':
+        max_temp = "Sin informacion asociada"
+    else:
+        max_temp = max_temp[2:4]
+      
+    if min_temp == '':
+        min_temp = "Sin informacion asociada"
+    else:
+        min_temp = min_temp[2:4] 
+        
+    for i in range(len(result_taf["Forecast"])):
+        
+        for nube in result_taf["Forecast"][i]["Cloud-List"]:    #Recorremos el array de nubes obtenidas
+            array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
+
+    #Devolución de JSON con los datos parseados  
+    datos_taf.append({'taf':taf,
+                      'max_temp':max_temp,
+                      'min_temp':min_temp,
+                      'dia_taf':dia_taf,
+                      'hora_taf':hora_taf,
+                      'array_nubes_taf':array_nubes_taf
+                    })
+
+    return datos_taf
+
+#Parsea la información obtenida (repetida, tal como todos los datos atmosféricos pronosticados) y devuelve un JSON con el TAFOR legible
+
+def parseoTAFOR_RepeatInfo(result_taf):
+
+    #Inicialización de variables  
+    datos_tafN = []
+    array_taf = []
+    presion = ''
+    visibilidad = ''
+    dir_viento = ''
+    vel_viento = ''
+    rafaga_viento = ''
+    
+    for i in range(len(result_taf["Forecast"])):    #Rellenamos el array con la info obtenida de la API
+        array_taf.append(result_taf["Forecast"][i])
+        
+    for taf in array_taf:                           #Parseamos la información y la guardamos en un dict
+        
+        if taf["Altimeter"] == '':
+            presion = 'Sin informacion asociada'
+        else:
+            presion = taf["Altimeter"] + ' hPa'
+            
+        if taf["Visibility"] == '9999':
+            visibilidad = '10km o superior'
+        elif taf["Visibility"] == '':
+            visibilidad = 'Sin informacion asociada'
+        else:
+            visibilidad = taf["Visibility"] + ' m'
+            
+        if taf["Wind-Direction"] == '':
+            dir_viento = 'Sin informacion asociada'
+        elif taf["Wind-Direction"] == 'VRB':
+            dir_viento = 'Viento en todas las direcciones'
+        else:
+            dir_viento = taf["Wind-Direction"] + ' grados'
+            
+        if taf["Wind-Gust"] == '':
+            rafaga_viento = 'Sin informacion asociada'
+        else:
+            rafaga_viento = taf["Wind-Gust"] + ' nudos (KT)'
+            
+        if taf["Wind-Speed"] == '':
+            vel_viento = "Sin informacion asociada"
+        else:
+            vel_viento = taf["Wind-Speed"] + ' nudos (KT)'
+
+        #Devolución de JSON con los datos parseados  
+        datos_tafN.append({'presion':presion,
+                          'vel_viento':vel_viento,
+                          'rafaga_viento':rafaga_viento,
+                          'dir_viento':dir_viento,
+                          'visibilidad':visibilidad,
+                          'dia':taf["Start-Time"][:2],
+                          'hora':taf["Start-Time"][2:4],
+                          'dia_fin':taf["End-Time"][:2],
+                          'hora_fin':taf["End-Time"][2:4],
+                        })
+
+    return datos_tafN
+    
 # Clase que genera los datos atmosféricos obtenidos de aeropuertos como son el TAF y METAR
 
 class METAR_TAF(webapp2.RequestHandler):
@@ -504,24 +684,14 @@ class METAR_TAF(webapp2.RequestHandler):
         global lng              #random lat y long
         
         if self.request.cookies.get("username"):
+            
             #Inicialización de variables para que siga funcionando en el que caso de que no exista alguna
+            
             username = str(self.request.cookies.get("username")) 
             error = ''
-            array_nubes = []
+            array_metar = []
             array_taf = []
-            array_nubes_taf = defaultdict(list)
-            taf = ''
-            metar = ''
-            max_temp = ''
-            min_temp = ''
-            temperatura = ''
-            presion_atmosferica = ''
-            nubes = ''
-            fecha_captura = ''
-            visibilidad = ''
-            direccion_viento = ''
-            velocidad_viento = ''
-            rafaga_viento = ''
+            array_tafN = []
             
             try:
                 #Gestión del METAR y parseo de la información para su interpretación
@@ -531,46 +701,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 r_metar = urllib2.urlopen(url_metar)
                 result_metar = json.load(r_metar)
                                     
-                metar = result_metar["Raw-Report"]
-                temperatura = result_metar["Temperature"] + ' grados celsius'
-                presion_atmosferica = result_metar["Altimeter"] + ' hPa'
-                nubes = result_metar["Cloud-List"]
-                
-                for nube in nubes:                          #Recorremos el array de nubes obtenidas
-                    array_nubes.append(getInfoNubosidad(nube[0], nube[1]))
-   
-                fecha_captura = result_metar["Time"]        #Parseo para obtener del string el dia y hora
-                dia = fecha_captura[:2]
-                hora = fecha_captura[2:4] + ':' + fecha_captura[4:6] + ' UTC'
-                
-                visibilidad = result_metar["Visibility"] + ' m'
-                if visibilidad == '9999 m':                #Si la visibilidad es 9999 significa que hay 10km o mas
-                    visibilidad = '10km o mas'
-                    
-                direccion_viento = result_metar["Wind-Direction"] + ' grados'
-                if direccion_viento == '000 grados':       #No hay viento
-                    direccion_viento = 'No existe presencia de viento'
-                elif direccion_viento == "VRB grados":
-                    direccion_viento = 'Viento en todas las direcciones'
-                    
-                rafaga_viento = result_metar["Wind-Gust"] + ' nudos (KT)'
-                
-                velocidad_viento = result_metar["Wind-Speed"] + ' nudos (KT)'
-                if velocidad_viento == '00 nudos (KT)':                #No hay viento
-                    velocidad_viento = 'No existe presencia de viento'
-                
-                if len(array_nubes) is 0:
-                    array_nubes.append('Sin informacion asociada')
-                if rafaga_viento == ' nudos (KT)':
-                    rafaga_viento = 'Sin informacion asociada'
-                if temperatura == ' grados celsius':
-                    temperatura = 'Sin informacion asociada'
-                if visibilidad == ' m':
-                    visibilidad = 'Sin informacion asociada'
-                if direccion_viento == ' grados':
-                    direccion_viento = 'Sin informacion asociada'
-                if velocidad_viento == ' nudos (KT)':
-                    rafaga_viento = 'Sin informacion asociada'
+                array_metar = parseoMETAR(result_metar)             #Llamamos a la función parseadora
                 
                 #Gestión del TAF y parseo de alguna de la información para su interpretación. La otra parte esta en el template interpretada
                  
@@ -578,48 +709,23 @@ class METAR_TAF(webapp2.RequestHandler):
                                                            
                 r_taf = urllib2.urlopen(url_taf)
                 result_taf = json.load(r_taf)
-                
-                taf = result_taf["Raw-Report"]
-                
-                fecha_captura_taf = result_taf["Time"]        #Parseo para obtener del string el dia y hora
-                dia_taf = fecha_captura_taf[:2]
-                hora_taf = fecha_captura_taf[2:4] + ':' + fecha_captura_taf[4:6]
-                
-                max_temp = result_taf["Max-Temp"]
-                min_temp = result_taf["Min-Temp"]
 
-                for i in range(len(result_taf["Forecast"])):
-                    array_taf.append(result_taf["Forecast"][i])
-                    
-                    for nube in result_taf["Forecast"][i]["Cloud-List"]:               #Recorremos el array de nubes obtenidas
-                        array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
-            
+                array_tafN = parseoTAFOR_noRepeatInfo(result_taf)   #Llamamos a las funciones parseadoras
+                array_taf = parseoTAFOR_RepeatInfo(result_taf)
+                
             except KeyError, e:
                 error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
                 
             self.response.headers['Content-Type'] = 'text/html'
+
             template_values={'sesion':username,
-                         'error':error, 
-                        'metar':metar,
-                        'taf':taf,
-                        'temperatura':temperatura,
-                        'max_temp':max_temp,
-                        'min_temp':min_temp,
-                        'dia':dia,
-                        'hora':hora,
-                        'dia_taf':dia_taf,
-                        'hora_taf':hora_taf,
-                        'array_nubes_taf':array_nubes_taf,
-                        'array_nubes':array_nubes,
-                        'array_taf':array_taf,
-                        'presion_atmosferica':presion_atmosferica,
-                        'visibilidad':visibilidad,
-                        'direccion_viento':direccion_viento,
-                        'rafaga_viento':rafaga_viento,
-                        'velocidad_viento':velocidad_viento,
-                        'footer': footer,
-                        'head':head
-                        }
+                             'array_metar':array_metar,
+                             'array_taf':array_taf,
+                             'array_tafN':array_tafN,
+                             'error':error, 
+                             'footer': footer,
+                             'head':head
+                            }
             
             template = JINJA_ENVIRONMENT.get_template('template/pronostico_aeropuertos.html')
             self.response.write(template.render(template_values)) 
