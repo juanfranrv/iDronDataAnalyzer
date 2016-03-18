@@ -351,7 +351,7 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
-            datos_atmos = list(dict())
+            datos_atmos = []
             fecha_elegida = self.request.get('fecha')
             tiempo_elegido = self.request.get('tiempo')
             
@@ -366,13 +366,13 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
                 
             if result is not None:          
                 for dato in result:             #Crear un array de tipo json para parsear en el cliente    
-                         datos_atmos.append( {'fecha': dato.fecha,
-                                        'temperatura': dato.temperatura,
-                                        'presion': dato.pres_atmos,
-                                        'humedad': dato.humedad,
-                                        'vel_viento': dato.vel_viento,
-                                        'dir_viento': dato.dir_viento
-                                        })
+                         datos_atmos.append({'fecha': dato.fecha,
+                                            'temperatura': dato.temperatura,
+                                            'presion': dato.pres_atmos,
+                                            'humedad': dato.humedad,
+                                            'vel_viento': dato.vel_viento,
+                                            'dir_viento': dato.dir_viento
+                                            })
 
             self.response.write(json.dumps(datos_atmos)) 
                         
