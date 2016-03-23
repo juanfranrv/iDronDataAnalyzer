@@ -25,3 +25,13 @@ class DatosAtmosfericos(ndb.Model):
     humedad = ndb.FloatProperty()
     vel_viento = ndb.FloatProperty()
     dir_viento = ndb.FloatProperty()
+
+#Clase donde se define el modelo de los datos recibidos en tiempo real desde el drone.
+
+class DatosRecibidos(ndb.Model):
+    idDatos = ndb.IntegerProperty()
+    latitud = ndb.StringProperty()
+    longitud = ndb.StringProperty()
+    altura = ndb.StringProperty()
+    velocidad = ndb.StringProperty()
+

@@ -28,8 +28,48 @@ Api_key = 'fffa0ba60d5357235f5782313216b8ae'    #Key para la API del gráfico de
 contador = 0                                    #Variable que lleva la cuenta para la inserción de datos en la base de datos
 lat = 37.19699469878369                         #Variables que generan coordenadas aleatorias utilizadas en la mayoría de las clases
 lng =  -3.6241040674591507
-grados = 0
 
+#Clase que recibe los datos procedentes del HTTP POST de la aplicación de Android y los almacena para ser tratados posteriormente en el resto de funcionalidades
+
+class RecibirDatosDrone(webapp2.RequestHandler):
+    
+    def post(self):
+        
+        datosRec = model.DatosRecibidos()
+        
+        #Obtiene los datos recibidos por Http Post desde el drone (App de Android)
+        latitud = self.request.get('latitud')
+        longitud = self.request.get('longitud')
+        altura = self.request.get('altura')
+        velocidad = self.request.get('velocidad')
+        
+        print latitud
+        print longitud
+        print altura
+        print velocidad
+        
+        busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1)
+        
+        if busqueda.get() is None:    #Si la base de datos está vacía, insertamos los datos recibidos del drone
+
+            datosRec.idDatos = 1
+            datosRec.latitud = latitud
+            datosRec.longitud = longitud
+            datosRec.altura = altura
+            datosRec.velocidad = velocidad
+            
+            datosRec.put()
+        
+        else:                         #Si ya no está vacía, buscamos los únicos datos que tiene y sobreescribimos por los nuevos
+
+            busqueda.idDatos = 1
+            busqueda.latitud = latitud
+            busqueda.longitud = longitud
+            busqueda.altura = altura
+            busqueda.velocidad = velocidad
+            
+            busqueda.put()
+              
 #Clase principal
 
 class MainPage(webapp2.RequestHandler):
@@ -236,9 +276,9 @@ class coordenadas(webapp2.RequestHandler):
         global lng
         global grados
 
-        grados += 5
+        #grados += 5
         lat += 0.001       #Generación automática de coordenadas provisional
-
+        
         latLng = [lat, lng]
         
         self.response.write(json.dumps(latLng))
@@ -407,12 +447,12 @@ class pronostico(webapp2.RequestHandler):
     def post(self):
         
         if self.request.cookies.get("username"):
-            
+
             username = str(self.request.cookies.get("username"))
             
             latitud = self.request.get('latitud')
             longitud = self.request.get('longitud')
-            radio_elegido = self.request.get('optradio');
+            radio_elegido = self.request.get('optradio')
             
             array_datos = []
             error = ''
@@ -753,6 +793,7 @@ urls = [('/', MainPage),
         ('/getDatosAtmosfericos', getDatosAtmosfericos),
         ('/datos_grafico', datos_grafico),
         ('/pronostico', pronostico),
+        ('/recibirDatosDrone', RecibirDatosDrone),
         ('/METAR_TAF', METAR_TAF),
         ('/.*', ErrorPage)
        ]
