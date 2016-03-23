@@ -48,9 +48,9 @@ class RecibirDatosDrone(webapp2.RequestHandler):
         print altura
         print velocidad
         
-        busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get
+        busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
         
-        if busqueda.get() is None:    #Si la base de datos está vacía, insertamos los datos recibidos del drone
+        if busqueda is None:    #Si la base de datos está vacía, insertamos los datos recibidos del drone
             
             datosRec.idDatos = 1
             datosRec.latitud = latitud
