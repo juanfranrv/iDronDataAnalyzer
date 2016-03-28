@@ -37,7 +37,7 @@ class RecibirDatosDrone(webapp2.RequestHandler):
         
         datosRec = model.DatosRecibidos()
         
-        #Obtiene los datos recibidos por Http Post desde el drone (App de Android)
+        #Obtiene los datos recibidos por Http Post desde el drone (A través de la app de Android)
         latitud = self.request.get('latitud')
         longitud = self.request.get('longitud')
         altura = self.request.get('altura')
@@ -60,7 +60,7 @@ class RecibirDatosDrone(webapp2.RequestHandler):
             
             datosRec.put()
         
-        else:                         #Si ya no está vacía, buscamos los únicos datos que tiene y sobreescribimos por los nuevos
+        else:                   #Si ya no está vacía, buscamos los únicos datos que tiene y sobreescribimos por los nuevos
             
             busqueda.idDatos = 1
             busqueda.latitud = latitud
@@ -272,17 +272,64 @@ class coordenadas(webapp2.RequestHandler):
     
     def get(self):
         
-        global lat
-        global lng
-        global grados
-
-        #grados += 5
-        lat += 0.001       #Generación automática de coordenadas provisional
+        #global lat
+        #global lng
+        #global grados
         
+        try:
+            
+            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
+            #grados += 5
+            #lat += 0.001       #Generación automática de coordenadas provisional
+            lat = coordenadas.latitud
+            lng = coordenadas.longitud
+            
+        except:
+            
+            lat = 37.19699469878369                        
+            lng =  -3.6241040674591507
+            
         latLng = [lat, lng]
         
         self.response.write(json.dumps(latLng))
 
+#Clase que gestiona la obtención de datos de seguridad en tiempo real
+
+class updateDatosDrone(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        datosRec = []
+        datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
+        
+        try:
+
+            lat = datos.latitud
+            lng = datos.longitud
+            
+        except:
+            
+            lat = 37.196                       
+            lng =  -3.624
+            
+        try:
+            
+            vel = round(float(datos.velocidad),3)
+            alt = round(float(datos.altura),3)
+            
+        except:
+            
+            vel = 0
+            alt = 0
+  
+        datosRec.append({'latitud': lat,
+                         'longitud': lng,
+                         'velocidad': vel,
+                         'altura': alt
+                       })
+            
+        self.response.write(json.dumps(datosRec))
+        
 #Clase que gestiona el gráfico de monitorización de datos atmosféricos en tiempo real
              
 class grafico(webapp2.RequestHandler):
@@ -725,8 +772,13 @@ class METAR_TAF(webapp2.RequestHandler):
     
     def get(self):
                     
-        global lat
-        global lng              #random lat y long
+        #global lat
+        #global lng              #random lat y long
+        
+        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
+        
+        lat = coordenadas.latitud
+        lng = coordenadas.longitud
         
         if self.request.cookies.get("username"):
             
@@ -794,6 +846,7 @@ urls = [('/', MainPage),
         ('/datos_grafico', datos_grafico),
         ('/pronostico', pronostico),
         ('/recibirDatosDrone', RecibirDatosDrone),
+        ('/updateDatosDrone', updateDatosDrone),
         ('/METAR_TAF', METAR_TAF),
         ('/.*', ErrorPage)
        ]
