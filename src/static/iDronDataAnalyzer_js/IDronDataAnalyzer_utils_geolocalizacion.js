@@ -38,12 +38,24 @@ function actualizarMapa() {
 }
 
 function initialize() {
-  var myLatlng = new google.maps.LatLng(37.19699469878369, -3.6241040674591507);
+  $.ajax({
+	  type: 'GET',			//Obtiene la latitud y longitud inicial para posicionar el drone. Llamada AJAX al servidor.
+	  url: '/updateDatosDrone',
+	  data: $(this).serialize(),
+	  dataType: 'json',
+	  success: function (data) {
+		window.lat = data[0].latitud;
+		window.lng = data[0].longitud;
+	  }
+  });
+
+  var myLatlng = new google.maps.LatLng(window.lat, window.lng);
   var mapOptions = {
-    zoom: 12,
+    zoom: 14,
     center: myLatlng,
     mapTypeId: 'terrain'
   }
+
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   marker = new google.maps.Marker({
       position: myLatlng,
