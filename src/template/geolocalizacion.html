@@ -67,7 +67,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLwe
     </header><!--/header-->
 
     <div style="background:transparent !important" class="jumbotron">
-    <div style="margin-left:3%;margin-bottom:1%;" class="row">
+    <div style="margin-left:3%;margin-bottom:1%;" id="recargar" class="row">
 	<div class="col-sm-5">
 	<label>Coordenadas: </label><label style="font-size:90%;">&nbsp; 0</label>
 	</div>
@@ -78,34 +78,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLwe
 	<label>Velocidad: </label><label style="font-size:90%;">&nbsp; 0 m/s</label>
 	</div>
     </div>
-    <script>
 
-	function actualizarDatosDrone() {	
-		  $.ajax({
-				  type: 'GET',
-				  url: '/updateDatosDrone',
-				  data: $(this).serialize(),
-				  dataType: 'json',
-				  success: function (data) {
-					 $('.row').html(
-					    function(){
-						var content = '<div style="margin-left:3%;margin-bottom:1%;" class="row">';
-						content = content + '<div class="col-sm-5"><label>Coordenadas: </label><label style="font-size:90%;">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</label></div>';
-						content = content + '<div class="col-sm-3"><label>Altitud: </label><label style="font-size:90%;">&nbsp;' + data[0].altura + ' m </label></div>';
-	     					content = content + '<div class="col-sm-3"><label>Velocidad: </label><label style="font-size:90%;">&nbsp;' + data[0].velocidad + ' m/s </label></div>';
-						content = content + '</div>'; 
-
-						return content;
-					    }
-					)
-				  }
-			  });
-
-	}
-
-    	setInterval(actualizarDatosDrone, 1000);
-
-    </script>
     <div id="map-canvas" class="jumbotron"></div>
     </div>
 

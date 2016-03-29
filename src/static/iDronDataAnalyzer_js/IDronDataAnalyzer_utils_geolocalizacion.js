@@ -1,5 +1,6 @@
 //------------------------------------------JAVASCRIPT PARA EL TEMPLATE GEOLOCALIZACIÓN----------------------------------------------
 
+//--------------------------------CONFIGURACIÓN GOOGLE MAPS-------------------------------------------
 
 var coordenadas;
 var marker;
@@ -7,32 +8,32 @@ var map;
 
 function actualizarMapa() {
   $.ajax({
-	        type: 'GET',
-	        url: '/coordenadas',
-	        data: $(this).serialize(),
-	        dataType: 'json',
-	        success: function (data) {
-	          coordenadas = data;	//Cogemos coordenadas del drone del servidor y vamos actualizando la posición en el mapa
-	          var latlng = new google.maps.LatLng(coordenadas[0], coordenadas[1]);
-	          marker.setPosition(latlng);
-	          map.setCenter(latlng); 
+        type: 'GET',
+        url: '/coordenadas',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function (data) {
+          coordenadas = data;	//Cogemos coordenadas del drone del servidor y vamos actualizando la posición en el mapa
+          var latlng = new google.maps.LatLng(coordenadas[0], coordenadas[1]);
+          marker.setPosition(latlng);
+          map.setCenter(latlng); 
 
-		   // Especificamos la localización, el radio y el tipo de lugares que queremos obtener para que se vaya actualizando a medida que avanza el drone
-		  var service = new google.maps.places.PlacesService(map);
-		  var request = {
-		     location: latlng,
-		     radius: 50000,
-		     types: ['airport']
-		   };
-		 
-		   service.nearbySearch(request, function(results, status) {
-		     if (status === google.maps.places.PlacesServiceStatus.OK) {
-		       for (var i = 0; i < results.length; i++) {
-			 crearMarcador(results[i]);
-		       }
-		     }
-		   });
-	        }
+	   // Especificamos la localización, el radio y el tipo de lugares que queremos obtener para que se vaya actualizando a medida que avanza el drone
+	  var service = new google.maps.places.PlacesService(map);
+	  var request = {
+	     location: latlng,
+	     radius: 50000,
+	     types: ['airport']
+	   };
+	 
+	   service.nearbySearch(request, function(results, status) {
+	     if (status === google.maps.places.PlacesServiceStatus.OK) {
+	       for (var i = 0; i < results.length; i++) {
+		 crearMarcador(results[i]);
+	       }
+	     }
+	   });
+        }
    });
 }
 
@@ -111,4 +112,31 @@ function displayLocationElevation(location, elevator, infowindow) {
     }
   });
 }
+
+//--------------------------------ACTUALIZACIÓN DINÁMICA DE LOS DATOS RECIBIDOS DEL DRONE--------------------------------------------
+
+function actualizarDatosDrone() {	
+	  $.ajax({
+		  type: 'GET',
+		  url: '/updateDatosDrone',
+		  data: $(this).serialize(),
+		  dataType: 'json',
+		  success: function (data) {
+			 $('#recargar').html(
+			    function(){
+				var content = '<div style="margin-left:3%;margin-bottom:1%;" class="row">';
+				content = content + '<div class="col-sm-5"><label>Coordenadas: </label><label style="font-size:90%;">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</label></div>';
+				content = content + '<div class="col-sm-3"><label>Altitud: </label><label style="font-size:90%;">&nbsp;' + data[0].altura + ' m </label></div>';
+				content = content + '<div class="col-sm-3"><label>Velocidad: </label><label style="font-size:90%;">&nbsp;' + data[0].velocidad + ' m/s </label></div>';
+				content = content + '</div>'; 
+
+				return content;
+			    }
+			)
+		  }
+	  });
+
+}
+
+setInterval(actualizarDatosDrone, 1000);
 
