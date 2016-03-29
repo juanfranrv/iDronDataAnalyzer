@@ -43,11 +43,6 @@ class RecibirDatosDrone(webapp2.RequestHandler):
         altura = self.request.get('altura')
         velocidad = self.request.get('velocidad')
         
-        print latitud
-        print longitud
-        print altura
-        print velocidad
-        
         busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
         
         if busqueda is None:    #Si la base de datos está vacía, insertamos los datos recibidos del drone
@@ -257,8 +252,16 @@ class geolocalizacion(webapp2.RequestHandler):
             
             username = str(self.request.cookies.get("username"))
             
+            datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
+
+            lat = datos.latitud
+            lng = datos.longitud
+
+            vel = round(float(datos.velocidad),3)
+            alt = round(float(datos.altura),3)
+ 
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username,'footer': footer,'head':head}
+            template_values={'sesion':username,'footer': footer,'head':head,'lat':lat,'lng':lng,'vel':vel,'alt':alt}
             template = JINJA_ENVIRONMENT.get_template('template/geolocalizacion.html')
             self.response.write(template.render(template_values))
             
@@ -271,24 +274,12 @@ class geolocalizacion(webapp2.RequestHandler):
 class coordenadas(webapp2.RequestHandler):
     
     def get(self):
+
+        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
+
+        lat = coordenadas.latitud
+        lng = coordenadas.longitud
         
-        #global lat
-        #global lng
-        #global grados
-        
-        try:
-            
-            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
-            #grados += 5
-            #lat += 0.001       #Generación automática de coordenadas provisional
-            lat = coordenadas.latitud
-            lng = coordenadas.longitud
-            
-        except:
-            
-            lat = 37.19699469878369                        
-            lng =  -3.6241040674591507
-            
         latLng = [lat, lng]
         
         self.response.write(json.dumps(latLng))
@@ -355,10 +346,12 @@ class datos_grafico(webapp2.RequestHandler):
     
     def get(self):
         
-        global lat
-        global lng              #random lat y long
         global contador
-        lat += 0.01
+        
+        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
+        
+        lat = coordenadas.latitud
+        lng = coordenadas.longitud
         
         data = model.DatosAtmosfericos()
         
@@ -389,7 +382,7 @@ class datos_grafico(webapp2.RequestHandler):
         elif dato_seleccionado == 'Direccion del viento':
             datoAmostrar = dir_win;
         
-        if contador is 10:               #Cada 10 datos obtenidos, almacenamos en la base de datos
+        if contador is 20:               #Cada 10 datos obtenidos, almacenamos en la base de datos
             
             data.fecha = time.strftime("%d-%m-%Y") 
             #Obtiene el número de la semana 
@@ -771,9 +764,6 @@ def parseoTAFOR_RepeatInfo(result_taf):
 class METAR_TAF(webapp2.RequestHandler):
     
     def get(self):
-                    
-        #global lat
-        #global lng              #random lat y long
         
         coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
         

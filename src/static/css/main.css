@@ -9,6 +9,11 @@
   margin-left:100px;
 }
 
+#recargar{
+  margin-left:5%;
+  margin-bottom:1%;
+}
+
 thead{
   background: #FFCC66;
   font-weight: bold;
