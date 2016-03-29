@@ -102,7 +102,7 @@
 		  success: function (data) {
 			 $('table').html(
 			    function(){
-				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión Atmosf.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>'; 
+				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión A.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>'; 
 				for(var i = 0; i < data.length; i++){
 				      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + '</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
@@ -134,7 +134,7 @@
 		  success: function (data) {
 			 $('table').html(
 			    function(){
-				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión Atmosf.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>'; 
+				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión A.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>'; 
 				for(var i = 0; i < data.length; i++){
 				      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + '</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
@@ -157,7 +157,7 @@
 <table class="table1 table-striped">
 
 <thead><tr>
-<th>Fecha</th><th>Temperatura</th><th>Presión Atmosf.</th><th>Viento</th><th>Humedad</th></tr></thead>
+<th>Fecha</th><th>Temperatura</th><th>Presión A.</th><th>Viento</th><th>Humedad</th></tr></thead>
 <tbody>
 
 	  {% for datos in datos_atmos %}
