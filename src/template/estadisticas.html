@@ -45,25 +45,90 @@
     <div id="inputs">
     	<p>Fecha: <input type="text" id="datepicker" /></p>
     </div>
-     <div class="panel panel-primary">
+     <div>
 	<select name="tiempo" id="tiempo" >    
 		<option value="diario" selected="selected">Diario</option>
 		<option value="semanal">Semanal</option>>
 		<option value="mensual">Mensual</option>>
 		<option value="anual">Anual</option>
 	</select>
-      </div>	
 
-   <script>
-	$(document).ready(
-	  
-	function () {
-	    $( "#datepicker" ).datepicker({
-	      dateFormat: "dd-mm-yy",
-	      changeMonth: true,
-	      changeYear: true 
-	    });
-	  }
+	<input type="checkbox" name="afirmar" id="afirmar" value="afirmar"><b>Activar gráfico</b>
+
+	<select name="data_grafico" id="data_grafico" >    
+		<option value="temperatura" selected="selected">Temperatura</option>
+		<option value="presion">Presión Atmosférica</option>>
+	</select>
+
+    <div id="chart"></div>	
+
+    <!--Highcharts-->
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts-3d.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+    <script>
+	var checkbox = false;
+	var clima = "temperatura";
+	$("#data_grafico").hide();
+	$("#chart").hide();
+	var mySeries = [];
+        var myFechas = [];
+
+	//Si la checkbox cambia, dependiendo de si está seleccionada o no, vamos a proceder a mostrar el gráfico y su select asociado
+	$('#afirmar').change(function() { 
+	   	if($("#afirmar").is(':checked')){
+		    $("#data_grafico").show();
+		    $("#chart").show();
+		    checkbox = true;
+		} else {
+		    $("#data_grafico").hide();
+		    $("#chart").hide();
+		    checkbox = false;
+		}
+	});
+
+       $('#data_grafico').change(function () {			//Evento que obteniene el tipo de dato a mostrar en el gráfico y actualiza este
+	  var dato_clima = document.getElementById('data_grafico').value;
+	  window.clima = dato_clima;
+	  clima = window.clima;
+	  $.ajax({
+		  type: 'GET',
+		  url: '/getDatosAtmosfericos?fecha=' + window.fecha + '&tiempo=' + window.tiempo,
+		  data: $(this).serialize(),
+		  dataType: 'json',
+		  success: function (data) {
+			 $('table').html(
+			    function(){
+				for(var i = 0; i < data.length; i++){
+				  myFechas.push([data[i].fecha]);
+
+				  if (checkbox == true){
+				      if(clima == 'temperatura'){
+				      	 mySeries.push([i, data[i].temperatura]);
+				      }else if(clima = 'presion'){
+					 mySeries.push([i, data[i].presion]);
+				      }
+				  }
+				}
+
+				load();
+				mySeries = [];
+				myFechas = [];
+			    }
+			)
+		  }
+          });
+
+	});
+
+	$(document).ready(				//Lanza la selección de fecha
+		function () {
+		    $( "#datepicker" ).datepicker({
+		      dateFormat: "dd-mm-yy",
+		      changeMonth: true,
+		      changeYear: true 
+		    });
+		}
 	);
 
 	//Función que traduce el Datepicker Jquery a español
@@ -88,7 +153,7 @@
 	    };
 	    $.datepicker.setDefaults($.datepicker.regional['es']);
 	});
-
+     
        $('#tiempo').change(function(){
 	  var tipo_tiempo = document.getElementById('tiempo').value;
 	  window.tiempo = tipo_tiempo;      //Almacenamos la variable para poder usarla en el evento de abajo
@@ -112,7 +177,6 @@
 				}
 
 				content = content + '</tr></tbody></table>';
-
 				return content;
 			    }
 			)
@@ -125,24 +189,39 @@
 	  var tipo_dato = document.getElementById('datepicker').value;
 	  window.fecha = tipo_dato;
 	  var tipo_tiem = window.tiempo;		//Recuperamos la variable anteriormente almacenada
+	  clima = window.clima;
 
 	  $.ajax({
 		  type: 'GET',
 		  url: '/getDatosAtmosfericos?fecha=' + tipo_dato + '&tiempo=' + tipo_tiem,
 		  data: $(this).serialize(),
 		  dataType: 'json',
-		  success: function (data) {
+		  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la paǵina
 			 $('table').html(
 			    function(){
-				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión A.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>'; 
+				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión A.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>';
+
 				for(var i = 0; i < data.length; i++){
 				      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + '</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
+				      myFechas.push([data[i].fecha]);
+
+				      if (checkbox == true){			//Si la checkbox está activa, rellenamos el array con datos 
+					      if(clima == 'temperatura'){
+					      	 mySeries.push([i, data[i].temperatura]);
+					      }else if(clima = 'presion'){
+						 mySeries.push([i, data[i].presion]);
+					      }
+				      }
+
 				}
 
+				load();						//Pintamos el gráfico con los datos del array
+				mySeries = [];
+				myFechas = [];
 				content = content + '</tr></tbody></table>';
 
 				return content;
@@ -150,10 +229,85 @@
 			)
 		  }
           });
+   
        });
 
+	//GRÁFICO HIGHCHART DE ESTADÍSTICAS
+
+       function load(){
+		var chart = new Highcharts.Chart({
+			chart: {
+				renderTo: 'chart',
+				type: 'column',
+				margin: 75,
+				marginTop:100,
+				options3d: {
+					enabled: true,
+					alpha: 0,
+					beta: 0,
+					depth: 50,
+					viewDistance: 25
+				}
+			},
+			title: {
+				text: '',
+			},
+			subtitle: {
+				text: ''
+			},
+
+			xAxis: {
+			      categories: myFechas
+			},
+
+			yAxis: {
+				allowDecimals: false,
+				min: 0,
+				max: 1000,
+				title: {
+					text: 'ºC'
+				}
+			},
+			plotOptions: {
+				column: {
+					depth: 25
+				}
+			},
+			legend: {
+			    layout: 'vertical',
+			    align: 'left',
+			    x: 600,
+			    verticalAlign: 'top',
+			    y: 40,
+			    floating: true,
+			    backgroundColor: '#FFFFFF'
+			},
+			series: [{ 
+			    name: 'Temperatura',
+			    data: mySeries
+			}]
+		});
+
+		if(clima == 'temperatura'){			//Cambios dinámicos de extremos, título y nombre de series tanto para presión como para temperatura
+		     chart.yAxis[0].setExtremes(0, 50);
+		     chart.yAxis[0].axisTitle.attr({
+			text: 'ºC'
+		     });
+		     chart.series[0].update({name:"Temperatura"}, false);
+chart.redraw();
+
+		}else if(clima = 'presion'){
+		     chart.yAxis[0].setExtremes(0, 1500);
+		     chart.yAxis[0].axisTitle.attr({
+			text: 'hPa'
+		     });
+                     chart.series[0].update({name:"Presión atmosférica"}, false);
+chart.redraw();
+		}
+      }
+
    </script>
- 
+
 <table class="table1 table-striped">
 
 <thead><tr>
@@ -175,7 +329,7 @@
 </tbody>
 </table>
 </div>
-
+</div>
 {{footer|safe}}
 
 </body>

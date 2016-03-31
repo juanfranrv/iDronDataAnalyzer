@@ -86,6 +86,17 @@ tbody{
   margin-left:5%;
 }
 
+#afirmar{
+  margin-top:0.5%;
+
+  margin-left:5%;
+}
+#data_grafico{
+  margin-top:0.5%;
+
+  margin-left:5%;
+}
+
 #tipoGrafica-temp1{
   margin-left:2%;
   float:left;
