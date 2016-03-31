@@ -51,7 +51,7 @@ function initialize() {
 
   var myLatlng = new google.maps.LatLng(window.lat, window.lng);
   var mapOptions = {
-    zoom: 14,
+    zoom: 15,
     center: myLatlng,
     mapTypeId: 'terrain'
   }
@@ -86,6 +86,16 @@ function initialize() {
      if (status === google.maps.places.PlacesServiceStatus.OK) {
        for (var i = 0; i < results.length; i++) {
          crearMarcador(results[i]);
+	 var cityCircle = new google.maps.Circle({
+	      strokeColor: '#FF0000',
+	      strokeOpacity: 0.8,
+	      strokeWeight: 2,
+	      fillColor: '#FF0000',
+	      fillOpacity: 0.35,
+	      map: map,
+	      center: results[i].geometry.location,
+	      radius:200
+	    });
        }
      }
    });
