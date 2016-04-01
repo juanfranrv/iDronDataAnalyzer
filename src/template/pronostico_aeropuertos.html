@@ -110,14 +110,9 @@
 
         <dt>Clouds: </dt>
 
-	{% if array_tafN[0].array_nubes_taf[0][0] != 'empty' %}
 	   {% for j in range(2) %}
 	   <dd> {{array_tafN[0].array_nubes_taf[count][j]}} </dd>
            {% endfor %}
-
-	{% else %}
-		<dd>No data</dd>
-	{% endif %}
 	   
 	{% set count = count + 1 %}
 

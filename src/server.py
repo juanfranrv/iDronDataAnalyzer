@@ -562,9 +562,9 @@ def getInfoNubosidad(nube, altura):
     if nube == 'SKC':
         result = 'SKC - Clear sky at ' + altura + '00 pies. Clean sky below 12.000 for ASOS/AWOS.'
     elif nube == 'FEW':
-        result = 'FEW - Few clouds at ' + altura + '00 feet. Clouds cover between  1/8 y 2/8 of sky.'
+        result = 'FEW - Few clouds at ' + altura + '00 feet. Clouds cover between  1/8 and 2/8 of sky.'
     elif nube == 'SCT':   
-        result = 'SCT - Scattered clouds at ' + altura + '00 feet. Clouds cover between 3/8 y 4/8 of sky.' 
+        result = 'SCT - Scattered clouds at ' + altura + '00 feet. Clouds cover between 3/8 and 4/8 of sky.' 
     elif nube == 'BKN': 
         result = 'BKN - Broken clouds at ' + altura + '00 feet. Clouds cover between 5/8 and 7/8 of sky.'  
     elif nube == 'OVC':
@@ -688,7 +688,7 @@ def parseoTAFOR_noRepeatInfo(result_taf):
         
         for nube in result_taf["Forecast"][i]["Cloud-List"]:    #Recorremos el array de nubes obtenidas
             array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
-
+         
     #Devolución de JSON con los datos parseados  
     datos_taf.append({'taf':taf,
                       'max_temp':max_temp,
