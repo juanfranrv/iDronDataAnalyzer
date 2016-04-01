@@ -9,8 +9,8 @@
         <div class="top-bar">
             <div class="container">
                     <a href="http://www.ugr.es"><img id="logo-ugr" name="logo-ugr" src="../static/images/logo_ugr.png" alt="logo"></a>
-                    <div id="mensaje_bienvenida" class="alert alert-success">Ha iniciado sesión como: <b>{{sesion}}</b></div>
-                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Cerrar sesión" onclick="location.href='/logout';" class="btn btn-warning" />
+                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{sesion}}</b></div>
+                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Logout" onclick="location.href='/logout';" class="btn btn-warning" />
             </div><!--/.container-->
         </div><!--/.top-bar-->
 
@@ -27,14 +27,14 @@
 				
                 <div class="collapse navbar-collapse navbar-right">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="/">Inicio</a></li>
-                        <li><a href="/grafico">Monitorización</a></li>
-			<li><a href="/pronostico">Pronóstico</a></li>
-                        <li><a href="/estadisticas">Estadísticas</a></li>
-                        <li><a href="/geolocalizacion">Geolocalización</a></li>
-                        <li><a href="/METAR_TAF">METAR-TAF</a></li>
+                        <li class="active"><a href="/">Home</a></li>
+                        <li><a href="/grafico">Monitoring</a></li>
+			<li><a href="/pronostico">Forecast</a></li>
+                        <li><a href="/estadisticas">Statistics</a></li>
+                        <li><a href="/geolocalizacion">Geolocation</a></li>
+                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>
                         <li><a href="/streaming">Streaming</a></li> 
-                        <li><a href="/editar_perfil">Editar perfil</a></li>                        
+                        <li><a href="/editar_perfil">Edit profile</a></li>                        
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -51,8 +51,8 @@
                         <div class="row slide-margin">
                             <div class="col-sm-6">
                                 <div class="carousel-content">
-                                    <h1 class="animation animated-item-1">Sigue a tu drone en directo</h1>
-                                    <h2 class="animation animated-item-2">El sistema dispone de un conjunto de herramientas de captura de datos en tiempo real cuyo destino es la seguridad para drones. En la parte de abajo se explica brevemente cada una de ellas.</h2>
+                                    <h1 class="animation animated-item-1">Follow your drone live</h1>
+                                    <h2 class="animation animated-item-2">This application has a toolset to capture  real time  data whose fate is security for drone. At the bottom, it explained briefly every one of them.</h2>
                                 </div>
                             </div>
 
@@ -72,8 +72,8 @@
     <section id="services" class="service-item">
 	   <div class="container">
             <div class="center wow fadeInDown">
-                <h2>Nuestro servicio</h2>
-                <p class="lead">A continuación, se muestra un breve resumen de cada una de las utilidades del sistema:</p>
+                <h2>Our service</h2>
+                <p class="lead">Then, it shows a summary of every tool:</p>
             </div>
 
             <div class="row">
@@ -84,8 +84,8 @@
                             <img class="img-responsive" src="../static/images/services/services1.png">
                         </div>
                         <div class="media-body">
-                            <h3 class="media-heading">Monitorización</h3>
-                            <p>Seguimiento de datos atmosféricos en directo.</p>
+                            <h3 class="media-heading">Monitoring</h3>
+                            <p>Follow atmospheric live data when the drone is flying</p>
                         </div>
                     </div>
                 </div>
@@ -96,8 +96,8 @@
                             <img class="img-responsive" src="../static/images/services/logo_estadistica.jpg">
                         </div>
                         <div class="media-body">
-                            <h3 class="media-heading">Estadísticas</h3>
-                            <p>Análisis de datos actualizados.</p>
+                            <h3 class="media-heading">Statistics</h3>
+                            <p>Data analysis. Charts and tables.</p>
                         </div>
                     </div>
                 </div>
@@ -108,8 +108,8 @@
                             <img class="img-responsive" src="../static/images/services/metar_taf.png">
                         </div>
                         <div class="media-body">
-                            <h3 class="media-heading">METAR-TAF</h3>
-                            <p>Datos atmosféricos del aeropuerto más cercano.</p>
+                            <h3 class="media-heading">METAR-TAFOR</h3>
+                            <p>Atmospheric data from nearest airport.</p>
                         </div>
                     </div>
                 </div>  
@@ -121,7 +121,7 @@
                         </div>
                         <div class="media-body">
                             <h3 class="media-heading">Streaming</h3>
-                            <p>Visualización de la zona por la que circula el dron.</p>
+                            <p>Visualization of the place where the drone is flying.</p>
                         </div>
                     </div>
                 </div>
@@ -132,8 +132,8 @@
                             <img class="img-responsive" src="../static/images/services/services5.png">
                         </div>
                         <div class="media-body">
-                            <h3 class="media-heading">Geolocalización</h3>
-                            <p>Geolocalización, detección altura y aeropuertos cercanos.</p>
+                            <h3 class="media-heading">Geolocation</h3>
+                            <p>Geolocation, altitude and nearest airports detection.</p>
                         </div>
                     </div>
                 </div>
@@ -144,8 +144,8 @@
                             <img class="img-responsive" src="../static/images/services/logo_pronostico.jpg">
                         </div>
                         <div class="media-body">
-                            <h3 class="media-heading">Pronóstico</h3>
-                            <p>Pronóstico actualizado por horas o días.</p>
+                            <h3 class="media-heading">Forecast</h3>
+                            <p>Daily or hourly forecast (wind, temperature...)</p>
                         </div>
                     </div>
                 </div>                                                

@@ -247,7 +247,7 @@ $(function () {
             },
             xAxis: {
 		title: {
-                    text: 'Hora actual'
+                    text: 'Current time'
                 },
                 type: 'datetime',
                 text: 'Datetime',
@@ -255,7 +255,7 @@ $(function () {
             },
             yAxis: {
                 title: {
-                    text: 'Datos'
+                    text: 'Data'
                 },
                 plotLines: [{
                     value: 0,

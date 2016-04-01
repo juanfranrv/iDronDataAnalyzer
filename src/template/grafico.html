@@ -33,8 +33,8 @@
         <div class="top-bar">
             <div class="container">
                     <a href="http://www.ugr.es"><img id="logo-ugr" name="logo-ugr" src="../static/images/logo_ugr.png" alt="logo"></a>
-                    <div id="mensaje_bienvenida" class="alert alert-success">Ha iniciado sesión como: <b>{{sesion}}</b></div>
-                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Cerrar sesión" onclick="location.href='/logout';" class="btn btn-warning" />
+                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{sesion}}</b></div>
+                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Logout" onclick="location.href='/logout';" class="btn btn-warning" />
             </div><!--/.container-->
         </div><!--/.top-bar-->
 
@@ -51,14 +51,14 @@
 				
                 <div class="collapse navbar-collapse navbar-right">
                     <ul class="nav navbar-nav">
-                        <li><a href="/">Inicio</a></li>
-                        <li class="active"><a href="/grafico">Monitorización</a></li>
-			<li><a href="/pronostico">Pronóstico</a></li>
-                        <li><a href="/estadisticas">Estadísticas</a></li>
-                        <li><a href="/geolocalizacion">Geolocalización</a></li>
-                        <li><a href="/METAR_TAF">METAR-TAF</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li class="active"><a href="/grafico">Monitoring</a></li>
+			<li><a href="/pronostico">Forecast</a></li>
+                        <li><a href="/estadisticas">Statistics</a></li>
+                        <li><a href="/geolocalizacion">Geolocation</a></li>
+                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>
                         <li><a href="/streaming">Streaming</a></li> 
-                        <li><a href="/editar_perfil">Editar perfil</a></li>                        
+                        <li><a href="/editar_perfil">Edit profile</a></li>                        
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -70,11 +70,11 @@
 	    
     <div class="panel panel-primary">
 	<select name="tipoGrafica-temp" id="tipoGrafica-temp" >    
-		<option value="column" selected="selected">Columnas</option>
-		<option value="spline">Lineas</option>
-		<option value="scatter">Puntos</option>
+		<option value="column" selected="selected">Column</option>
+		<option value="spline">Spline</option>
+		<option value="scatter">Scatter</option>
 		<option value="area">Area</option>
-		<option value="areaspline">Lineas y Area</option>
+		<option value="areaspline">Area and spline</option>
 
 	</select>
      </div>
@@ -82,11 +82,11 @@
 
      <div class="panel panel-primary">
 	<select name="tipoGrafica-temp1" id="tipoGrafica-temp1" >    
-		<option value="Temperatura" selected="selected">Temperatura (ºC)</option>
-		<option value="Presion atmosferica">Presión Atmosférica (hPa)</option>
-		<option value="Humedad">Humedad (%)</option>>
-		<option value="Velocidad del viento">Velocidad del viento (km/h)</option>
-		<option value="Direccion del viento">Dirección del viento (º)</option>
+		<option value="Temperature" selected="selected">Temperature (ºC)</option>
+		<option value="Atmospheric pressure">Atmospheric pressure (hPa)</option>
+		<option value="Humidity">Humidity (%)</option>>
+		<option value="Wind Speed">Wind Speed (km/h)</option>
+		<option value="Wind Direction">Wind Direction (º)</option>
 	</select>
       </div>	
 	

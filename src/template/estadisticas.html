@@ -8,8 +8,8 @@
         <div class="top-bar">
             <div class="container">
                     <a href="http://www.ugr.es"><img id="logo-ugr" name="logo-ugr" src="../static/images/logo_ugr.png" alt="logo"></a>
-                    <div id="mensaje_bienvenida" class="alert alert-success">Ha iniciado sesión como: <b>{{sesion}}</b></div>
-                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Cerrar sesión" onclick="location.href='/logout';" class="btn btn-warning" />
+                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{sesion}}</b></div>
+                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Logout" onclick="location.href='/logout';" class="btn btn-warning" />
             </div><!--/.container-->
         </div><!--/.top-bar-->
 
@@ -26,14 +26,14 @@
 				
                 <div class="collapse navbar-collapse navbar-right">
                     <ul class="nav navbar-nav">
-                        <li><a href="/">Inicio</a></li>
-                        <li><a href="/grafico">Monitorización</a></li>
-			<li><a href="/pronostico">Pronóstico</a></li>
-                        <li class="active"><a href="/estadisticas">Estadísticas</a></li>
-                        <li><a href="/geolocalizacion">Geolocalización</a></li>
-                        <li><a href="/METAR_TAF">METAR-TAF</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/grafico">Monitoring</a></li>
+			<li><a href="/pronostico">Forecast</a></li>
+                        <li class="active"><a href="/estadisticas">Statistics</a></li>
+                        <li><a href="/geolocalizacion">Geolocation</a></li>
+                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>
                         <li><a href="/streaming">Streaming</a></li> 
-                        <li><a href="/editar_perfil">Editar perfil</a></li>                        
+                        <li><a href="/editar_perfil">Edit profile</a></li>                        
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -43,29 +43,29 @@
 
    <div style="background:transparent !important" class="jumbotron">
     <div id="inputs">
-    	<p>Fecha: <input type="text" id="datepicker" /></p>
+    	<p>Date: <input type="text" id="datepicker" /></p>
     </div>
      <div>
 	<select name="tiempo" id="tiempo" >    
-		<option value="diario" selected="selected">Diario</option>
-		<option value="semanal">Semanal</option>>
-		<option value="mensual">Mensual</option>>
-		<option value="anual">Anual</option>
+		<option value="diario" selected="selected">Daily</option>
+		<option value="semanal">Weekly</option>>
+		<option value="mensual">Monthly</option>>
+		<option value="anual">Annual</option>
 	</select>
 
-	<input type="checkbox" name="afirmar" id="afirmar" value="afirmar"><b>Gráfico</b>
+	<input type="checkbox" name="afirmar" id="afirmar" value="afirmar">Chart
 
 	<select name="data_grafico" id="data_grafico" >    
-		<option value="temperatura" selected="selected">Temperatura</option>
-		<option value="presion">Presión Atmosférica</option>
-		<option value="vel_viento">Velocidad Viento</option>
-		<option value="dir_viento">Dirección Viento</option>
-		<option value="humedad">Humedad</option>
+		<option value="temperatura" selected="selected">Temperature</option>
+		<option value="presion">Atmospheric pressure</option>
+		<option value="vel_viento">Wind Speed</option>
+		<option value="dir_viento">Wind Direction</option>
+		<option value="humedad">Humidity</option>
 	</select>
 
 	<select name="shape_grafico" id="shape_grafico" >    
-		<option value="column" selected="selected">Columnas 3D</option>
-		<option value="spline">Líneas</option>
+		<option value="column" selected="selected">3D Column</option>
+		<option value="spline">Spline</option>
 	</select>
 
     <div id="chart"></div>	
@@ -183,29 +183,6 @@
 		    });
 		}
 	);
-
-	//Función que traduce el Datepicker Jquery a español
-
-	$(function($){
-	    $.datepicker.regional['es'] = {
-		closeText: 'Cerrar',
-		prevText: '<Ant',
-		nextText: 'Sig>',
-		currentText: 'Hoy',
-		monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-		monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
-		dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-		dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
-		dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
-		weekHeader: 'Sm',
-		dateFormat: 'dd/mm/yy',
-		firstDay: 1,
-		isRTL: false,
-		showMonthAfterYear: false,
-		yearSuffix: ''
-	    };
-	    $.datepicker.setDefaults($.datepicker.regional['es']);
-	});
      
        $('#tiempo').change(function(){			//Select asociado al tiempo
 	  var tipo_tiempo = document.getElementById('tiempo').value;
@@ -220,7 +197,7 @@
 		  success: function (data) {
 			 $('table').html(
 			    function(){
-				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión A.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>'; 
+				var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temperature</th><th>A. pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>'; 
 				for(var i = 0; i < data.length; i++){
 				      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + '</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
@@ -252,7 +229,7 @@
 		  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la paǵina
 			 $('table').html(
 			    function(){
-				var content = '<table class="table table-striped"><thead><tr><th>Fecha</th><th>Temperatura</th><th>Presión A.</th><th>Viento</th><th>Humedad</th></tr></thead><tbody>';
+				var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temperature</th><th>A. pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>';
 
 				for(var i = 0; i < data.length; i++){
 				      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + '</td>';
@@ -360,7 +337,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: 'ºC'
 		     });
-		     chart.series[0].update({name:"Temperatura (Ordenado por orden de recogida de datos diaria)"}, false);
+		     chart.series[0].update({name:"Temperature (Sorted by order of daily data collection)"}, false);
 		     chart.redraw();
 		     break;
 
@@ -369,7 +346,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: 'hPa'
 		     });
-	             chart.series[0].update({name:"Presión atmosférica (Ordenado por orden de recogida de datos diaria)"}, false);
+	             chart.series[0].update({name:"Atmospheric pressure (Sorted by order of daily data collection)"}, false);
 		     chart.redraw();
 		     break;
 
@@ -378,7 +355,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: 'kph'
 		     });
-	             chart.series[0].update({name:"Velocidad viento (Ordenado por orden de recogida de datos diaria)"}, false);
+	             chart.series[0].update({name:"Wind speed (Sorted by order of daily data collection)"}, false);
 		     chart.redraw();
 		     break;
 
@@ -387,7 +364,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: 'º'
 		     });
-	             chart.series[0].update({name:"Dirección viento (Ordenado por orden de recogida de datos diaria)"}, false);
+	             chart.series[0].update({name:"Wind direction (Sorted by order of daily data collection)"}, false);
 		     chart.redraw();
 		     break;
 
@@ -396,7 +373,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: '%'
 		     });
-	             chart.series[0].update({name:"Humedad (Ordenado por orden de recogida de datos diaria)"}, false);
+	             chart.series[0].update({name:"Humidity (Sorted by order of daily data collectiona)"}, false);
 		     chart.redraw();
 		     break;
 	}
@@ -404,8 +381,9 @@
   	if(window.forma == 'spline'){	//Si la forma "Línea" está seleccionada, pintamos el gráfico con dicha forma. En caso contrario, como columna 3D
 	     chart.series[0].update({
 	    	type: window.forma
-	});
+	     });
 	}
+
       }
 
    </script>
@@ -413,7 +391,7 @@
 <table class="table1 table-striped">
 
 <thead><tr>
-<th>Fecha</th><th>Temperatura</th><th>Presión A.</th><th>Viento</th><th>Humedad</th></tr></thead>
+<th>Date</th><th>Temperature</th><th>A. pressure</th><th>Wind</th><th>Humidity</th></tr></thead>
 <tbody>
 
 	  {% for datos in datos_atmos %}

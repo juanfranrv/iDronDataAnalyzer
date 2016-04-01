@@ -8,8 +8,8 @@
         <div class="top-bar">
             <div class="container">
                     <a href="http://www.ugr.es"><img id="logo-ugr" name="logo-ugr" src="../static/images/logo_ugr.png" alt="logo"></a>
-                    <div id="mensaje_bienvenida" class="alert alert-success">Ha iniciado sesión como: <b>{{sesion}}</b></div>
-                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Cerrar sesión" onclick="location.href='/logout';" class="btn btn-warning" />
+                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{sesion}}</b></div>
+                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Logout" onclick="location.href='/logout';" class="btn btn-warning" />
             </div><!--/.container-->
         </div><!--/.top-bar-->
 
@@ -26,14 +26,14 @@
 				
                 <div class="collapse navbar-collapse navbar-right">
                     <ul class="nav navbar-nav">
-                        <li><a href="/">Inicio</a></li>
-                        <li><a href="/grafico">Monitorización</a></li>
-			<li class="active"><a href="/pronostico">Pronóstico</a></li>
-                        <li><a href="/estadisticas">Estadísticas</a></li>
-                        <li><a href="/geolocalizacion">Geolocalización</a></li>
-                        <li><a href="/METAR_TAF">METAR-TAF</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/grafico">Monitoring</a></li>
+			<li class="active"><a href="/pronostico">Forecast</a></li>
+                        <li><a href="/estadisticas">Statistics</a></li>
+                        <li><a href="/geolocalizacion">Geolocation</a></li>
+                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>
                         <li><a href="/streaming">Streaming</a></li> 
-                        <li><a href="/editar_perfil">Editar perfil</a></li>                        
+                        <li><a href="/editar_perfil">Edit profile</a></li>                        
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -45,21 +45,21 @@
    <form id="form_pronos" role="form" onsubmit="return Valida_pronostico(this);" method="post" action="/pronostico">
     <div class="row">
 	<div class="col-md-3">
-	<label>Introduce latitud: </label>
-        <input id="latitud" type="text" class="form-control" name="latitud" value="{{latitud_actual}}" placeholder="Latitud">
+	<label>Insert latitude: </label>
+        <input id="latitud" type="text" class="form-control" name="latitud" value="{{latitud_actual}}" placeholder="Latitude">
 	</div>
         <div class="col-md-3">
-	<label>Introduce longitud: </label>
-	<input id="longitud" type="text" class="form-control" name="longitud" value="{{longitud_actual}}" placeholder="Longitud">
+	<label>Insert longitude: </label>
+	<input id="longitud" type="text" class="form-control" name="longitud" value="{{longitud_actual}}" placeholder="Longitude">
 	</div>
-    <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-danger">Realizar pronóstico</button>
+    <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-danger">Make forecast</button>
     </div>
     <div style="margin-top:3%;font-size:90%;" class="row">
 	<div class="col-md-3">
-	  <label><input type="radio" value="horas" name="optradio" checked="checked">Pronóstico por horas</label>
+	  <label><input type="radio" value="horas" name="optradio" checked="checked">Hourly forecast</label>
 	</div>
 	<div class="col-md-3">
-	  <label><input type="radio" value="dias" name="optradio">Pronóstico por días</label>
+	  <label><input type="radio" value="dias" name="optradio">Daily forecast</label>
 	</div>
      </div>
    </form> 
@@ -73,14 +73,14 @@
 
 <thead><tr>
 {% if radio_elegido == 'horas' %}
-  <th>Hora</th>
+  <th>Hour</th>
 {% endif %}
 
 {% if radio_elegido == 'dias' %}
-  <th>Día</th>
+  <th>Day</th>
 {% endif %}
 
-<th>Máx/Mín</th><th>Descripción</th><th>Viento</th><th>Humedad</th></tr></thead>
+<th>Max/Min</th><th>Description</th><th>Wind</th><th>Humidity</th></tr></thead>
 <tbody>
 
 	  {% for datos in array_datos %}

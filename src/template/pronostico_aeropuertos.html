@@ -8,8 +8,8 @@
         <div class="top-bar">
             <div class="container">
                     <a href="http://www.ugr.es"><img id="logo-ugr" name="logo-ugr" src="../static/images/logo_ugr.png" alt="logo"></a>
-                    <div id="mensaje_bienvenida" class="alert alert-success">Ha iniciado sesión como: <b>{{sesion}}</b></div>
-                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Cerrar sesión" onclick="location.href='/logout';" class="btn btn-warning" />
+                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{sesion}}</b></div>
+                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Logout" onclick="location.href='/logout';" class="btn btn-warning" />
             </div><!--/.container-->
         </div><!--/.top-bar-->
 
@@ -26,14 +26,14 @@
 				
                 <div class="collapse navbar-collapse navbar-right">
                     <ul class="nav navbar-nav">
-                        <li><a href="/">Inicio</a></li>
-                        <li><a href="/grafico">Monitorización</a></li>
-			<li><a href="/pronostico">Pronóstico</a></li>
-                        <li><a href="/estadisticas">Estadísticas</a></li>
-                        <li><a href="/geolocalizacion">Geolocalización</a></li>
-                        <li class="active"><a href="/METAR_TAF">METAR-TAF</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/grafico">Monitoring</a></li>
+			<li><a href="/pronostico">Forecast</a></li>
+                        <li><a href="/estadisticas">Statistics</a></li>
+                        <li><a href="/geolocalizacion">Geolocation</a></li>
+                        <li class="active"><a href="/METAR_TAF">METAR-TAFOR</a></li>
                         <li><a href="/streaming">Streaming</a></li> 
-                        <li><a href="/editar_perfil">Editar perfil</a></li>                        
+                        <li><a href="/editar_perfil">Edit profile</a></li>                        
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -51,30 +51,30 @@
 {% endif %}
 
    <div class="panel panel-primary">
-      <h2 class="panel-heading"><b> METAR (Obtenido del aeropuerto más cercano) </b></h2>
+      <h2 class="panel-heading"><b> METAR (Obtained from the nearest airport) </b></h2>
 {% if error == '' %}
       <div class="panel-body">
       <label>{{array_metar[0].metar}} </label><br/>
       <div style="font-size:80%">
       <dl class="dl-horizontal">
-        <label>El informe se hizo el día {{array_metar[0].dia}} a las {{array_metar[0].hora}} </label><br/>
-        <dt>Temperatura: </dt>
+        <label>Report was made {{array_metar[0].dia}}th at {{array_metar[0].hora}} </label><br/>
+        <dt>Temperature: </dt>
         <dd>{{array_metar[0].temperatura}}</dd>
-        <dt>Presión atmosf.:</dt>
+        <dt>Atm. pressure:</dt>
         <dd>{{array_metar[0].presion_atmosferica}} </dd>
-        <dt>Nubosidad: </dt>
+        <dt>Clouds: </dt>
 
   	   {% for nube in array_metar[0].array_nubes %}
 	   <dd> {{nube}} </dd>
            {% endfor %}
 
-	<dt>Visibilidad:</dt>
+	<dt>Visibility:</dt>
 	<dd>{{array_metar[0].visibilidad}} </dd>
-	<dt>Dirección viento:</dt>
+	<dt>Wind direction:</dt>
 	<dd> {{array_metar[0].direccion_viento}} </dd>
-	<dt>Ráfaga viento:</dt>
+	<dt>Wind gust:</dt>
 	<dd>{{array_metar[0].rafaga_viento}} </dd>
-	<dt>Velocidad viento: </dt>
+	<dt>Wind speed: </dt>
 	<dd>{{array_metar[0].velocidad_viento}} </dd>
 
       </dl>
@@ -85,49 +85,49 @@
    </div>
    <br/>
    <div class="panel panel-primary">
-      <h2 class="panel-heading"><b> TAFOR (Obtenido del aeropuerto más cercano) </b></h2>
+      <h2 class="panel-heading"><b> TAFOR (Obtained from the nearest airport) </b></h2>
 
 {% if error == '' %}
       <div class="panel-body">
       <label>{{array_tafN[0].taf}} </label><br/>
       <div style="font-size:80%">
       <dl class="dl-horizontal">
-	<label>El informe se hizo el día {{array_tafN[0].dia_taf}} a las {{array_tafN[0].hora_taf}} UTC </label><br/>
-        <dt>Máx. temperatura:</dt>
+	<label>Report was made {{array_tafN[0].dia_taf}}th at {{array_tafN[0].hora_taf}} UTC </label><br/>
+        <dt>Max. temperature:</dt>
 	<dd>{{array_tafN[0].max_temp}} </dd>
 
-	<dt>Min. temperatura:</dt>
+	<dt>Min. temperature:</dt>
 	<dd>{{array_tafN[0].min_temp}} </dd>
 
 {% set count = 0 %}
 {% for taf in array_taf %}
-        <label>Pronóstico válido del día {{taf["dia"]}} a las {{taf["hora"]}} UTC hasta el día {{taf["dia_fin"]}} a las {{taf["hora_fin"]}} UTC </label></br>
-        <dt>Presión atmosf.:</dt>
+        <label>Valid forecast from {{taf["dia"]}}th at {{taf["hora"]}} UTC until {{taf["dia_fin"]}}th at {{taf["hora_fin"]}} UTC </label></br>
+        <dt>Atm. pressure:</dt>
 	<dd>{{taf["presion"]}}</dd>
 
-	<dt>Visibilidad:</dt>
+	<dt>Visibility:</dt>
 	<dd>{{taf["visibilidad"]}} </dd>
 
-        <dt>Nubosidad: </dt>
+        <dt>Clouds: </dt>
 
-	{% if array_tafN[0].array_nubes_taf[0][0] != '' %}
+	{% if array_tafN[0].array_nubes_taf[0][0] != 'empty' %}
 	   {% for j in range(2) %}
 	   <dd> {{array_tafN[0].array_nubes_taf[count][j]}} </dd>
            {% endfor %}
 
 	{% else %}
-		<dd>Sin información asociada</dd>
+		<dd>No data</dd>
 	{% endif %}
 	   
 	{% set count = count + 1 %}
 
-	<dt>Dirección viento:</dt>
+	<dt>Wind speed:</dt>
 	<dd>{{taf["dir_viento"]}} </dd>
 
-	<dt>Ráfaga viento:</dt>
+	<dt>Wind gust:</dt>
 	<dd>{{taf["rafaga_viento"]}} </dd>
 
-	<dt>Velocidad viento: </dt>
+	<dt>Wind speed: </dt>
 	<dd>{{taf["vel_viento"]}} </dd>
 
 {% endfor %}
@@ -136,7 +136,7 @@
      </div>
      </div>
    </div>
-   <p style="margin-top:50px"> Para cualquier duda relacionada con la interpretación del METAR y TAFOR anteriores, consulte el siguiente <a href="http://www.proteccioncivil.es/catalogo/carpeta02/carpeta24/vademecum12/vdm043.htm">enlace.</a>
+   <p style="margin-top:50px"> For any questions concerning the interpretation of previous METAR and TAFOR, look at the following <a href="http://www.proteccioncivil.es/catalogo/carpeta02/carpeta24/vademecum12/vdm043.htm">link.</a>
   </div>
 
 {{footer|safe}}

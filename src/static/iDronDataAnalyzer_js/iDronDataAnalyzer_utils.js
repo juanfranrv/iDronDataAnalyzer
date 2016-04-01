@@ -8,11 +8,11 @@ function seguridad() { // Seguridad para contraseñas
    var password = document.getElementById("password").value;
 
    if (longitud_alta.test(password)) {
-      longitud.innerHTML = '<span style="color:green">Contraseña muy segura</span>';
+      longitud.innerHTML = '<span style="color:green">Very secure password</span>';
    } else if (longitud_mediana.test(password)) {
-      longitud.innerHTML = '<span style="color:orange">Contraseña normal</span>';
+      longitud.innerHTML = '<span style="color:orange">Normal secure password</span>';
    } else {
-    longitud.innerHTML = '<span style="color:red">Contraseña débil</span>';
+    longitud.innerHTML = '<span style="color:red">Weak secure password</span>';
    }
 
 }
@@ -32,34 +32,34 @@ function Valida(form) {
 	
 		
 	  if(usuario.length==0) { //¿Tiene 0 caracteres?
-	    alert('No has escrito el nombre de usuario'); //Mostramos el mensaje
+	    alert('You did not write your user'); //Mostramos el mensaje
 	
 	    return false; 
 	  }
 
 	  if(password.length==0) { //¿Tiene 0 caracteres?
-	    alert('No has escrito la contraseña'); //Mostramos el mensaje
+	    alert('You did not write your password'); //Mostramos el mensaje
 	
 	    return false; 
 	  }
 	  if(email.length==0) { //comprueba que no esté vacío
 	  
-	    alert('No has escrito tu e-Mail');
+	    alert('You did not write your email');
 	    return false;
 	  }
 	  if(telefono.length==0) { //comprueba que no esté vacío
 	  
-	    alert('No has escrito tu teléfono');
+	    alert('You did not write your phone');
 	    return false;
 	  }
 	  
 	  if( !(/^\d{9}$/.test(telefono)) ) {
-	   alert('No has introducido un número de teléfono correcto');
+	   alert('You did not write a correct phone');
 		return false;
 	  }
 	  
 	  if( !(/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/.test(email)) ) {
-		alert('El formato de email introducido no es el correcto');
+		alert('Email format is invalid');
 		return false;
 	  }  
 	
@@ -77,12 +77,12 @@ function Valida_login(form) {
 	var password= document.getElementById("pass").value;
 
 	if(usuario.length==0) { //¿Tiene 0 caracteres?
-		alert('No has escrito el nombre de usuario'); //Mostramos el mensaje
+		alert('You did not write your user'); //Mostramos el mensaje
 		return false; 
 	}
 
 	if(password.length==0) { //comprueba que no esté vacío
-		alert('No has escrito tu contraseña');
+		alert('You did not write your password');
 		return false;
 	}
 
@@ -100,12 +100,12 @@ function Valida_login(form) {
 	  var longitud = document.getElementById("longitud").value;
 		
 	  if(latitud.length == 0) { //¿Tiene 0 caracteres?
-	  	alert('Introduce latitud'); //Mostramos el mensaje
+	  	alert('Insert latitude'); //Mostramos el mensaje
 	        return false; 
 	  }
 
 	  if(longitud.length == 0) { //¿Tiene 0 caracteres?
-	  	alert('Introduce longitud'); //Mostramos el mensaje
+	  	alert('Insert longitude'); //Mostramos el mensaje
 	  	return false; 
 	  }
 	

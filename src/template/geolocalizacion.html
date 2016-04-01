@@ -33,8 +33,8 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLwe
         <div class="top-bar">
             <div class="container">
                     <a href="http://www.ugr.es"><img id="logo-ugr" name="logo-ugr" src="../static/images/logo_ugr.png" alt="logo"></a>
-                    <div id="mensaje_bienvenida" class="alert alert-success">Ha iniciado sesión como: <b>{{sesion}}</b></div>
-                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Cerrar sesión" onclick="location.href='/logout';" class="btn btn-warning" />
+                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{sesion}}</b></div>
+                    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Logout" onclick="location.href='/logout';" class="btn btn-warning" />
             </div><!--/.container-->
         </div><!--/.top-bar-->
 
@@ -51,14 +51,14 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLwe
 				
                 <div class="collapse navbar-collapse navbar-right">
                     <ul class="nav navbar-nav">
-                        <li><a href="/">Inicio</a></li>
-                        <li><a href="/grafico">Monitorización</a></li>
-			<li><a href="/pronostico">Pronóstico</a></li>
-                        <li><a href="/estadisticas">Estadísticas</a></li>
-                        <li class="active"><a href="/geolocalizacion">Geolocalización</a></li>
-                        <li><a href="/METAR_TAF">METAR-TAF</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/grafico">Monitoring</a></li>
+			<li><a href="/pronostico">Forecast</a></li>
+                        <li><a href="/estadisticas">Statistics</a></li>
+                        <li class="active"><a href="/geolocalizacion">Geolocation</a></li>
+                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>
                         <li><a href="/streaming">Streaming</a></li> 
-                        <li><a href="/editar_perfil">Editar perfil</a></li>                        
+                        <li><a href="/editar_perfil">Edit profile</a></li>                        
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -69,13 +69,13 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLwe
     <div style="background:transparent !important" class="jumbotron">
     <div id="recargar" class="row">
 	<div class="col-sm-5">
-	<label>Coordenadas: </label><label style="font-size:90%;">&nbsp;{{lat}}, {{lng}}</label>
+	<label>Coordinates: </label><label style="font-size:90%;">&nbsp;{{lat}}, {{lng}}</label>
 	</div>
         <div class="col-sm-3">
-	<label>Altitud: </label><label style="font-size:90%;">&nbsp;{{alt}} m</label>
+	<label>Altitude: </label><label style="font-size:90%;">&nbsp;{{alt}} m</label>
 	</div>
         <div class="col-sm-3">
-	<label>Velocidad: </label><label style="font-size:90%;">&nbsp;{{vel}} m/s</label>
+	<label>Speed: </label><label style="font-size:90%;">&nbsp;{{vel}} m/s</label>
 	</div>
     </div>
 

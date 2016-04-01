@@ -115,12 +115,12 @@ class Login(webapp2.RequestHandler):
                 
             else:
         
-                template_values={'mensaje':'Password incorrecta.'}
+                template_values={'mensaje':'Wrong password.'}
                 template = JINJA_ENVIRONMENT.get_template('template/login.html')
                 self.response.write(template.render(template_values))
         else:
         
-            template_values={'mensaje':'Usuario incorrecto.'}
+            template_values={'mensaje':'Wrong user.'}
             template = JINJA_ENVIRONMENT.get_template('template/login.html')
             self.response.write(template.render(template_values))
             
@@ -171,7 +171,7 @@ class formRegistro(webapp2.RequestHandler):
 
             self.response.headers['Content-Type'] = 'text/html'
             template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-            self.response.write(template.render(message="El nombre de usuario se encuentra en uso"))
+            self.response.write(template.render(message="User name is already in use"))
 
 #Clase para cambiar los datos de usuario
 
@@ -503,7 +503,7 @@ class pronostico(webapp2.RequestHandler):
                 
                 if radio_elegido == 'horas':
                     
-                    url_horas = 'http://api.wunderground.com/api/' + API_pronostico + '/hourly/conditions/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
+                    url_horas = 'http://api.wunderground.com/api/' + API_pronostico + '/hourly/conditions/lang:EN/q/' + str(latitud) + ',' + str(longitud) + '.json'
                     
                     r = urllib2.urlopen(url_horas)
                     result = json.load(r)
@@ -513,7 +513,7 @@ class pronostico(webapp2.RequestHandler):
                                          
                 else: 
                     
-                    url_dias = 'http://api.wunderground.com/api/' + API_pronostico + '/forecast10day/conditions/lang:SP/q/' + str(latitud) + ',' + str(longitud) + '.json'
+                    url_dias = 'http://api.wunderground.com/api/' + API_pronostico + '/forecast10day/conditions/lang:EN/q/' + str(latitud) + ',' + str(longitud) + '.json'
     
                     r = urllib2.urlopen(url_dias)
                     result = json.load(r)
@@ -525,7 +525,7 @@ class pronostico(webapp2.RequestHandler):
                 longitud_actual = result["current_observation"]["display_location"]["longitude"]
                 
             except KeyError, e:
-                error = 'No existe ninguna ciudad relacionada con esas coordenadas. Por favor, verifique la zona.'
+                error = 'There is not any city with that coordinates. Please, verify the place.'
                 
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'sesion':username, 
@@ -560,22 +560,24 @@ def getInfoNubosidad(nube, altura):
     result = ''
     
     if nube == 'SKC':
-        result = 'SKC - Cielo despejado de nubes a ' + altura + '00 pies (sky clear). Cielo limpio por debajo de 12.000 para ASOS/AWOS.'
+        result = 'SKC - Clear sky at ' + altura + '00 pies. Clean sky below 12.000 for ASOS/AWOS.'
     elif nube == 'FEW':
-        result = 'FEW - Nubes escasas a ' + altura + '00 pies. Las nubes cubre entre 1/8 y 2/8 del cielo.'
+        result = 'FEW - Few clouds at ' + altura + '00 feet. Clouds cover between  1/8 y 2/8 of sky.'
     elif nube == 'SCT':   
-        result = 'SCT - Nubes dispersas a ' + altura + '00 pies (scatered). Los nubes cubre entre 3/8 y 4/8 del cielo.' 
+        result = 'SCT - Scattered clouds at ' + altura + '00 feet. Clouds cover between 3/8 y 4/8 of sky.' 
     elif nube == 'BKN': 
-        result = 'BKN - Cielo quebradizo, nubosidad abundante a  ' + altura + '00 pies (broken). Las nubes cubren entre 5/8 y 7/8 del cielo.'  
+        result = 'BKN - Broken clouds at ' + altura + '00 feet. Clouds cover between 5/8 and 7/8 of sky.'  
     elif nube == 'OVC':
-        result = 'OVC - Cielo cubierto a ' + altura + '00 pies (overcast). Cielo totalmente cubierto por nubes.'    
+        result = 'OVC - Covered sky at ' + altura + '00 feet (overcast).'    
     elif nube == 'TCU': 
-        result = 'TCU - Desarrollandose cumulonimbos a ' + altura + '00 pies  (towering cumulus).'  
+        result = 'TCU - Towering cumulus at ' + altura + '00 feet.'  
     elif nube == 'CB':
-        result = 'CB - Cumulonimbos a ' + altura + '00 pies (cumulonimbus). Los cumulonimbos son densas formaciones de nubes verticales que pueden provocar fuertes precipitaciones, tormentas eléctricas o granizadas.'
+        result = 'CB - Cumulonimbus at ' + altura + '00 feet. Cumulonimbus are dense vertical formations that can cause heavy rainfall , thunderstorms or hail' 
     elif nube == 'CAVOK': 
-        result = 'CAVOK - Techo y visibilidad OK a ' + altura + '00 pies  (Condiciones perfectas para el vuelo)'
-        
+        result = 'CAVOK - Visibility is perfect at ' + altura + '00 feet (Conditions are perfect for flying)'
+    else:   
+        result = 'empty'
+
     return result
 
 #Parsea la información obtenida y devuelve un JSON con el METAR legible
@@ -597,7 +599,7 @@ def parseoMETAR(result_metar):
 
     #Inicio del parseo
     metar = result_metar["Raw-Report"]
-    temperatura = result_metar["Temperature"] + ' grados celsius'
+    temperatura = result_metar["Temperature"] + ' celsius degrees'
     presion_atmosferica = result_metar["Altimeter"] + ' hPa'
     nubes = result_metar["Cloud-List"]
      
@@ -610,32 +612,32 @@ def parseoMETAR(result_metar):
      
     visibilidad = result_metar["Visibility"] + ' m'
     if visibilidad == '9999 m':                #Si la visibilidad es 9999 significa que hay 10km o mas
-        visibilidad = '10km o mas'
+        visibilidad = '10km or more'
          
-    direccion_viento = result_metar["Wind-Direction"] + ' grados'
-    if direccion_viento == '000 grados':       #No hay viento
-        direccion_viento = 'No existe presencia de viento'
-    elif direccion_viento == "VRB grados":
-        direccion_viento = 'Viento en todas las direcciones'
+    direccion_viento = result_metar["Wind-Direction"] + ' degrees'
+    if direccion_viento == '000 degrees':       #No hay viento
+        direccion_viento = 'There is not wind'
+    elif direccion_viento == "VRB degrees":
+        direccion_viento = 'Wind in all directions '
          
-    rafaga_viento = result_metar["Wind-Gust"] + ' nudos (KT)'
+    rafaga_viento = result_metar["Wind-Gust"] + ' KT'
      
-    velocidad_viento = result_metar["Wind-Speed"] + ' nudos (KT)'
-    if velocidad_viento == '00 nudos (KT)':                #No hay viento
-        velocidad_viento = 'No existe presencia de viento'
+    velocidad_viento = result_metar["Wind-Speed"] + ' KT'
+    if velocidad_viento == '00 KT':                #No hay viento
+        velocidad_viento = 'There is not wind'
      
     if len(array_nubes) is 0:
-        array_nubes.append('Sin informacion asociada')
-    if rafaga_viento == ' nudos (KT)':
-        rafaga_viento = 'Sin informacion asociada'
-    if temperatura == ' grados celsius':
-        temperatura = 'Sin informacion asociada'
+        array_nubes.append('No data')
+    if rafaga_viento == ' KT':
+        rafaga_viento = 'No data'
+    if temperatura == ' celsius degrees':
+        temperatura = 'No data'
     if visibilidad == ' m':
-        visibilidad = 'Sin informacion asociada'
-    if direccion_viento == ' grados':
-        direccion_viento = 'Sin informacion asociada'
-    if velocidad_viento == ' nudos (KT)':
-        rafaga_viento = 'Sin informacion asociada'
+        visibilidad = 'No data'
+    if direccion_viento == ' degrees':
+        direccion_viento = 'No data'
+    if velocidad_viento == ' KT':
+        rafaga_viento = 'No data'
      
     #Devolución de JSON con los datos parseados      
     datos_metar.append({'presion_atmosferica':presion_atmosferica,
@@ -673,12 +675,12 @@ def parseoTAFOR_noRepeatInfo(result_taf):
     min_temp = result_taf["Min-Temp"]
 
     if max_temp == '':
-        max_temp = "Sin informacion asociada"
+        max_temp = "No data"
     else:
         max_temp = max_temp[2:4]
       
     if min_temp == '':
-        min_temp = "Sin informacion asociada"
+        min_temp = "No data"
     else:
         min_temp = min_temp[2:4] 
         
@@ -717,33 +719,33 @@ def parseoTAFOR_RepeatInfo(result_taf):
     for taf in array_taf:                           #Parseamos la información y la guardamos en un dict
         
         if taf["Altimeter"] == '':
-            presion = 'Sin informacion asociada'
+            presion = 'No data'
         else:
             presion = taf["Altimeter"] + ' hPa'
             
         if taf["Visibility"] == '9999':
-            visibilidad = '10km o superior'
+            visibilidad = '10km or more'
         elif taf["Visibility"] == '':
-            visibilidad = 'Sin informacion asociada'
+            visibilidad = 'No data'
         else:
             visibilidad = taf["Visibility"] + ' m'
             
         if taf["Wind-Direction"] == '':
-            dir_viento = 'Sin informacion asociada'
+            dir_viento = 'No data'
         elif taf["Wind-Direction"] == 'VRB':
-            dir_viento = 'Viento en todas las direcciones'
+            dir_viento = 'Wind in all directions'
         else:
-            dir_viento = taf["Wind-Direction"] + ' grados'
+            dir_viento = taf["Wind-Direction"] + ' degrees'
             
         if taf["Wind-Gust"] == '':
-            rafaga_viento = 'Sin informacion asociada'
+            rafaga_viento = 'No data'
         else:
-            rafaga_viento = taf["Wind-Gust"] + ' nudos (KT)'
+            rafaga_viento = taf["Wind-Gust"] + ' KT'
             
         if taf["Wind-Speed"] == '':
-            vel_viento = "Sin informacion asociada"
+            vel_viento = "No data"
         else:
-            vel_viento = taf["Wind-Speed"] + ' nudos (KT)'
+            vel_viento = taf["Wind-Speed"] + ' KT'
 
         #Devolución de JSON con los datos parseados  
         datos_tafN.append({'presion':presion,
@@ -801,7 +803,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 array_taf = parseoTAFOR_RepeatInfo(result_taf)
                 
             except KeyError, e:
-                error = 'No es posible verificar la zona por la que va circulando el drone en estos momentos.'
+                error = 'At this moment, it is not possible to verify the place where the drone is circulating.'
                 
             self.response.headers['Content-Type'] = 'text/html'
 

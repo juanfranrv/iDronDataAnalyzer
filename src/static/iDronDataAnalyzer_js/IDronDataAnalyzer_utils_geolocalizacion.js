@@ -109,7 +109,7 @@ function crearMarcador(place){
    var marker = new google.maps.Marker({
      map: map,
      position: place.geometry.location,
-     title: 'Aeropuerto detectado',
+     title: 'Detected Airport',
      icon: '../static/images/airport.png'
    });
 }
@@ -124,13 +124,13 @@ function displayLocationElevation(location, elevator, infowindow) {
       // Cogemos el primer resultado
       if (results[0]) {
         // Abrimos la infowindow para mostrar la elevación en el punto deseado
-        infowindow.setContent('La elevación en este punto <br>es ' +
+        infowindow.setContent('Elevation at this point is <br>es ' +
             results[0].elevation + ' metros.');
       } else {
-        infowindow.setContent('No se han obtenido resultados');
+        infowindow.setContent('No data');
       }
     } else {
-      infowindow.setContent('El servicio de elevación ha fallado debido a: ' + status);
+      infowindow.setContent('Elevation service has failed because of: ' + status);
     }
   });
 }
@@ -146,9 +146,9 @@ function actualizarDatosDrone() {
 		  success: function (data) {
 			 $('#recargar').html(
 			    function(){
-				var content = '<div class="col-sm-5"><label>Coordenadas: </label><label style="font-size:90%;">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</label></div>';
-				content = content + '<div class="col-sm-3"><label>Altitud: </label><label style="font-size:90%;">&nbsp;' + data[0].altura + ' m </label></div>';
-				content = content + '<div class="col-sm-3"><label>Velocidad: </label><label style="font-size:90%;">&nbsp;' + data[0].velocidad + ' m/s </label></div>';
+				var content = '<div class="col-sm-5"><label>Coordinates: </label><label style="font-size:90%;">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</label></div>';
+				content = content + '<div class="col-sm-3"><label>Altitude: </label><label style="font-size:90%;">&nbsp;' + data[0].altura + ' m </label></div>';
+				content = content + '<div class="col-sm-3"><label>Speed: </label><label style="font-size:90%;">&nbsp;' + data[0].velocidad + ' m/s </label></div>';
 
 				return content;
 			    }
