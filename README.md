@@ -4,11 +4,13 @@
 
 ### Proyecto de fin de grado UGR || Talentum Telefónica ###
 
-Actualmente está muy de moda el uso de drones para fines muy variados, desde misiones de reconocimiento hasta misiones de ataque. Cuando un drone está en movimiento, es conveniente tener una serie de personas encargadas de estudiar y observar los diversos datos que presenta la zona por la que va circulando, como la humedad, la temperatura, la velocidad del viento o la trayectoria, que son datos necesarios para decidir, por ejemplo, si cambiar la trayectoria del drone o ver si está en peligro. Para realizar estas tareas sería de gran utilidad la disposición de un sistema web que nos permita monitorizar y analizar dichos datos de suma importancia para el desarrollo con éxito de la misión.
+Se pronostica que se va a proceder a invertir en drones más de 100.000 millones de dólares en 5 años aprox. Sin embargo, no se disponen de aplicaciones destinadas a la seguridad para drones en las que se muestre el avance del drone y las medidas de seguridad simultáneamente. 
 
-Además, este sistema gestionará varios aspectos en el tema de "Seguridad en drones" que la mayoría de los usuarios desconoce, como es el acceso prohibido a aeropuertos, zonas de alta tensión, carreteras, edificios habitados... El drone detectará automáticamente estas zonas y obligará a que el usuario no pueda dirigirlo hacia ellas.
+Debido a la no disponibilidad de estas aplicaciones, se están produciendo numerosas incidencias entre drones y aviones, entre otras. Este sistema pretende solucionar dichos problemas:
 
-Se pretende desarrollar un sistema con un kit de utilidades destinadas a la realización de misiones con drones de forma eficaz, efectiva y segura. 
+* Captura de información: Cuando un drone está en movimiento, es necesario tener una serie de personas encargadas de estudiar y observar los diversos datos que presenta la zona por la que va circulando, como la humedad, la temperatura, la velocidad del viento o la trayectoria, que son datos necesarios para decidir, por ejemplo, si cambiar la trayectoria del drone o ver si está en peligro. Para realizar estas tareas sería de gran utilidad la disposición de un sistema web que nos permita monitorizar y analizar dichos datos de suma importancia para el desarrollo con éxito de la misión.
+
+* Seguridad: El sistema gestionará varios aspectos en el tema de "Seguridad para drones" que la mayoría de los usuarios desconoce, como es el acceso prohibido a aeropuertos, a poblaciones, áreas donde haya vuelo aéreo frecuente... El drone detectará automáticamente estas zonas informando de que se encuentra en área restringida.
 
 ***
 
@@ -19,18 +21,16 @@ La aplicación tendrá que cumplir los siguientes requisitos:
 * [X] Monitorización y análisis de datos atmosféricos en tiempo real.  
 * [X] Seguimiento del drone utilizando el GPS incorporado. Además, se mostrarán los aeropuertos más cercanos (zona prohibida) y se podrá consultar la altura del terreno por el que va circulando el drone.
 * [X] Pronóstico de datos atmosféricos por horas o por días.
-* [X] Almacenamiento de datos monitorizados para el posterior estudio de la misión.
-* [ ] Streaming en directo utilizando la cámara incorporada del dron.
+* [X] Almacenamiento de datos monitorizados para el posterior estudio de la misión. Estudio con gráficos.
 * [X] Detección de los datos atmosféricos procedentes del METAR y TAF del aeropuerto más cercano por el que vaya circulando el drone en ese momento.
-* [ ] Detección de zonas restringidas para el drone, prohibiéndole el acceso. 
-* [ ] Detección de vías aéreas más frecuentes, tráfico aéreo, torres de control, etc.
-* [ ] Incorporación de infraestructura virtual para automatizar varios aspectos del sistema: integración continua, entorno de pruebas, aprovisionamiento, instalación automática y despliegue automático.
+* [ ] Streaming en directo utilizando la cámara incorporada del dron.
+* [ ] Detección de tráfico aéreo y/o fronteras con poblaciones (zonas restringidas).
  
 ***
 
 ### Conexión con drone ###
 
-Como el servidor no deja añadir las librerías de comunicación con el drone (como por ejemplo Dronekit), he decidido crear una aplicación Android que haga de "proxy" entre el drone y el servidor. Esta app va a gestionar todo lo relacionado con el drone (conexión, telemetría...) y la va a mandar al servidor donde será procesada a tiempo real. 
+Como el servidor no deja añadir las librerías de comunicación con el drone (como por ejemplo Dronekit), he decidido crear una aplicación Android que haga de "proxy" entre el drone y el servidor. Esta app va a gestionar todo lo relacionado con el drone (conexión, telemetría...) y la va a mandar al servidor donde será procesada en tiempo real. 
 
 Por otro lado, el servidor permanecerá ajeno de todo lo relacionado con el drone. Se encargará de recibir la información mandada por la aplicación de Android y utilizarla para cada una de sus funcionalidades.
 
@@ -38,7 +38,7 @@ Por otro lado, el servidor permanecerá ajeno de todo lo relacionado con el dron
 
 ### Para instalar la aplicación automáticamente: ###
 
-Dar permisos y ejecutar el script [despliegue_azure.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/despliegue_azure.sh). Inmediatamente, tendremos la aplicación lanzada en el puerto 8080.
+Dar permisos y ejecutar el script [install.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/install.sh). Inmediatamente, tendremos la aplicación lanzada en el puerto 8080.
 
 ***
 
@@ -60,13 +60,13 @@ Dar permisos y ejecutar el script [despliegue_automatico_gae.sh](https://github.
 
 ### Noticias interesantes: ###
 
-Choques de aviones con drones:
+Incidencias de drones con aviones en zonas restringidas:
 
 * [Noticia 1](http://economia.elpais.com/economia/2016/03/02/actualidad/1456911759_020181.html)
 * [Noticia 2](http://economia.elpais.com/economia/2016/03/04/actualidad/1457078339_462092.html)
 * [Noticia 3](http://www.elmundo.es/internacional/2016/03/04/56d93e71e2704e3d4c8b45f6.html)
 
-Los problemas con drones en las noticias anteriores, han ocurrido por la no disposición de suficientes aplicaciones que traten el tema de la seguridad para drones. Esta aplicación intentará solucionar dichos problemas.
+Los problemas con drones en las noticias anteriores, han ocurrido por la no disposición de suficientes aplicaciones que traten la seguridad para drones. Esta aplicación intentará solucionar dichos problemas.
 
 
 
