@@ -53,11 +53,19 @@
 		<option value="anual">Anual</option>
 	</select>
 
-	<input type="checkbox" name="afirmar" id="afirmar" value="afirmar"><b>Activar gráfico</b>
+	<input type="checkbox" name="afirmar" id="afirmar" value="afirmar"><b>Gráfico</b>
 
 	<select name="data_grafico" id="data_grafico" >    
 		<option value="temperatura" selected="selected">Temperatura</option>
-		<option value="presion">Presión Atmosférica</option>>
+		<option value="presion">Presión Atmosférica</option>
+		<option value="vel_viento">Velocidad Viento</option>
+		<option value="dir_viento">Dirección Viento</option>
+		<option value="humedad">Humedad</option>
+	</select>
+
+	<select name="shape_grafico" id="shape_grafico" >    
+		<option value="column" selected="selected">Columnas 3D</option>
+		<option value="spline">Líneas</option>
 	</select>
 
     <div id="chart"></div>	
@@ -66,34 +74,34 @@
     <script src="http://code.highcharts.com/highcharts.js"></script>
     <script src="http://code.highcharts.com/highcharts-3d.js"></script>
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
     <script>
+
 	var checkbox = false;
-	var clima = "temperatura";
 	$("#data_grafico").hide();
+	$("#shape_grafico").hide();
 	$("#chart").hide();
 	var mySeries = [];
         var myFechas = [];
 
-	//Si la checkbox cambia, dependiendo de si está seleccionada o no, vamos a proceder a mostrar el gráfico y su select asociado
-	$('#afirmar').change(function() { 
-	   	if($("#afirmar").is(':checked')){
-		    $("#data_grafico").show();
-		    $("#chart").show();
-		    checkbox = true;
-		} else {
-		    $("#data_grafico").hide();
-		    $("#chart").hide();
-		    checkbox = false;
-		}
-	});
 
-       $('#data_grafico').change(function () {			//Evento que obteniene el tipo de dato a mostrar en el gráfico y actualiza este
-	  var dato_clima = document.getElementById('data_grafico').value;
-	  window.clima = dato_clima;
-	  clima = window.clima;
+	//Servicio para obtener o actualizar el clima seleccionado por el usuario
+	var clima = "temperatura";
+
+	function setClima(tipoAasignar) {
+	  clima = tipoAasignar;
+	}
+
+	function getClima() {
+	  return clima;
+	}
+	
+	//Hace peticiones al servidor para actualizar los datos del gráfico
+	function loadAjaxClima(){
+
 	  $.ajax({
 		  type: 'GET',
-		  url: '/getDatosAtmosfericos?fecha=' + window.fecha + '&tiempo=' + window.tiempo,
+		  url: '/getDatosAtmosfericos?fecha=' + window.fecha + '&tiempo=diario',
 		  data: $(this).serialize(),
 		  dataType: 'json',
 		  success: function (data) {
@@ -103,10 +111,22 @@
 				  myFechas.push([data[i].fecha]);
 
 				  if (checkbox == true){
-				      if(clima == 'temperatura'){
-				      	 mySeries.push([i, data[i].temperatura]);
-				      }else if(clima = 'presion'){
-					 mySeries.push([i, data[i].presion]);
+				      switch(getClima()){
+				      	case 'temperatura':
+				      		mySeries.push([i, data[i].temperatura]);
+						break;
+					case 'presion':
+				      		mySeries.push([i, data[i].presion]);
+						break;
+					case 'vel_viento':
+				      		mySeries.push([i, data[i].vel_viento]);
+						break;
+					case 'dir_viento':
+				      		mySeries.push([i, data[i].dir_viento]);
+						break;
+					case 'humedad':
+				      		mySeries.push([i, data[i].humedad]);
+						break;
 				      }
 				  }
 				}
@@ -119,6 +139,39 @@
 		  }
           });
 
+	}
+
+	//Si la checkbox cambia, dependiendo de si está seleccionada o no, vamos a proceder a mostrar el gráfico y su select asociado
+	$('#afirmar').change(function() { 
+	   	if($("#afirmar").is(':checked')){				//Si la checkbox está seleccionada
+		    $("#data_grafico").show();					//Mostramos los dos select asociados y el gráfico
+		    $("#shape_grafico").show();
+		    $("#chart").show();
+	  	    loadAjaxClima();						//Llamamos a AJAX para actualizar el gráfico
+		    document.getElementById("tiempo").disabled = true;		//Deshabilitamos el select asociado a tiempo que no sirve para el gráfico
+		    $("#tiempo [value='diario']").attr("selected","selected");	//Habilitamos por defecto "Diario", ya que los datos van a ser diarios
+		    checkbox = true;
+
+		} else {							//Si la checkbox no está seleccionada
+		    $("#data_grafico").hide();					
+		    $("#shape_grafico").hide();					//Escondemos los select asociados y el gráfico
+		    $("#chart").hide();
+		    document.getElementById("tiempo").disabled = false;		//Activamos el select Tiempo que sí sirve para la tabla
+		    checkbox = false;
+		}
+	});
+
+       $('#data_grafico').change(function () {			//Evento que obtiene el tipo de dato a mostrar en el gráfico y actualiza este
+	  var dato_clima = document.getElementById('data_grafico').value;
+	  setClima(dato_clima);
+	  loadAjaxClima();
+	});
+
+       $('#shape_grafico').change(function () {			//Evento que obtiene el tipo de dato a mostrar en el gráfico y actualiza este
+	  var forma_grafico = document.getElementById('shape_grafico').value;
+	  window.forma = forma_grafico;
+	  loadAjaxClima();
+   
 	});
 
 	$(document).ready(				//Lanza la selección de fecha
@@ -154,9 +207,9 @@
 	    $.datepicker.setDefaults($.datepicker.regional['es']);
 	});
      
-       $('#tiempo').change(function(){
+       $('#tiempo').change(function(){			//Select asociado al tiempo
 	  var tipo_tiempo = document.getElementById('tiempo').value;
-	  window.tiempo = tipo_tiempo;      //Almacenamos la variable para poder usarla en el evento de abajo
+	  window.tiempo = tipo_tiempo;     		//Almacenamos la variable para poder usarla en el evento de abajo
           var tipo_dat = window.fecha;
 
 	  $.ajax({
@@ -209,13 +262,26 @@
 				      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
 				      myFechas.push([data[i].fecha]);
 
-				      if (checkbox == true){			//Si la checkbox está activa, rellenamos el array con datos 
-					      if(clima == 'temperatura'){
-					      	 mySeries.push([i, data[i].temperatura]);
-					      }else if(clima = 'presion'){
-						 mySeries.push([i, data[i].presion]);
+				      if (checkbox == true){
+
+					      switch(getClima()){
+					      	case 'temperatura':
+					      		mySeries.push([i, data[i].temperatura]);
+							break;
+						case 'presion':
+					      		mySeries.push([i, data[i].presion]);
+							break;
+						case 'vel_viento':
+					      		mySeries.push([i, data[i].vel_viento]);
+							break;
+						case 'dir_viento':
+					      		mySeries.push([i, data[i].dir_viento]);
+							break;
+						case 'humedad':
+					      		mySeries.push([i, data[i].humedad]);
+							break;
 					      }
-				      }
+				     }
 
 				}
 
@@ -288,21 +354,57 @@
 			}]
 		});
 
-		if(clima == 'temperatura'){			//Cambios dinámicos de extremos, título y nombre de series tanto para presión como para temperatura
-		     chart.yAxis[0].setExtremes(0, 50);
-		     chart.yAxis[0].axisTitle.attr({
-			text: 'ºC'
-		     });
-		     chart.series[0].update({name:"Temperatura"}, false);
-chart.redraw();
+		switch(getClima()){			//Dependiendo del dato atmosférico seleccionado vamos cambiando los valores
+			case 'temperatura':		//Cambios dinámicos de extremos, título y nombre de series tanto para presión como para temperatura
+			     chart.yAxis[0].setExtremes(0, 50);
+			     chart.yAxis[0].axisTitle.attr({
+				text: 'ºC'
+			     });
+			     chart.series[0].update({name:"Temperatura (Ordenado por orden de recogida de datos diaria)"}, false);
+			     chart.redraw();
+			     break;
 
-		}else if(clima = 'presion'){
-		     chart.yAxis[0].setExtremes(0, 1500);
-		     chart.yAxis[0].axisTitle.attr({
-			text: 'hPa'
+			case 'presion':
+			     chart.yAxis[0].setExtremes(0, 1500);
+			     chart.yAxis[0].axisTitle.attr({
+				text: 'hPa'
+			     });
+		             chart.series[0].update({name:"Presión atmosférica (Ordenado por orden de recogida de datos diaria)"}, false);
+			     chart.redraw();
+			     break;
+
+			case'vel_viento':
+			     chart.yAxis[0].setExtremes(0, 50);
+			     chart.yAxis[0].axisTitle.attr({
+				text: 'kph'
+			     });
+		             chart.series[0].update({name:"Velocidad viento (Ordenado por orden de recogida de datos diaria)"}, false);
+			     chart.redraw();
+			     break;
+
+			case 'dir_viento':
+			     chart.yAxis[0].setExtremes(0, 360);
+			     chart.yAxis[0].axisTitle.attr({
+				text: 'º'
+			     });
+		             chart.series[0].update({name:"Dirección viento (Ordenado por orden de recogida de datos diaria)"}, false);
+			     chart.redraw();
+			     break;
+
+			case 'humedad':
+			     chart.yAxis[0].setExtremes(0, 100);
+			     chart.yAxis[0].axisTitle.attr({
+				text: '%'
+			     });
+		             chart.series[0].update({name:"Humedad (Ordenado por orden de recogida de datos diaria)"}, false);
+			     chart.redraw();
+			     break;
+		}
+
+	  	if(window.forma == 'spline'){	//Si la forma "Línea" está seleccionada, pintamos el gráfico con dicha forma. En caso contrario, como columna 3D
+		     chart.series[0].update({
+		    	type: window.forma
 		     });
-                     chart.series[0].update({name:"Presión atmosférica"}, false);
-chart.redraw();
 		}
       }
 

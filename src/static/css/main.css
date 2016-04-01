@@ -88,10 +88,15 @@ tbody{
 
 #afirmar{
   margin-top:0.5%;
-
   margin-left:5%;
 }
+
 #data_grafico{
+  margin-top:0.5%;
+  margin-left:5%;
+}
+
+#shape_grafico{
   margin-top:0.5%;
 
   margin-left:5%;
