@@ -44,7 +44,7 @@ Dar permisos y ejecutar el script [install.sh](https://github.com/juanfranrv/iDr
 
 ### Para desplegar la aplicación en la nube automáticamente: ###
 
-Dar permisos y ejecutar el script [despliegue_automatico_gae.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/despliegue_automatico_gae.sh). Inmediatamente, tendremos la aplicación desplegada en la nube de Google App Engine.
+Dar permisos y ejecutar el script [deployToGAE.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/deployToGAE.sh). Inmediatamente, tendremos la aplicación desplegada en la nube de Google App Engine.
 
 ***
 
