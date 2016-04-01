@@ -124,8 +124,8 @@ function displayLocationElevation(location, elevator, infowindow) {
       // Cogemos el primer resultado
       if (results[0]) {
         // Abrimos la infowindow para mostrar la elevación en el punto deseado
-        infowindow.setContent('Elevation at this point is <br>es ' +
-            results[0].elevation + ' metros.');
+        infowindow.setContent('Elevation at this point <br> is ' +
+            results[0].elevation + ' meters.');
       } else {
         infowindow.setContent('No data');
       }

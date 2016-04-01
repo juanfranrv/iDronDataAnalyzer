@@ -371,15 +371,15 @@ class datos_grafico(webapp2.RequestHandler):
 
         dato_seleccionado = self.request.get('dato')
 
-        if dato_seleccionado == 'undefined' or dato_seleccionado == 'Temperatura':
+        if dato_seleccionado == 'undefined' or dato_seleccionado == 'Temperature':
             datoAmostrar = temp;
-        elif dato_seleccionado == 'Presion atmosferica':
+        elif dato_seleccionado == 'Atmospheric pressure':
             datoAmostrar = pres;
-        elif dato_seleccionado == 'Humedad':
+        elif dato_seleccionado == 'Humidity':
             datoAmostrar = hum;
-        elif dato_seleccionado == 'Velocidad del viento':
+        elif dato_seleccionado == 'Wind Speed':
             datoAmostrar = vel_win;
-        elif dato_seleccionado == 'Direccion del viento':
+        elif dato_seleccionado == 'Wind Direction':
             datoAmostrar = dir_win;
         
         if contador is 20:               #Cada 10 datos obtenidos, almacenamos en la base de datos
