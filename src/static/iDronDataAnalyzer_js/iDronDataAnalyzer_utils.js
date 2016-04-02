@@ -8,11 +8,11 @@ function seguridad() { // Seguridad para contraseñas
    var password = document.getElementById("password").value;
 
    if (longitud_alta.test(password)) {
-      longitud.innerHTML = '<span style="color:green">Very secure password</span>';
+      longitud.innerHTML = '<span style="color:green">Secure password</span>';
    } else if (longitud_mediana.test(password)) {
-      longitud.innerHTML = '<span style="color:orange">Normal secure password</span>';
+      longitud.innerHTML = '<span style="color:orange">Normal password</span>';
    } else {
-    longitud.innerHTML = '<span style="color:red">Weak secure password</span>';
+    longitud.innerHTML = '<span style="color:red">Weak password</span>';
    }
 
 }
@@ -32,34 +32,34 @@ function Valida(form) {
 	
 		
 	  if(usuario.length==0) { //¿Tiene 0 caracteres?
-	    alert('You did not write your user'); //Mostramos el mensaje
+	    alert('Insert username'); //Mostramos el mensaje
 	
 	    return false; 
 	  }
 
 	  if(password.length==0) { //¿Tiene 0 caracteres?
-	    alert('You did not write your password'); //Mostramos el mensaje
+	    alert('Insert password'); //Mostramos el mensaje
 	
 	    return false; 
 	  }
 	  if(email.length==0) { //comprueba que no esté vacío
 	  
-	    alert('You did not write your email');
+	    alert('Insert email');
 	    return false;
 	  }
 	  if(telefono.length==0) { //comprueba que no esté vacío
 	  
-	    alert('You did not write your phone');
+	    alert('Insert phone');
 	    return false;
 	  }
 	  
 	  if( !(/^\d{9}$/.test(telefono)) ) {
-	   alert('You did not write a correct phone');
+	   alert('Insert a valid phone');
 		return false;
 	  }
 	  
 	  if( !(/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/.test(email)) ) {
-		alert('Email format is invalid');
+		alert('Insert a valid email');
 		return false;
 	  }  
 	
@@ -77,12 +77,12 @@ function Valida_login(form) {
 	var password= document.getElementById("pass").value;
 
 	if(usuario.length==0) { //¿Tiene 0 caracteres?
-		alert('You did not write your user'); //Mostramos el mensaje
+		alert('Insert username'); //Mostramos el mensaje
 		return false; 
 	}
 
 	if(password.length==0) { //comprueba que no esté vacío
-		alert('You did not write your password');
+		alert('Insert password');
 		return false;
 	}
 

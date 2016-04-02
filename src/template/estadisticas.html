@@ -101,7 +101,7 @@
 
 	  $.ajax({
 		  type: 'GET',
-		  url: '/getDatosAtmosfericos?fecha=' + window.fecha + '&tiempo=diario',
+		  url: '/getDatosAtmosfericos?fecha=' + window.fecha + '&tiempo=' + window.tiempo,
 		  data: $(this).serialize(),
 		  dataType: 'json',
 		  success: function (data) {
@@ -148,15 +148,15 @@
 		    $("#shape_grafico").show();
 		    $("#chart").show();
 	  	    loadAjaxClima();						//Llamamos a AJAX para actualizar el gráfico
-		    document.getElementById("tiempo").disabled = true;		//Deshabilitamos el select asociado a tiempo que no sirve para el gráfico
-		    $("#tiempo [value='diario']").attr("selected","selected");	//Habilitamos por defecto "Diario", ya que los datos van a ser diarios
+		   // document.getElementById("tiempo").disabled = true;		//Deshabilitamos el select asociado a tiempo que no sirve para el gráfico
+		    //$("#tiempo [value='diario']").attr("selected","selected");	//Habilitamos por defecto "Diario", ya que los datos van a ser diarios
 		    checkbox = true;
 
 		} else {							//Si la checkbox no está seleccionada
 		    $("#data_grafico").hide();					
 		    $("#shape_grafico").hide();					//Escondemos los select asociados y el gráfico
 		    $("#chart").hide();
-		    document.getElementById("tiempo").disabled = false;		//Activamos el select Tiempo que sí sirve para la tabla
+		   // document.getElementById("tiempo").disabled = false;		//Activamos el select Tiempo que sí sirve para la tabla
 		    checkbox = false;
 		}
 	});
@@ -197,15 +197,40 @@
 		  success: function (data) {
 			 $('table').html(
 			    function(){
-				var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temperature</th><th>A. pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>'; 
+				var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temperature</th><th>Atm. pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>'; 
 				for(var i = 0; i < data.length; i++){
 				      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + '</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
 				      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
+				      myFechas.push([data[i].fecha]);
+
+				      if (checkbox == true){
+
+					      switch(getClima()){
+					      	case 'temperatura':
+					      		mySeries.push([i, data[i].temperatura]);
+							break;
+						case 'presion':
+					      		mySeries.push([i, data[i].presion]);
+							break;
+						case 'vel_viento':
+					      		mySeries.push([i, data[i].vel_viento]);
+							break;
+						case 'dir_viento':
+					      		mySeries.push([i, data[i].dir_viento]);
+							break;
+						case 'humedad':
+					      		mySeries.push([i, data[i].humedad]);
+							break;
+					      }
+				     }
 				}
 
+				load();						//Pintamos el gráfico con los datos del array
+				mySeries = [];
+				myFechas = [];
 				content = content + '</tr></tbody></table>';
 				return content;
 			    }
@@ -229,7 +254,7 @@
 		  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la paǵina
 			 $('table').html(
 			    function(){
-				var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temperature</th><th>A. pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>';
+				var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temperature</th><th>Atm. pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>';
 
 				for(var i = 0; i < data.length; i++){
 				      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + '</td>';
@@ -337,7 +362,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: 'ºC'
 		     });
-		     chart.series[0].update({name:"Temperature (Sorted by order of daily data collection)"}, false);
+		     chart.series[0].update({name:"Temperature (Sorted by order of data collection)"}, false);
 		     chart.redraw();
 		     break;
 
@@ -346,7 +371,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: 'hPa'
 		     });
-	             chart.series[0].update({name:"Atmospheric pressure (Sorted by order of daily data collection)"}, false);
+	             chart.series[0].update({name:"Atmospheric pressure (Sorted by order of data collection)"}, false);
 		     chart.redraw();
 		     break;
 
@@ -355,7 +380,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: 'kph'
 		     });
-	             chart.series[0].update({name:"Wind speed (Sorted by order of daily data collection)"}, false);
+	             chart.series[0].update({name:"Wind speed (Sorted by order of data collection)"}, false);
 		     chart.redraw();
 		     break;
 
@@ -364,7 +389,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: 'º'
 		     });
-	             chart.series[0].update({name:"Wind direction (Sorted by order of daily data collection)"}, false);
+	             chart.series[0].update({name:"Wind direction (Sorted by order of data collection)"}, false);
 		     chart.redraw();
 		     break;
 
@@ -373,7 +398,7 @@
 		     chart.yAxis[0].axisTitle.attr({
 			text: '%'
 		     });
-	             chart.series[0].update({name:"Humidity (Sorted by order of daily data collectiona)"}, false);
+	             chart.series[0].update({name:"Humidity (Sorted by order of data collection)"}, false);
 		     chart.redraw();
 		     break;
 	}
@@ -391,7 +416,7 @@
 <table class="table1 table-striped">
 
 <thead><tr>
-<th>Date</th><th>Temperature</th><th>A. pressure</th><th>Wind</th><th>Humidity</th></tr></thead>
+<th>Date</th><th>Temperature</th><th>Atm. pressure</th><th>Wind</th><th>Humidity</th></tr></thead>
 <tbody>
 
 	  {% for datos in datos_atmos %}

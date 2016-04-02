@@ -525,7 +525,7 @@ class pronostico(webapp2.RequestHandler):
                 longitud_actual = result["current_observation"]["display_location"]["longitude"]
                 
             except KeyError, e:
-                error = 'There is not any city with that coordinates. Please, verify the place.'
+                error = 'There is not any city with those coordinates. Please, verify the place.'
                 
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'sesion':username, 

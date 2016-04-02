@@ -16,6 +16,11 @@
     <link href="../static/css/main.css" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 
+    <!-- Libreria Bootstrap js -->
+
+    <script type='text/javascript' src='../static/iDronDataAnalyzer_js/bootstrap.js'></script>
+    <script type='text/javascript' src='../static/iDronDataAnalyzer_js/bootstrap.min.js'></script>
+
     <!-- Libreria proyecto js -->
 
     <script type='text/javascript' src='../static/iDronDataAnalyzer_js/iDronDataAnalyzer_utils.js'></script> 
@@ -67,8 +72,8 @@
     </header><!--/header-->
 
    <div style="background:transparent !important" class="jumbotron">
-	    
-    <div class="panel panel-primary">
+    <div class="row">	    
+    <div class="col-md-2" class="panel panel-primary">
 	<select name="tipoGrafica-temp" id="tipoGrafica-temp" >    
 		<option value="column" selected="selected">Column</option>
 		<option value="spline">Spline</option>
@@ -79,8 +84,7 @@
 	</select>
      </div>
 
-
-     <div class="panel panel-primary">
+     <div class="col-md-2" class="panel panel-primary">
 	<select name="tipoGrafica-temp1" id="tipoGrafica-temp1" >    
 		<option value="Temperature" selected="selected">Temperature (ºC)</option>
 		<option value="Atmospheric pressure">Atmospheric pressure (hPa)</option>
@@ -89,7 +93,7 @@
 		<option value="Wind Direction">Wind Direction (º)</option>
 	</select>
       </div>	
-	
+      </div>	
       <div style="margin-bottom:150px;" id="container-temp-grande"></div>
    </div>
 

@@ -45,14 +45,16 @@
    <form id="form_pronos" role="form" onsubmit="return Valida_pronostico(this);" method="post" action="/pronostico">
     <div class="row">
 	<div class="col-md-3">
-	<label>Insert latitude: </label>
-        <input id="latitud" type="text" class="form-control" name="latitud" value="{{latitud_actual}}" placeholder="Latitude">
+	  <label>Insert latitude: </label>
+          <input id="latitud" type="text" class="form-control" name="latitud" value="{{latitud_actual}}" placeholder="Latitude">
 	</div>
         <div class="col-md-3">
-	<label>Insert longitude: </label>
-	<input id="longitud" type="text" class="form-control" name="longitud" value="{{longitud_actual}}" placeholder="Longitude">
+	  <label>Insert longitude: </label>
+	  <input id="longitud" type="text" class="form-control" name="longitud" value="{{longitud_actual}}" placeholder="Longitude">
 	</div>
-    <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-danger">Make forecast</button>
+	<div class="col-md-3">
+    	  <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-danger">Make forecast</button>
+	</div>
     </div>
     <div style="margin-top:3%;font-size:90%;" class="row">
 	<div class="col-md-3">
@@ -64,24 +66,24 @@
      </div>
    </form> 
 
-<table class="table table-striped">
-{% if radio_elegido == 'horas' or radio_elegido == 'dias' %}
+	<table class="table table-striped">
+	{% if radio_elegido == 'horas' or radio_elegido == 'dias' %}
 
-{% if error != '' %}
-  <div id="mensaje_error" class="alert alert-danger">{{error}}</div>
-{% endif %}
+	{% if error != '' %}
+	  <div id="mensaje_error" class="alert alert-danger">{{error}}</div>
+	{% endif %}
 
-<thead><tr>
-{% if radio_elegido == 'horas' %}
-  <th>Hour</th>
-{% endif %}
+	<thead><tr>
+	{% if radio_elegido == 'horas' %}
+	  <th>Hour</th>
+	{% endif %}
 
-{% if radio_elegido == 'dias' %}
-  <th>Day</th>
-{% endif %}
+	{% if radio_elegido == 'dias' %}
+	  <th>Day</th>
+	{% endif %}
 
-<th>Max/Min</th><th>Description</th><th>Wind</th><th>Humidity</th></tr></thead>
-<tbody>
+	<th>Max/Min</th><th>Description</th><th>Wind</th><th>Humidity</th></tr></thead>
+	<tbody>
 
 	  {% for datos in array_datos %}
 

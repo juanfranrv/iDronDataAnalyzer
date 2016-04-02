@@ -48,13 +48,6 @@ tbody{
    width:150px;
 }
 
-#boton-enviar{
-   float:left;
-   width: 15%;
-   margin-top: 50px;
-   margin-left: 100px;
-}
-
 #container-temp-grande{
   width:99%;
   margin-top:6.5%;
@@ -70,11 +63,7 @@ tbody{
    float:left;
 }
 
-#tipoGrafica-temp{
-   margin-top:1.55%;
-   float:left;
-   margin-left:5%;
-}
+
 
 #datepicker{
    margin-top:1.55%;
@@ -100,11 +89,6 @@ tbody{
   margin-top:0.5%;
 
   margin-left:5%;
-}
-
-#tipoGrafica-temp1{
-  margin-left:2%;
-  float:left;
 }
 
 #map-canvas{
