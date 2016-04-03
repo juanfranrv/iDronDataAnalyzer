@@ -109,7 +109,7 @@ function crearMarcador(place){
    var marker = new google.maps.Marker({
      map: map,
      position: place.geometry.location,
-     title: 'Detected Airport',
+     title: 'Airport detected ',
      icon: '../static/images/airport.png'
    });
 }

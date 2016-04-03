@@ -55,7 +55,7 @@
 
 	<input type="checkbox" name="afirmar" id="afirmar" value="afirmar">Chart
 
-	<select name="data_grafico" id="data_grafico" >    
+	<select style="display:none;" name="data_grafico" id="data_grafico" >    
 		<option value="temperatura" selected="selected">Temperature</option>
 		<option value="presion">Atmospheric pressure</option>
 		<option value="vel_viento">Wind Speed</option>
@@ -63,7 +63,7 @@
 		<option value="humedad">Humidity</option>
 	</select>
 
-	<select name="shape_grafico" id="shape_grafico" >    
+	<select style="display:none;" name="shape_grafico" id="shape_grafico" >    
 		<option value="column" selected="selected">3D Column</option>
 		<option value="spline">Spline</option>
 	</select>
@@ -78,12 +78,9 @@
     <script>
 
 	var checkbox = false;
-	$("#data_grafico").hide();
-	$("#shape_grafico").hide();
 	$("#chart").hide();
 	var mySeries = [];
         var myFechas = [];
-
 
 	//Servicio para obtener o actualizar el clima seleccionado por el usuario
 	var clima = "temperatura";

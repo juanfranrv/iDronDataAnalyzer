@@ -599,7 +599,7 @@ def parseoMETAR(result_metar):
 
     #Inicio del parseo
     metar = result_metar["Raw-Report"]
-    temperatura = result_metar["Temperature"] + ' celsius degrees'
+    temperatura = result_metar["Temperature"] + ' degrees celsius'
     presion_atmosferica = result_metar["Altimeter"] + ' hPa'
     nubes = result_metar["Cloud-List"]
      
@@ -616,7 +616,7 @@ def parseoMETAR(result_metar):
          
     direccion_viento = result_metar["Wind-Direction"] + ' degrees'
     if direccion_viento == '000 degrees':       #No hay viento
-        direccion_viento = 'There is not wind'
+        direccion_viento = 'No wind'
     elif direccion_viento == "VRB degrees":
         direccion_viento = 'Wind in all directions '
          
@@ -630,7 +630,7 @@ def parseoMETAR(result_metar):
         array_nubes.append('No data')
     if rafaga_viento == ' KT':
         rafaga_viento = 'No data'
-    if temperatura == ' celsius degrees':
+    if temperatura == ' degrees celsius':
         temperatura = 'No data'
     if visibilidad == ' m':
         visibilidad = 'No data'
@@ -677,17 +677,20 @@ def parseoTAFOR_noRepeatInfo(result_taf):
     if max_temp == '':
         max_temp = "No data"
     else:
-        max_temp = max_temp[2:4]
+        max_temp = max_temp[2:4] + " degrees celsius"
       
     if min_temp == '':
         min_temp = "No data"
     else:
-        min_temp = min_temp[2:4] 
+        min_temp = min_temp[2:4] + " degrees celsius"
         
     for i in range(len(result_taf["Forecast"])):
         
         for nube in result_taf["Forecast"][i]["Cloud-List"]:    #Recorremos el array de nubes obtenidas
-            array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
+            if nube[0] == '':
+                array_nubes_taf[i].append('No data')
+            else:
+                array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
          
     #Devolución de JSON con los datos parseados  
     datos_taf.append({'taf':taf,
@@ -734,6 +737,8 @@ def parseoTAFOR_RepeatInfo(result_taf):
             dir_viento = 'No data'
         elif taf["Wind-Direction"] == 'VRB':
             dir_viento = 'Wind in all directions'
+        elif taf["Wind-Direction"] == '000 degrees':
+            dir_viento = 'No wind'
         else:
             dir_viento = taf["Wind-Direction"] + ' degrees'
             
