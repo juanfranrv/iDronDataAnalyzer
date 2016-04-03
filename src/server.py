@@ -120,7 +120,7 @@ class Login(webapp2.RequestHandler):
                 self.response.write(template.render(template_values))
         else:
         
-            template_values={'mensaje':'Wrong user.'}
+            template_values={'mensaje':'Wrong username.'}
             template = JINJA_ENVIRONMENT.get_template('template/login.html')
             self.response.write(template.render(template_values))
             
@@ -171,7 +171,7 @@ class formRegistro(webapp2.RequestHandler):
 
             self.response.headers['Content-Type'] = 'text/html'
             template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-            self.response.write(template.render(message="User name is already in use"))
+            self.response.write(template.render(message="Username is already in use"))
 
 #Clase para cambiar los datos de usuario
 

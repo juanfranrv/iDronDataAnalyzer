@@ -15,8 +15,9 @@
 }
 
 thead{
-  background: #FFCC66;
+  background: #282828;
   font-weight: bold;
+  color:white;
   display:block;
 }
 
@@ -27,6 +28,8 @@ td,th{
 table{
  height: 500px; 
  margin-top: 100px;
+ border-left: 2px solid #282828;
+ border-right: 2px solid #282828;
 }
 
 .table1{
