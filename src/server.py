@@ -687,7 +687,7 @@ def parseoTAFOR_noRepeatInfo(result_taf):
     for i in range(len(result_taf["Forecast"])):
         
         for nube in result_taf["Forecast"][i]["Cloud-List"]:    #Recorremos el array de nubes obtenidas
-            if nube[0] == '':
+            if nube[0] == '' and nube[1] == '':
                 array_nubes_taf[i].append('No data')
             else:
                 array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
