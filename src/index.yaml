@@ -61,5 +61,11 @@ indexes:
 
 - kind: DatosAtmosfericos
   properties:
+  - name: date
+  - name: idUsuario
+  - name: fecha
+
+- kind: DatosAtmosfericos
+  properties:
   - name: dia
   - name: fecha

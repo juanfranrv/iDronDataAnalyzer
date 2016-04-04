@@ -381,12 +381,13 @@ class datos_grafico(webapp2.RequestHandler):
         elif dato_seleccionado == 'Wind Direction':
             datoAmostrar = dir_win;
         
-        if contador is 20:               #Cada 10 datos obtenidos, almacenamos en la base de datos
+        if contador is 20:               #Cada 20 datos obtenidos, almacenamos en la base de datos
             #Almacenamos los datos en el usuario con la sesión activa
             result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
             data = model.DatosAtmosfericos()
             
-            data.fecha = time.strftime("%d-%m-%Y") 
+            data.fecha = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+            data.date = datetime.datetime.now().strftime("%d-%m-%Y")
             #Obtiene el número de la semana 
             data.idUsuario = result.idUsuario
             data.dia = datetime.date.today().strftime("%V")
@@ -435,7 +436,7 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
         if self.request.cookies.get("username"):
             
             datos_atmos = []
-            fecha_elegida = self.request.get('fecha')
+            fecha_elegida = self.request.get('fecha') 
             tiempo_elegido = self.request.get('tiempo')
             
             UserQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
@@ -450,9 +451,9 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
             elif tiempo_elegido == 'anual':     #Si el tiempo es anual, comprobamos el año antes de añadir
                 result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
 
-            else:                
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.fecha == fecha_elegida, model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario)
-                
+            else:          
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.date  == fecha_elegida, model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
+
             if result is not None:          
                 for dato in result:             #Crear un array de tipo json para parsear en el cliente    
                          datos_atmos.append({'fecha': dato.fecha,
