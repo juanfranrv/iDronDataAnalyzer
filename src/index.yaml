@@ -19,6 +19,26 @@ indexes:
 - kind: DatosAtmosfericos
   properties:
   - name: anio
+  - name: dia
+  - name: idUsuario
+  - name: fecha
+
+- kind: DatosAtmosfericos
+  properties:
+  - name: anio
+  - name: fecha
+
+- kind: DatosAtmosfericos
+  properties:
+  - name: anio
+  - name: idUsuario
+  - name: fecha
+
+- kind: DatosAtmosfericos
+  properties:
+  - name: anio
+  - name: idUsuario
+  - name: mes
   - name: fecha
 
 - kind: DatosAtmosfericos

@@ -6,7 +6,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from collections import defaultdict
 from google.appengine.runtime import DeadlineExceededError
 from google.appengine.api import urlfetch
-import os, model, webapp2, jinja2, json, math, urllib, urllib2, sys, subprocess, random, datetime,time
+import os, model, webapp2, jinja2, json, math, urllib, urllib2, sys, subprocess, random, datetime, time, uuid
 #import drone_utils
 
 # Declaración del entorno de jinja2 y el sistema de templates.
@@ -153,8 +153,9 @@ class formRegistro(webapp2.RequestHandler):
  
         #Si el usuario no existe, se introducen los datos en la base de datos
         
-        if(model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None):
+        if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
             
+            user.idUsuario = str(uuid.uuid4())
             user.usuario = self.request.get('usuario')
             user.password = self.request.get('password')
             user.nombre = self.request.get('nombre')
@@ -353,8 +354,6 @@ class datos_grafico(webapp2.RequestHandler):
         lat = coordenadas.latitud
         lng = coordenadas.longitud
         
-        data = model.DatosAtmosfericos()
-        
         url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
         r = urllib2.urlopen(url)
 
@@ -383,9 +382,13 @@ class datos_grafico(webapp2.RequestHandler):
             datoAmostrar = dir_win;
         
         if contador is 20:               #Cada 10 datos obtenidos, almacenamos en la base de datos
+            #Almacenamos los datos en el usuario con la sesión activa
+            result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            data = model.DatosAtmosfericos()
             
             data.fecha = time.strftime("%d-%m-%Y") 
             #Obtiene el número de la semana 
+            data.idUsuario = result.idUsuario
             data.dia = datetime.date.today().strftime("%V")
             data.mes = datetime.date.today().strftime("%m")
             data.anio = datetime.date.today().strftime("%Y")  
@@ -434,20 +437,21 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
             datos_atmos = []
             fecha_elegida = self.request.get('fecha')
             tiempo_elegido = self.request.get('tiempo')
-            distancia = 0
             
+            UserQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+                        
             if tiempo_elegido == 'mensual':     #Si el tiempo es mensual, comprobamos el mes antes de añadir
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.mes == fecha_elegida[3:5], model.DatosAtmosfericos.anio == fecha_elegida[6:11]).order(model.DatosAtmosfericos.fecha)
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.mes == fecha_elegida[3:5], model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
             
             elif tiempo_elegido == 'semanal':
                 num_semana = datetime.date(int(fecha_elegida[6:11]), int(fecha_elegida[3:5]), int(fecha_elegida[0:2])).strftime("%V") 
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.dia == num_semana, model.DatosAtmosfericos.anio == fecha_elegida[6:11]).order(model.DatosAtmosfericos.fecha)
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.dia == num_semana, model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
                                                 
             elif tiempo_elegido == 'anual':     #Si el tiempo es anual, comprobamos el año antes de añadir
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11]).order(model.DatosAtmosfericos.fecha)
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
 
             else:                
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.fecha == fecha_elegida)
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.fecha == fecha_elegida, model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario)
                 
             if result is not None:          
                 for dato in result:             #Crear un array de tipo json para parsear en el cliente    

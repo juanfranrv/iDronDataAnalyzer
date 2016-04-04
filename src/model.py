@@ -6,6 +6,7 @@ from google.appengine.ext import ndb
 #Clase donde se define el modelo del usuario de la base de datos.
 
 class Usuario(ndb.Model):
+    idUsuario = ndb.StringProperty()
     usuario = ndb.StringProperty()
     password = ndb.StringProperty()
     nombre = ndb.StringProperty()
@@ -16,6 +17,7 @@ class Usuario(ndb.Model):
 #Clase donde se define el modelo de los datos atmosféricos monitorizados por el drone.
 
 class DatosAtmosfericos(ndb.Model):
+    idUsuario = ndb.StringProperty()
     fecha = ndb.StringProperty()
     dia = ndb.StringProperty()
     mes = ndb.StringProperty()
