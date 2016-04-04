@@ -99,11 +99,10 @@ function initialize() {
        }
      }
    });
-}
 
   google.maps.event.addDomListener(window, 'load', initialize);
   setInterval(actualizarMapa, 1000);
-
+}
 
 function crearMarcador(place){
    // Creamos un marcador para los aeropuertos
