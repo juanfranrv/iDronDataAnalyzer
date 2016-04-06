@@ -7,7 +7,7 @@ from collections import defaultdict
 from google.appengine.runtime import DeadlineExceededError
 from google.appengine.api import urlfetch
 import os, model, webapp2, jinja2, json, math, urllib, urllib2, sys, subprocess, random, datetime, time, uuid
-#import drone_utils
+from httplib import HTTPResponse
 
 # Declaración del entorno de jinja2 y el sistema de templates.
 
@@ -29,25 +29,53 @@ contador = 0                                    #Variable que lleva la cuenta pa
 lat = 37.19699469878369                         #Variables que generan coordenadas aleatorias utilizadas en la mayoría de las clases
 lng =  -3.6241040674591507
 
+
+#Clase que recibe los datos  de login procedentes del HTTP POST de la aplicación de Android para devolver el token del usuario correspondiente
+
+class RecibirDatosLoginApp(webapp2.RequestHandler):
+    
+    def post(self):
+        
+        username = self.request.get('username')
+        password = self.request.get('password')
+        
+        #Buscamos el usuario recibido desde Android en la base de datos y si existe devolvemos su token para iniciar sesión en la app Android
+        UserQuery = model.Usuario.query(model.Usuario.usuario == username).get()
+        
+        if UserQuery is not None:
+            
+            if UserQuery.password == password:
+                token = UserQuery.idUsuario
+                self.response.write(token)
+                
+            else:
+                token = "NoData"
+                self.response.write(token)
+            
+        else:    
+            token = "NoData" 
+            self.response.write(token)         
+     
 #Clase que recibe los datos procedentes del HTTP POST de la aplicación de Android y los almacena para ser tratados posteriormente en el resto de funcionalidades
 
 class RecibirDatosDrone(webapp2.RequestHandler):
     
     def post(self):
         
-        datosRec = model.DatosRecibidos()
-        
         #Obtiene los datos recibidos por Http Post desde el drone (A través de la app de Android)
+        token = self.request.get('token')
         latitud = self.request.get('latitud')
         longitud = self.request.get('longitud')
         altura = self.request.get('altura')
         velocidad = self.request.get('velocidad')
         
-        busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
+        busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == token).get()
         
         if busqueda is None:    #Si la base de datos está vacía, insertamos los datos recibidos del drone
             
-            datosRec.idDatos = 1
+            datosRec = model.DatosRecibidos()
+                    
+            datosRec.idDatos = token
             datosRec.latitud = latitud
             datosRec.longitud = longitud
             datosRec.altura = altura
@@ -57,7 +85,7 @@ class RecibirDatosDrone(webapp2.RequestHandler):
         
         else:                   #Si ya no está vacía, buscamos los únicos datos que tiene y sobreescribimos por los nuevos
             
-            busqueda.idDatos = 1
+            busqueda.idDatos = token
             busqueda.latitud = latitud
             busqueda.longitud = longitud
             busqueda.altura = altura
@@ -232,7 +260,7 @@ class ErrorPage(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
-            
+
             username = str(self.request.cookies.get("username"))
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'sesion':username,'footer': footer,'head':head}
@@ -253,8 +281,9 @@ class geolocalizacion(webapp2.RequestHandler):
             
             username = str(self.request.cookies.get("username"))
             
-            datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
-
+            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+        
             lat = datos.latitud
             lng = datos.longitud
 
@@ -276,10 +305,26 @@ class coordenadas(webapp2.RequestHandler):
     
     def get(self):
 
-        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
-
+        userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+        
         lat = coordenadas.latitud
         lng = coordenadas.longitud
+        
+        '''
+        url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/" + lat + "/" + lng +"/200?appId=57286966&appKey=9bf92ea213f90dd82a2db88892bce75a&maxFlights=200"
+        #url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/-35.36/149.16/200?appId=57286966&appKey=9bf92ea213f90dd82a2db88892bce75a&maxFlights=200"
+        
+        r = urllib2.urlopen(url)
+
+        result = json.load(r)
+        flights= []
+        
+        for i in range(len(result["flightPositions"])):
+            last_flight_detected = result["flightPositions"][i]["positions"][len(result["flightPositions"][i]["positions"])]
+            flights.append(last_flight_detected)
+        print flights
+        '''
         
         latLng = [lat, lng]
         
@@ -292,27 +337,15 @@ class updateDatosDrone(webapp2.RequestHandler):
     def get(self):
         
         datosRec = []
-        datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
         
-        try:
+        userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+        datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
 
-            lat = datos.latitud
-            lng = datos.longitud
+        lat = datos.latitud
+        lng = datos.longitud
             
-        except:
-            
-            lat = 37.196                       
-            lng =  -3.624
-            
-        try:
-            
-            vel = round(float(datos.velocidad),3)
-            alt = round(float(datos.altura),3)
-            
-        except:
-            
-            vel = 0
-            alt = 0
+        vel = round(float(datos.velocidad),3)
+        alt = round(float(datos.altura),3)
   
         datosRec.append({'latitud': lat,
                          'longitud': lng,
@@ -349,7 +382,8 @@ class datos_grafico(webapp2.RequestHandler):
         
         global contador
         
-        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
+        userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
         
         lat = coordenadas.latitud
         lng = coordenadas.longitud
@@ -388,9 +422,8 @@ class datos_grafico(webapp2.RequestHandler):
             
             data.fecha = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
             data.date = datetime.datetime.now().strftime("%d-%m-%Y")
-            #Obtiene el número de la semana 
             data.idUsuario = result.idUsuario
-            data.dia = datetime.date.today().strftime("%V")
+            data.dia = datetime.date.today().strftime("%V")        #Obtiene el número de la semana 
             data.mes = datetime.date.today().strftime("%m")
             data.anio = datetime.date.today().strftime("%Y")  
             data.temperatura = round(temp,2)
@@ -604,7 +637,7 @@ def parseoMETAR(result_metar):
 
     #Inicio del parseo
     metar = result_metar["Raw-Report"]
-    temperatura = result_metar["Temperature"] + ' degrees celsius'
+    temperatura = result_metar["Temperature"] + ' C'
     presion_atmosferica = result_metar["Altimeter"] + ' hPa'
     nubes = result_metar["Cloud-List"]
      
@@ -635,7 +668,7 @@ def parseoMETAR(result_metar):
         array_nubes.append('No data')
     if rafaga_viento == ' KT':
         rafaga_viento = 'No data'
-    if temperatura == ' degrees celsius':
+    if temperatura == ' C':
         temperatura = 'No data'
     if visibilidad == ' m':
         visibilidad = 'No data'
@@ -682,12 +715,12 @@ def parseoTAFOR_noRepeatInfo(result_taf):
     if max_temp == '':
         max_temp = "No data"
     else:
-        max_temp = max_temp[2:4] + " degrees celsius"
+        max_temp = max_temp[2:4] + " C"
       
     if min_temp == '':
         min_temp = "No data"
     else:
-        min_temp = min_temp[2:4] + " degrees celsius"
+        min_temp = min_temp[2:4] + " C"
         
     for i in range(len(result_taf["Forecast"])):
         
@@ -777,7 +810,8 @@ class METAR_TAF(webapp2.RequestHandler):
     
     def get(self):
         
-        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == 1).get()
+        userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
         
         lat = coordenadas.latitud
         lng = coordenadas.longitud
@@ -813,7 +847,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 array_taf = parseoTAFOR_RepeatInfo(result_taf)
                 
             except KeyError, e:
-                error = 'At this moment, it is not possible to verify the place where the drone is circulating.'
+                error = 'At this moment, it is not possible to verify the place where drone is circulating.'
                 
             self.response.headers['Content-Type'] = 'text/html'
 
@@ -848,6 +882,7 @@ urls = [('/', MainPage),
         ('/datos_grafico', datos_grafico),
         ('/pronostico', pronostico),
         ('/recibirDatosDrone', RecibirDatosDrone),
+        ('/recibirDatosLoginApp',RecibirDatosLoginApp),
         ('/updateDatosDrone', updateDatosDrone),
         ('/METAR_TAF', METAR_TAF),
         ('/.*', ErrorPage)

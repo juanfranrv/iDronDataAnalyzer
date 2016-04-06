@@ -32,7 +32,7 @@ class DatosAtmosfericos(ndb.Model):
 #Clase donde se define el modelo de los datos recibidos en tiempo real desde el drone.
 
 class DatosRecibidos(ndb.Model):
-    idDatos = ndb.IntegerProperty()
+    idDatos = ndb.StringProperty()
     latitud = ndb.StringProperty()
     longitud = ndb.StringProperty()
     altura = ndb.StringProperty()
