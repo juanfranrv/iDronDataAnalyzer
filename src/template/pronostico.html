@@ -32,8 +32,7 @@
 			<li class="active"><a href="/pronostico">Forecast</a></li>
                         <li><a href="/estadisticas">Statistics</a></li>
                         <li><a href="/geolocalizacion">Geolocation</a></li>
-                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>
-                        <li><a href="/streaming">Streaming</a></li>                         
+                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>                        
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -45,18 +44,16 @@
    <form id="form_pronos" role="form" onsubmit="return Valida_pronostico(this);" method="post" action="/pronostico">
     <div class="row">
 	<div class="col-md-3">
-	  <label>Insert latitude: </label>
           <input id="latitud" type="text" class="form-control" name="latitud" value="{{latitud_actual}}" placeholder="Latitude">
 	</div>
         <div class="col-md-3">
-	  <label>Insert longitude: </label>
 	  <input id="longitud" type="text" class="form-control" name="longitud" value="{{longitud_actual}}" placeholder="Longitude">
 	</div>
 	<div class="col-md-3">
     	  <button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-danger">Make forecast</button>
 	</div>
     </div>
-    <div style="margin-top:3%;font-size:90%;" class="row">
+    <div style="margin-top:3%;font-size:85%;" class="row">
 	<div class="col-md-3">
 	  <label><input type="radio" value="horas" name="optradio" checked="checked">Hourly forecast</label>
 	</div>

@@ -36,25 +36,25 @@ class RecibirDatosLoginApp(webapp2.RequestHandler):
     
     def post(self):
                 
-        username = self.request.get('username')
-        password = self.request.get('password')
-        
-        #Buscamos el usuario recibido desde Android en la base de datos y si existe devolvemos su token para iniciar sesión en la app Android
-        UserQuery = model.Usuario.query(model.Usuario.usuario == username).get()
-        
-        if UserQuery is not None:
+            username = self.request.get('username')
+            password = self.request.get('password')
             
-            if UserQuery.password == password:
-                token = UserQuery.idUsuario
-                self.response.write(token)
+            #Buscamos el usuario recibido desde Android en la base de datos y si existe devolvemos su token para iniciar sesión en la app Android
+            UserQuery = model.Usuario.query(model.Usuario.usuario == username).get()
+            
+            if UserQuery is not None:
                 
-            else:
-                token = "NoData"
-                self.response.write(token)
-            
-        else:    
-            token = "NoData" 
-            self.response.write(token)         
+                if UserQuery.password == password:
+                    token = UserQuery.idUsuario
+                    self.response.write(token)
+                    
+                else:
+                    token = "NoData"
+                    self.response.write(token)
+                
+            else:    
+                token = "NoData" 
+                self.response.write(token)         
          
 #Clase que recibe los datos procedentes del HTTP POST de la aplicación de Android y los almacena para ser tratados posteriormente en el resto de funcionalidades
 
@@ -62,36 +62,36 @@ class RecibirDatosDrone(webapp2.RequestHandler):
     
     def post(self):
 
-        #Obtiene los datos recibidos por Http Post desde el drone (A través de la app de Android)
-        token = self.request.get('token')
-        latitud = self.request.get('latitud')
-        longitud = self.request.get('longitud')
-        altura = self.request.get('altura')
-        velocidad = self.request.get('velocidad')
-        
-        busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == token).get()
-        
-        if busqueda is None:    #Si la base de datos está vacía, insertamos los datos recibidos del drone
+            #Obtiene los datos recibidos por Http Post desde el drone (A través de la app de Android)
+            token = self.request.get('token')
+            latitud = self.request.get('latitud')
+            longitud = self.request.get('longitud')
+            altura = self.request.get('altura')
+            velocidad = self.request.get('velocidad')
             
-            datosRec = model.DatosRecibidos()
-                    
-            datosRec.idDatos = token
-            datosRec.latitud = latitud
-            datosRec.longitud = longitud
-            datosRec.altura = altura
-            datosRec.velocidad = velocidad
+            busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == token).get()
             
-            datosRec.put()
-        
-        else:                   #Si ya no está vacía, buscamos los únicos datos que tiene y sobreescribimos por los nuevos
+            if busqueda is None:    #Si la base de datos está vacía, insertamos los datos recibidos del drone
+                
+                datosRec = model.DatosRecibidos()
+                        
+                datosRec.idDatos = token
+                datosRec.latitud = latitud
+                datosRec.longitud = longitud
+                datosRec.altura = altura
+                datosRec.velocidad = velocidad
+                
+                datosRec.put()
             
-            busqueda.idDatos = token
-            busqueda.latitud = latitud
-            busqueda.longitud = longitud
-            busqueda.altura = altura
-            busqueda.velocidad = velocidad
-            
-            busqueda.put()
+            else:                   #Si ya no está vacía, buscamos los únicos datos que tiene y sobreescribimos por los nuevos
+                
+                busqueda.idDatos = token
+                busqueda.latitud = latitud
+                busqueda.longitud = longitud
+                busqueda.altura = altura
+                busqueda.velocidad = velocidad
+                
+                busqueda.put()
                   
 #Clase principal
 

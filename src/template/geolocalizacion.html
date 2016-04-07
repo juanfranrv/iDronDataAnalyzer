@@ -1,38 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../static/images/dron_geo.png" type="image/x-icon" />
-    <title>iDron Data Analyzer</title>
-	
-    <!-- core CSS -->
-
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../static/css/animate.min.css" rel="stylesheet">
-    <link href="../static/css/main.css" rel="stylesheet">
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-
-    <!-- Libreria Bootstrap js -->
-
-    <script type='text/javascript' src='../static/js/bootstrap.js'></script>
-    <script type='text/javascript' src='../static/js/bootstrap.min.js'></script>
-
-
-    <!-- Google maps (Places API, elevation service and maps API)-->
-
-    <script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLweM-83sN7E&signed_in=true&libraries=places&callback=initialize">
-    </script>
-
-    <!-- Libreria proyecto js -->
-
-    <script type='text/javascript' src='../static/js/iDronDataAnalyzer/utils_geolocalizacion.js'></script> 
-     
-</head><!--/head-->
+{{head|safe}}
 
 <body class="homepage">
        <header id="header">
@@ -63,8 +32,7 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLwe
 			<li><a href="/pronostico">Forecast</a></li>
                         <li><a href="/estadisticas">Statistics</a></li>
                         <li class="active"><a href="/geolocalizacion">Geolocation</a></li>
-                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>
-                        <li><a href="/streaming">Streaming</a></li>                      
+                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>                     
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -75,20 +43,29 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLwe
     <div style="background:transparent !important" class="jumbotron">
     <div id="recargar" class="row">
 	<div class="col-sm-5">
-	<label>Coordinates: </label><label style="font-size:90%;">&nbsp;{{lat}}, {{lng}}</label>
+	<label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{lat}}, {{lng}}</span>
 	</div>
         <div class="col-sm-3">
-	<label>Altitude: </label><label style="font-size:90%;">&nbsp;{{alt}} m</label>
+	<label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{alt}} m</span>
 	</div>
         <div class="col-sm-3">
-	<label>Speed: </label><label style="font-size:90%;">&nbsp;{{vel}} m/s</label>
+	<label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{vel}} m/s</span>
 	</div>
     </div>
 
     <div id="map-canvas" class="jumbotron"></div>
+
     </div>
 
 {{footer|safe}}
+
+    <!-- Libreria proyecto js -->
+
+    <script type='text/javascript' src='../static/js/iDronDataAnalyzer/utils_geolocalizacion.js'></script> 
+     
+    <!-- Google maps (Places API, elevation service and maps API)-->
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLweM-83sN7E&signed_in=true&libraries=places&callback=initialize" async defer></script>
 
 </body>
 </html>

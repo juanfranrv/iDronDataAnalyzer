@@ -146,9 +146,9 @@ function actualizarDatosDrone() {
 		  success: function (data) {
 			 $('#recargar').html(
 			    function(){
-				var content = '<div class="col-sm-5"><label>Coordinates: </label><label style="font-size:90%;">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</label></div>';
-				content = content + '<div class="col-sm-3"><label>Altitude: </label><label style="font-size:90%;">&nbsp;' + data[0].altura + ' m </label></div>';
-				content = content + '<div class="col-sm-3"><label>Speed: </label><label style="font-size:90%;">&nbsp;' + data[0].velocidad + ' m/s </label></div>';
+				var content = '<div class="col-sm-5"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
+				content = content + '<div class="col-sm-3"><label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].altura + ' m </span></div>';
+				content = content + '<div class="col-sm-3"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s </span></div>';
 
 				return content;
 			    }
