@@ -35,7 +35,7 @@ lng =  -3.6241040674591507
 class RecibirDatosLoginApp(webapp2.RequestHandler):
     
     def post(self):
-        
+                
         username = self.request.get('username')
         password = self.request.get('password')
         
@@ -55,13 +55,13 @@ class RecibirDatosLoginApp(webapp2.RequestHandler):
         else:    
             token = "NoData" 
             self.response.write(token)         
-     
+         
 #Clase que recibe los datos procedentes del HTTP POST de la aplicación de Android y los almacena para ser tratados posteriormente en el resto de funcionalidades
 
 class RecibirDatosDrone(webapp2.RequestHandler):
     
     def post(self):
-        
+
         #Obtiene los datos recibidos por Http Post desde el drone (A través de la app de Android)
         token = self.request.get('token')
         latitud = self.request.get('latitud')
@@ -92,7 +92,7 @@ class RecibirDatosDrone(webapp2.RequestHandler):
             busqueda.velocidad = velocidad
             
             busqueda.put()
-              
+                  
 #Clase principal
 
 class MainPage(webapp2.RequestHandler):
@@ -125,15 +125,15 @@ class Login(webapp2.RequestHandler):
     def post(self):
         
         usu=self.request.get('user')
+        pas=self.request.get('pass')
         result=model.Usuario.query(model.Usuario.usuario==usu)
         usur=result.get()
-        pas=self.request.get('pass')
         
         if usur is not None:
 
             if usur.password==pas:
                 
-                self.response.headers.add_header('Set-Cookie',"username="+str(usur.usuario))
+                self.response.headers.add_header('Set-Cookie',"username=" + str(usur.usuario))
         
                 template_values={'sesion':usur.usuario,'head':head,'footer':footer}
                 template = JINJA_ENVIRONMENT.get_template('template/index.html')
@@ -304,31 +304,33 @@ class geolocalizacion(webapp2.RequestHandler):
 class coordenadas(webapp2.RequestHandler):
     
     def get(self):
-
-        userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
         
-        lat = coordenadas.latitud
-        lng = coordenadas.longitud
-        
-        '''
-        url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/" + lat + "/" + lng +"/200?appId=57286966&appKey=9bf92ea213f90dd82a2db88892bce75a&maxFlights=200"
-        #url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/-35.36/149.16/200?appId=57286966&appKey=9bf92ea213f90dd82a2db88892bce75a&maxFlights=200"
-        
-        r = urllib2.urlopen(url)
-
-        result = json.load(r)
-        flights= []
-        
-        for i in range(len(result["flightPositions"])):
-            last_flight_detected = result["flightPositions"][i]["positions"][len(result["flightPositions"][i]["positions"])]
-            flights.append(last_flight_detected)
-        print flights
-        '''
-        
-        latLng = [lat, lng]
-        
-        self.response.write(json.dumps(latLng))
+        if self.request.cookies.get("username"):
+            
+            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+            
+            lat = coordenadas.latitud
+            lng = coordenadas.longitud
+            
+            '''
+            url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/" + lat + "/" + lng +"/200?appId=57286966&appKey=9bf92ea213f90dd82a2db88892bce75a&maxFlights=200"
+            #url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/-35.36/149.16/200?appId=57286966&appKey=9bf92ea213f90dd82a2db88892bce75a&maxFlights=200"
+            
+            r = urllib2.urlopen(url)
+    
+            result = json.load(r)
+            flights= []
+            
+            for i in range(len(result["flightPositions"])):
+                last_flight_detected = result["flightPositions"][i]["positions"][len(result["flightPositions"][i]["positions"])]
+                flights.append(last_flight_detected)
+            print flights
+            '''
+            
+            latLng = [lat, lng]
+            
+            self.response.write(json.dumps(latLng))
 
 #Clase que gestiona la obtención de datos de seguridad en tiempo real
 
@@ -336,25 +338,27 @@ class updateDatosDrone(webapp2.RequestHandler):
     
     def get(self):
         
-        datosRec = []
-        
-        userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-        datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
-
-        lat = datos.latitud
-        lng = datos.longitud
+        if self.request.cookies.get("username"):
             
-        vel = round(float(datos.velocidad),3)
-        alt = round(float(datos.altura),3)
-  
-        datosRec.append({'latitud': lat,
-                         'longitud': lng,
-                         'velocidad': vel,
-                         'altura': alt
-                       })
+            datosRec = []
             
-        self.response.write(json.dumps(datosRec))
-        
+            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+    
+            lat = datos.latitud
+            lng = datos.longitud
+                
+            vel = round(float(datos.velocidad),3)
+            alt = round(float(datos.altura),3)
+      
+            datosRec.append({'latitud': lat,
+                             'longitud': lng,
+                             'velocidad': vel,
+                             'altura': alt
+                           })
+                
+            self.response.write(json.dumps(datosRec))
+            
 #Clase que gestiona el gráfico de monitorización de datos atmosféricos en tiempo real
              
 class grafico(webapp2.RequestHandler):
@@ -380,66 +384,68 @@ class datos_grafico(webapp2.RequestHandler):
     
     def get(self):
         
-        global contador
+        if self.request.cookies.get("username"):
         
-        userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
-        
-        lat = coordenadas.latitud
-        lng = coordenadas.longitud
-        
-        url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
-        r = urllib2.urlopen(url)
-
-        result = json.load(r)
-        
-        tempe = result["main"]["temp"]          #temperatura
-        pres = result["main"]["pressure"]       #presion atmosferica
-        hum = result["main"]["humidity"]        #humedad
-        vel_wind = result["wind"]["speed"]      #velocidad del viento
-        dir_win = result["wind"]["deg"]         #direccion del viento
-        
-        temp = tempe - 273.15                   #conversión de kelvin a celsius
-        vel_win = vel_wind * 3.6                #conversión de m/s a km/h
-
-        dato_seleccionado = self.request.get('dato')
-
-        if dato_seleccionado == 'undefined' or dato_seleccionado == 'Temperature':
-            datoAmostrar = temp;
-        elif dato_seleccionado == 'Atmospheric pressure':
-            datoAmostrar = pres;
-        elif dato_seleccionado == 'Humidity':
-            datoAmostrar = hum;
-        elif dato_seleccionado == 'Wind Speed':
-            datoAmostrar = vel_win;
-        elif dato_seleccionado == 'Wind Direction':
-            datoAmostrar = dir_win;
-        
-        if contador is 20:               #Cada 20 datos obtenidos, almacenamos en la base de datos
-            #Almacenamos los datos en el usuario con la sesión activa
-            result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            data = model.DatosAtmosfericos()
+            global contador
             
-            data.fecha = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
-            data.date = datetime.datetime.now().strftime("%d-%m-%Y")
-            data.idUsuario = result.idUsuario
-            data.dia = datetime.date.today().strftime("%V")        #Obtiene el número de la semana 
-            data.mes = datetime.date.today().strftime("%m")
-            data.anio = datetime.date.today().strftime("%Y")  
-            data.temperatura = round(temp,2)
-            data.pres_atmos = round(pres,2)
-            data.humedad = hum
-            data.vel_viento = round(vel_win,2)
-            data.dir_viento = round(dir_win,2)
-                            
-            data.put()
+            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
             
-            contador = 0
-        
-        else:
-            contador = contador + 1
-        
-        self.response.write(json.dumps(datoAmostrar)) 
+            lat = coordenadas.latitud
+            lng = coordenadas.longitud
+            
+            url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
+            r = urllib2.urlopen(url)
+    
+            result = json.load(r)
+            
+            tempe = result["main"]["temp"]          #temperatura
+            pres = result["main"]["pressure"]       #presion atmosferica
+            hum = result["main"]["humidity"]        #humedad
+            vel_wind = result["wind"]["speed"]      #velocidad del viento
+            dir_win = result["wind"]["deg"]         #direccion del viento
+            
+            temp = tempe - 273.15                   #conversión de kelvin a celsius
+            vel_win = vel_wind * 3.6                #conversión de m/s a km/h
+    
+            dato_seleccionado = self.request.get('dato')
+    
+            if dato_seleccionado == 'undefined' or dato_seleccionado == 'Temperature':
+                datoAmostrar = temp;
+            elif dato_seleccionado == 'Atmospheric pressure':
+                datoAmostrar = pres;
+            elif dato_seleccionado == 'Humidity':
+                datoAmostrar = hum;
+            elif dato_seleccionado == 'Wind Speed':
+                datoAmostrar = vel_win;
+            elif dato_seleccionado == 'Wind Direction':
+                datoAmostrar = dir_win;
+            
+            if contador is 20:               #Cada 20 datos obtenidos, almacenamos en la base de datos
+                #Almacenamos los datos en el usuario con la sesión activa
+                result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+                data = model.DatosAtmosfericos()
+                
+                data.fecha = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+                data.date = datetime.datetime.now().strftime("%d-%m-%Y")
+                data.idUsuario = result.idUsuario
+                data.dia = datetime.date.today().strftime("%V")        #Obtiene el número de la semana 
+                data.mes = datetime.date.today().strftime("%m")
+                data.anio = datetime.date.today().strftime("%Y")  
+                data.temperatura = round(temp,2)
+                data.pres_atmos = round(pres,2)
+                data.humedad = hum
+                data.vel_viento = round(vel_win,2)
+                data.dir_viento = round(dir_win,2)
+                                
+                data.put()
+                
+                contador = 0
+            
+            else:
+                contador = contador + 1
+            
+            self.response.write(json.dumps(datoAmostrar)) 
 
 #Clase que gestiona las estadisticas de la monitorización de datos atmosféricos obtenida
 
@@ -810,13 +816,13 @@ class METAR_TAF(webapp2.RequestHandler):
     
     def get(self):
         
-        userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-        coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
-        
-        lat = coordenadas.latitud
-        lng = coordenadas.longitud
-        
         if self.request.cookies.get("username"):
+                       
+            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+            
+            lat = coordenadas.latitud
+            lng = coordenadas.longitud
             
             #Inicialización de variables para que siga funcionando en el que caso de que no exista alguna
             
