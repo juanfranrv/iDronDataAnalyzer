@@ -340,6 +340,7 @@ class updateDatosDrone(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
+            alert = 0
             datosRec = []
             
             userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
@@ -350,11 +351,15 @@ class updateDatosDrone(webapp2.RequestHandler):
                 
             vel = round(float(datos.velocidad),3)
             alt = round(float(datos.altura),3)
+            
+            if alt > 120:       #Si la altura es mayor de 120m, lanzamos alerta ya que está prohibido
+                alert = 1
       
             datosRec.append({'latitud': lat,
                              'longitud': lng,
                              'velocidad': vel,
-                             'altura': alt
+                             'altura': alt,
+                             'alert':alert
                            })
                 
             self.response.write(json.dumps(datosRec))
