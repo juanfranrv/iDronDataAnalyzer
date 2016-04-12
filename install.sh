@@ -1,23 +1,22 @@
 #!/bin/bash
 
-#Se avisa si no se tiene permisos de administrador para que el usuarios los ponga
-
 if [[ $EUID -ne 0 ]]; then
 	echo "Debes tener permisos de administrador para ejecutar el script"
 
 else
-	# Variables
 
-	APPENGINE_SERVER="GoogleAppEngineSDK/dev_appserver.py"
+	echo 'Instalando aplicación...'
 
-	#Iniciamos los módulos de GAE
+	if [ ! -d /usr/local/bin/iDronDataAnalyzer ]; then
+		echo 'Copiando archivos en el sistema...'
+		cp -r . /usr/local/bin/iDronDataAnalyzer
+	fi
 
-	git submodule init && \
-	git submodule sync && \
-	git submodule update
+	sudo cp iDronDataAnalyzer /etc/init.d
 
-	# Lanzar aplicación (con autoconfirmación)
+	sudo update-rc.d iDronDataAnalyzer defaults
+	sudo service iDronDataAnalyzer start
 
-	echo y | python $APPENGINE_SERVER  src --host=0.0.0.0 --port=8080 --admin_port=9090 --storage_path=database &
+	echo '¡Listo!'
 
 fi
