@@ -5,7 +5,7 @@ import unittest
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 from google.appengine.datastore import datastore_stub_util
-import urllib, webapp2
+import urllib, webapp2, subprocess
 
 
 class TestModel(db.Model):
