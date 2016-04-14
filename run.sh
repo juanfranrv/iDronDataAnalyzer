@@ -2,7 +2,7 @@
 
 # Variables
 
-APPENGINE_SERVER="google_appengine/dev_appserver.py"
+APPENGINE_SERVER="GoogleAppEngineSDK/dev_appserver.py"
 
 # Lanzar aplicación (con autoconfirmación)
 

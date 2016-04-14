@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -⁻- coding: UTF-8 -*-
+
 import unittest
 from google.appengine.ext import db
 from google.appengine.ext import testbed
@@ -82,7 +85,6 @@ class Tests(webapp2.RequestHandler):
 
 
 class iDronTestCase(unittest.TestCase):
-	
 
 	def setUp(self):
 		# First, create an instance of the Testbed class.
