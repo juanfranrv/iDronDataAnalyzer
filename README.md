@@ -89,13 +89,20 @@ Para parar el servicio:s
 
     sudo docker pull juanfranrv/idrondataanalyzer
 
-    
+***
+
 ### Para desplegar la aplicación en la nube automáticamente: ###
 
 Dar permisos y ejecutar el script [deployToGAE.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/deployToGAE.sh). Inmediatamente, tendremos la aplicación desplegada en la nube de Google App Engine.
 
 ***
 
+##Integración contínua con Shippable:##
+
+Con cada commit la aplicación se desplegará de manera automática en Google App Engine (si pasa todos los test) gracias al script [shippale.yml](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/shippable.yml)
+
+*** 
+s
 ### Para lanzar el simulador del drone: ###
 
 1. Lanzar el script [dronekit.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/dronekit.sh). Instalará las dependencias necesarias y lanzará un simulador de tipo drone.
