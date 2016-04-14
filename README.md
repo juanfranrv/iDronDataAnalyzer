@@ -66,7 +66,7 @@ Descargamos e iniciamos los módulos del SDK de Google App Engine y lanzamos el 
 
 Lanzamos el script con permisos de ejecución:
 
-sudo ./uninstall.sh
+    sudo ./uninstall.sh
 
 
 ***
