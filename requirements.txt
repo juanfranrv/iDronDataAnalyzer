@@ -1,0 +1,10 @@
+nose
+coverage
+NoseGAE
+WebTest
+paramiko
+PyYAML
+jinja2
+httplib2
+
+
