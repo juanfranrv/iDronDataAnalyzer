@@ -63,8 +63,7 @@ class Tests(webapp2.RequestHandler):
     def testURL(self):  
         
         urls_test = [ '/', '/logout', '/editar_perfil', '/formRegistro', '/login', '/geolocalizacion', '/coordenadas',
-              '/grafico', '/estadisticas', '/getDatosAtmosfericos', '/datos_grafico', '/pronostico', '/recibirDatosDrone', 
-	      '/recibirDatosLoginApp', '/updateDatosDrone', '/METAR_TAF']
+              '/grafico', '/estadisticas', '/getDatosAtmosfericos', '/datos_grafico', '/pronostico', '/updateDatosDrone', '/METAR_TAF']
         
         for url in urls_test:
             response=urllib.urlopen('http://idrondataanalyzer.appspot.com' + url)
