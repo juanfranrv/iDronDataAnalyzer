@@ -392,6 +392,7 @@ class datos_grafico(webapp2.RequestHandler):
         if self.request.cookies.get("username"):
         
             global contador
+            datoAmostrar = ''
             
             userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
             coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
