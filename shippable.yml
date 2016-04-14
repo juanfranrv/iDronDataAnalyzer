@@ -18,7 +18,7 @@ before_install:
   - >
     test -e $GAE_DIR ||
     (mkdir -p $GAE_DIR &&
-    cp -r google_appengine $GAE_DIR)
+    cp -r GoogleAppEngineSDK $GAE_DIR)
 
 #Instalar requerimientos (herramientas necesarias para realizar test)
 install:
