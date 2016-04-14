@@ -23,7 +23,6 @@ La aplicación tendrá que cumplir los siguientes requisitos:
 * [X] Pronóstico de datos atmosféricos por horas o por días.
 * [X] Almacenamiento de datos monitorizados para el posterior estudio de la misión. Estudio con gráficos.
 * [X] Detección de los datos atmosféricos procedentes del METAR y TAF del aeropuerto más cercano por el que vaya circulando el drone en ese momento.
-* [ ] Streaming en directo utilizando la cámara incorporada del dron.
 * [ ] Detección de tráfico aéreo y/o fronteras con poblaciones (zonas restringidas).
  
 ***
@@ -36,12 +35,61 @@ Por otro lado, el servidor permanecerá ajeno de todo lo relacionado con el dron
 
 ***
 
-### Para instalar la aplicación automáticamente: ###
+### Instalación: ###
 
-Dar permisos y ejecutar el script [install.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/install.sh). Inmediatamente, tendremos la aplicación lanzada en el puerto 8080.
+Actualizamos repositorios:
+
+    sudo apt-get update
+    
+Instalamos python y sus dependencias:
+
+    apt-get -y install python python-setuptools build-essential python-dev
+    easy_install pip
+    
+Instalamos git y clonamos el repositorio:
+
+    apt-get install -y git
+    git clone https://github.com/juanfranrv/iDronDataAnalyzer.git
+
+Descargamos e iniciamos los módulos del SDK de Google App Engine y lanzamos el demonio del sistema:
+
+    cd iDronDataAnalyzer && \
+    git submodule init && \
+    git submodule sync && \
+    git submodule update && \
+    chmod 755 install.sh && \
+    sudo ./install.sh
+    
+***
+
+### Desinstalación: ###
+
+Lanzamos el script con permisos de ejecución:
+
+sudo ./uninstall.sh
+
 
 ***
 
+### Parar y lanzar servicio: ###
+
+Para lanzar el servicio:
+
+    sudo service iDronDataAnalyzer start
+
+Para parar el servicio:s
+
+    sudo service iDronDataAnalyzer stop 
+    
+***
+
+### Contenedor Docker para lanzar e instalar toda la aplicación automáticamente: ###
+
+[Visitar sitio Docker con el contenedor de la aplicación](https://hub.docker.com/r/juanfranrv/idrondataanalyzer/)
+
+    sudo docker pull juanfranrv/idrondataanalyzer
+
+    
 ### Para desplegar la aplicación en la nube automáticamente: ###
 
 Dar permisos y ejecutar el script [deployToGAE.sh](https://github.com/juanfranrv/iDronDataAnalyzer/blob/master/deployToGAE.sh). Inmediatamente, tendremos la aplicación desplegada en la nube de Google App Engine.

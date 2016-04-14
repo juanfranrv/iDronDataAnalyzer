@@ -24,8 +24,8 @@ else
         docker -d &    
  
         #Instalamos la imagen base del contenedor, en este caso Ubuntu
-        docker pull juanfranrv/iDronDataAnalyzer
+        docker pull juanfranrv/idrondataanalyzer
 
         #Arrancamos el contenedor
-        docker run -t -i juanfranrv/iDronDataAnalyzer /bin/bash
+        docker run -t -i juanfranrv/idrondataanalyzer /bin/bash
 fi
