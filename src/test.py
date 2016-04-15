@@ -1,15 +1,11 @@
 #!/usr/bin/python
 # -⁻- coding: UTF-8 -*-
-import sys
-sys.path.insert(1, '../GoogleAppEngineSDK')
-sys.path.insert(1, '../GoogleAppEngineSDK/lib/yaml/lib')
 
 import unittest, urllib, subprocess, model
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 from google.appengine.datastore import datastore_stub_util
 from google.appengine.ext import ndb
-
 
 # Clase con cada uno de los tests 
 class Tests():
@@ -175,7 +171,7 @@ class Tests():
         busquedaRec = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == '10').get()
         busquedaAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == 'jacinto').get()
         busquedaUser = model.Usuario.query(model.Usuario.idUsuario == 'jacinto').get()
-	print 'holaaaa'
+
 	busquedaRec.key.delete()
 	busquedaAtmos.key.delete()
 	busquedaUser.key.delete()
@@ -218,7 +214,7 @@ class iDronTestCase(unittest.TestCase):
 		#Probamos que la pagina esté activa
 		respuesta = pruebas.testPaginaActiva()
 		self.assertEqual(respuesta, True)
-
+'''
 		#Probamos que se inserten datos en la BD
 		response = pruebas.testInsercionBD()
 		self.assertEqual(respuesta, True)
@@ -230,7 +226,7 @@ class iDronTestCase(unittest.TestCase):
 		#Probamos que se borran datos en la BD
 		response = pruebas.testBorrarBD()
 		self.assertEqual(respuesta, True)
-				
+'''				
 #Lanzamos la batería de tests
 if __name__ == '__main__':	
 
