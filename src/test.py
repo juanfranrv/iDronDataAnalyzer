@@ -172,9 +172,9 @@ class Tests(webapp2.RequestHandler):
         busquedaAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == 'jacinto').get()
         busquedaUser = model.Usuario.query(model.Usuario.idUsuario == 'jacinto').get()
 
-	ndb.delete_multi(busquedaRec)
-	ndb.delete_multi(busquedaAtmos)
-	ndb.delete_multi(busquedaUser)
+	busquedaRec.key.delete()
+	busquedaAtmos.key.delete()
+	busquedaUser.key.delete()
 
 	#Si no existe devolvemos True ya que se han borrado
 	if (busquedaRec or busquedaAtmos or busquedaUser) is None:
