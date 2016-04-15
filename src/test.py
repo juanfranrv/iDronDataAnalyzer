@@ -217,10 +217,6 @@ class iDronTestCase(unittest.TestCase):
 		response = pruebas.testInsercionBD()
 		self.assertEqual(respuesta, True)
 
-		#Probamos que se actualizan datos en la BD
-		response = pruebas.testActualizarBD()
-		self.assertEqual(respuesta, True)
-
 
 				
 #Lanzamos la batería de tests
