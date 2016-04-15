@@ -186,14 +186,6 @@ class iDronTestCase(unittest.TestCase):
 
 	def setUp(self):
 
-		app_id = 'myapp'
-		os.environ['APPLICATION_ID'] = app_id
-		datastore_file = '/dev/null'
-		from google.appengine.api import apiproxy_stub_map,datastore_file_stub
-		apiproxy_stub_map.apiproxy = apiproxy_stub_map.APIProxyStubMap() 
-		stub = datastore_file_stub.DatastoreFileStub(app_id, datastore_file, '/')
-		apiproxy_stub_map.apiproxy.RegisterStub('datastore_v3', stub)
-
 		# Primero creamos una instace de testbed
 		self.testbed = testbed.Testbed()
 		# Después activamos testbed
@@ -201,6 +193,8 @@ class iDronTestCase(unittest.TestCase):
 		# Inicializamos la datastore con esta política
 		self.testbed.init_datastore_v3_stub()
 		self.testbed.init_memcache_stub()
+
+    		ndb.get_context().clear_cache()
 
 	def tearDown(self):
 		self.testbed.deactivate()
