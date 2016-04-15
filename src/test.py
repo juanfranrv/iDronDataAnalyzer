@@ -221,9 +221,7 @@ class iDronTestCase(unittest.TestCase):
 		response = pruebas.testActualizarBD()
 		self.assertEqual(respuesta, True)
 
-		#Probamos que se borran datos en la BD
-		response = pruebas.testBorrarBD()
-		self.assertEqual(respuesta, True)
+
 				
 #Lanzamos la batería de tests
 if __name__ == '__main__':	
