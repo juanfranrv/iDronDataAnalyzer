@@ -191,7 +191,7 @@ class iDronTestCase(unittest.TestCase):
 		# Después activamos testbed
 		self.testbed.activate()
 		# Inicializamos la datastore con esta política
-		self.testbed.init_datastore_v3_stub()
+		self.testbed.init_datastore_v3_stub(datastore_file='../database/datastore.db',use_sqlite=False)
 		self.testbed.init_memcache_stub()
 
     		ndb.get_context().clear_cache()
@@ -229,14 +229,6 @@ class iDronTestCase(unittest.TestCase):
 				
 #Lanzamos la batería de tests
 if __name__ == '__main__':	
-	# Primero creamos una instace de testbed
-	self.testbed = testbed.Testbed()
-	# Después activamos testbed
-	self.testbed.activate()
-	# Inicializamos la datastore con esta política
-	self.testbed.init_datastore_v3_stub()
-	self.testbed.init_memcache_stub()
 
-	ndb.get_context().clear_cache()
-	unittest.main()
+    unittest.main()
 
