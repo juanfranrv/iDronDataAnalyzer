@@ -183,7 +183,10 @@ class Tests(webapp2.RequestHandler):
 
 #En esta clase vamos a ejecutar cada uno de los tests anteriores utilizando unittest.
 class iDronTestCase(unittest.TestCase):
-
+	nosegae_datastore_v3 = True
+	nosegae_datastore_v3_kwargs = {
+	    'consistency_policy': datastore_stub_util.PseudoRandomHRConsistencyPolicy(
+	      probability=0)}
 	def setUp(self):
 
 		# Primero creamos una instace de testbed
@@ -191,7 +194,7 @@ class iDronTestCase(unittest.TestCase):
 		# Después activamos testbed
 		self.testbed.activate()
 		# Inicializamos la datastore con esta política
-		self.testbed.init_datastore_v3_stub(datastore_file='../database/datastore.db',use_sqlite=False)
+		self.testbed.init_datastore_v3_stub()
 		self.testbed.init_memcache_stub()
 
     		ndb.get_context().clear_cache()
