@@ -57,7 +57,7 @@ class Tests():
 	if response.getcode() >= 400:
 	        return False
 	return True
-
+'''
     #Comprueba si se inserta correctamente en cada una de las tablas que forman la base de datos
     def testInsercionBD(self):
 
@@ -180,7 +180,7 @@ class Tests():
 	if (busquedaRec or busquedaAtmos or busquedaUser) is None:
 	        return True
 	return False
-
+'''
 #En esta clase vamos a ejecutar cada uno de los tests anteriores utilizando unittest.
 class iDronTestCase(unittest.TestCase):
 
