@@ -102,6 +102,7 @@ class Tests(webapp2.RequestHandler):
 
 	datosAtmosf.put()
 
+	#Consultamos por id para comprobar si se han insertado en el test
         busquedaRec = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == '1').get()
         busquedaAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == 'pepe').get()
         busquedaUser = model.Usuario.query(model.Usuario.idUsuario == 'pepe').get()
@@ -171,9 +172,9 @@ class Tests(webapp2.RequestHandler):
         busquedaAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == 'jacinto').get()
         busquedaUser = model.Usuario.query(model.Usuario.idUsuario == 'jacinto').get()
 
-	busquedaRec.delete()
-	busquedaAtmos.delete()
-	busquedaUser.delete()
+	ndb.delete(busquedaRec)
+	ndb.delete(busquedaAtmos)
+	ndb.delete(busquedaUser)
 
 	#Si no existe devolvemos True ya que se han borrado
 	if (busquedaRec or busquedaAtmos or busquedaUser) is None:
