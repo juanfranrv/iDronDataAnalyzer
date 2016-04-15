@@ -106,7 +106,7 @@ class Tests(webapp2.RequestHandler):
         busquedaAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == 'pepe').get()
         busquedaUser = model.Usuario.query(model.Usuario.idUsuario == 'pepe').get()
 
-	if busquedaRec is None | busquedaAtmos is None | busquedaUser is None:
+	if (busquedaRec or busquedaAtmos or busquedaUser) is None:
 	        return False
 	return True
 
@@ -159,7 +159,7 @@ class Tests(webapp2.RequestHandler):
         busquedaAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == 'jacinto').get()
         busquedaUser = model.Usuario.query(model.Usuario.idUsuario == 'jacinto').get()
 
-	if busquedaRec is None | busquedaAtmos is None | busquedaUser is None:
+	if (busquedaRec or busquedaAtmos or busquedaUser) is None:
 	        return False
 	return True
 
@@ -176,7 +176,7 @@ class Tests(webapp2.RequestHandler):
 	busquedaUser.delete()
 
 	#Si no existe devolvemos True ya que se han borrado
-	if busquedaRec is None | busquedaAtmos is None | busquedaUser is None:
+	if (busquedaRec or busquedaAtmos or busquedaUser) is None:
 	        return True
 	return False
 
