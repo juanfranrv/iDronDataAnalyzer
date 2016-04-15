@@ -183,10 +183,7 @@ class Tests(webapp2.RequestHandler):
 
 #En esta clase vamos a ejecutar cada uno de los tests anteriores utilizando unittest.
 class iDronTestCase(unittest.TestCase):
-	nosegae_datastore_v3 = True
-	nosegae_datastore_v3_kwargs = {
-	    'consistency_policy': datastore_stub_util.PseudoRandomHRConsistencyPolicy(
-	      probability=0)}
+
 	def setUp(self):
 
 		# Primero creamos una instace de testbed

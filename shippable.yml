@@ -13,7 +13,7 @@ env:
   global:
     - GAE_DIR=/tmp/gae
 
-#Instalarse la mágina virtual GAE
+#Instalarse la máquina virtual GAE
 before_install:
   - >
     test -e $GAE_DIR ||
@@ -33,7 +33,7 @@ before_script:
 script:
   - >
     nosetests src/test.py
-    --with-gae --gae-lib-root=$GAE_DIR/GoogleAppEngineSDK --gae-application=src
+     --gae-lib-root=$GAE_DIR/GoogleAppEngineSDK --gae-application=src
     --with-xunit --xunit-file=shippable/testresults/test.xml
     --with-coverage --cover-xml --cover-xml-file=shippable/codecoverage/coverage.xml
 
