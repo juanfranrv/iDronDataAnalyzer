@@ -1,14 +1,18 @@
 #!/usr/bin/python
 # -⁻- coding: UTF-8 -*-
+import sys
+sys.path.insert(1, '../GoogleAppEngineSDK')
+sys.path.insert(1, '../GoogleAppEngineSDK/lib/yaml/lib')
 
-import unittest, urllib, webapp2, subprocess, model
+import unittest, urllib, subprocess, model
 from google.appengine.ext import db
 from google.appengine.ext import testbed
 from google.appengine.datastore import datastore_stub_util
 from google.appengine.ext import ndb
 
+
 # Clase con cada uno de los tests 
-class Tests(webapp2.RequestHandler):
+class Tests():
     
     def get(self):
         self.response.write('TEST')
@@ -171,7 +175,7 @@ class Tests(webapp2.RequestHandler):
         busquedaRec = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == '10').get()
         busquedaAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == 'jacinto').get()
         busquedaUser = model.Usuario.query(model.Usuario.idUsuario == 'jacinto').get()
-
+	print 'holaaaa'
 	busquedaRec.key.delete()
 	busquedaAtmos.key.delete()
 	busquedaUser.key.delete()
