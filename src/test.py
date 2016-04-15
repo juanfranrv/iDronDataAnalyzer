@@ -186,6 +186,14 @@ class iDronTestCase(unittest.TestCase):
 
 	def setUp(self):
 
+		app_id = 'myapp'
+		os.environ['APPLICATION_ID'] = app_id
+		datastore_file = '/dev/null'
+		from google.appengine.api import apiproxy_stub_map,datastore_file_stub
+		apiproxy_stub_map.apiproxy = apiproxy_stub_map.APIProxyStubMap() 
+		stub = datastore_file_stub.DatastoreFileStub(app_id, datastore_file, '/')
+		apiproxy_stub_map.apiproxy.RegisterStub('datastore_v3', stub)
+
 		# Primero creamos una instace de testbed
 		self.testbed = testbed.Testbed()
 		# Después activamos testbed
@@ -217,7 +225,13 @@ class iDronTestCase(unittest.TestCase):
 		response = pruebas.testInsercionBD()
 		self.assertEqual(respuesta, True)
 
+		#Probamos que se actualizan datos en la BD
+		response = pruebas.testActualizarBD()
+		self.assertEqual(respuesta, True)
 
+		#Probamos que se borran datos en la BD
+		response = pruebas.testBorrarBD()
+		self.assertEqual(respuesta, True)
 				
 #Lanzamos la batería de tests
 if __name__ == '__main__':	
