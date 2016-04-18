@@ -3,6 +3,10 @@
 
 {{head|safe}}
 
+<!--/Toggle button Bootstrap-->
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
 <body class="homepage">
        <header id="header">
         <div class="top-bar">
@@ -45,11 +49,24 @@
 	<div class="col-sm-5">
 	<label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{lat}}, {{lng}}</span>
 	</div>
-        <div class="col-sm-4">
+        <div class="col-sm-3">
 	<label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{alt}} m</span>
 	</div>
         <div class="col-sm-3">
 	<label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{vel}} m/s</span>
+	</div>
+    </div>
+
+    <div id="recargar" class="row">
+	<div class="col-sm-3"></div>
+	<div class="col-sm-2">
+	<input type="checkbox" data-toggle="toggle" data-on="Airports detection" data-off="No airports detection" data-onstyle="default">
+	</div>
+        <div class="col-sm-2">
+	<input type="checkbox" data-toggle="toggle" data-on="Cities detection" data-off="No cities detection" data-onstyle="default">
+	</div>
+        <div class="col-sm-2">
+	<input type="checkbox" data-toggle="toggle" data-on="Air flight detection" data-off="No air flight detection" data-onstyle="default">
 	</div>
     </div>
 
