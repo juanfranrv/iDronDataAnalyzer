@@ -281,15 +281,16 @@ class geolocalizacion(webapp2.RequestHandler):
             
             username = str(self.request.cookies.get("username"))
             
-            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+            #userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            #datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
         
-            lat = datos.latitud
-            lng = datos.longitud
+            #lat = datos.latitud
+            #lng = datos.longitud
 
-            vel = round(float(datos.velocidad),3)
-            alt = round(float(datos.altura),3)
- 
+            #vel = round(float(datos.velocidad),3)
+            #alt = round(float(datos.altura),3)
+            vel=1
+            alt=1
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'sesion':username,'footer': footer,'head':head,'lat':lat,'lng':lng,'vel':vel,'alt':alt}
             template = JINJA_ENVIRONMENT.get_template('template/geolocalizacion.html')
@@ -307,11 +308,11 @@ class coordenadas(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
-            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+            #userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            #coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
             
-            lat = coordenadas.latitud
-            lng = coordenadas.longitud
+            #lat = coordenadas.latitud
+            #lng = coordenadas.longitud
             
             '''
             url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/" + lat + "/" + lng +"/200?appId=57286966&appKey=9bf92ea213f90dd82a2db88892bce75a&maxFlights=200"
@@ -343,14 +344,15 @@ class updateDatosDrone(webapp2.RequestHandler):
             alert = 0
             datosRec = []
             
-            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+            #userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            #datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
     
-            lat = datos.latitud
-            lng = datos.longitud
-                
-            vel = round(float(datos.velocidad),3)
-            alt = round(float(datos.altura),3)
+            #lat = datos.latitud
+            #lng = datos.longitud
+            vel=1
+            alt=1  
+            #vel = round(float(datos.velocidad),3)
+            #alt = round(float(datos.altura),3)
             
             if alt > 120:       #Si la altura es mayor de 120m, lanzamos alerta ya que está prohibido
                 alert = 1
