@@ -32,34 +32,34 @@ function Valida(form) {
 	
 		
 	  if(usuario.length==0) { //¿Tiene 0 caracteres?
-	    alert('Insert username'); //Mostramos el mensaje
+	    alert('Enter username'); //Mostramos el mensaje
 	
 	    return false; 
 	  }
 
 	  if(password.length==0) { //¿Tiene 0 caracteres?
-	    alert('Insert password'); //Mostramos el mensaje
+	    alert('Enter password'); //Mostramos el mensaje
 	
 	    return false; 
 	  }
 	  if(email.length==0) { //comprueba que no esté vacío
 	  
-	    alert('Insert email');
+	    alert('Enter email');
 	    return false;
 	  }
 	  if(telefono.length==0) { //comprueba que no esté vacío
 	  
-	    alert('Insert phone');
+	    alert('Enter phone');
 	    return false;
 	  }
 	  
 	  if( !(/^\d{9}$/.test(telefono)) ) {
-	   alert('Insert a valid phone');
+	   alert('Enter a valid phone');
 		return false;
 	  }
 	  
 	  if( !(/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/.test(email)) ) {
-		alert('Insert a valid email');
+		alert('Enter a valid email');
 		return false;
 	  }  
 	
@@ -77,12 +77,12 @@ function Valida_login(form) {
 	var password= document.getElementById("pass").value;
 
 	if(usuario.length==0) { //¿Tiene 0 caracteres?
-		alert('Insert username'); //Mostramos el mensaje
+		alert('Enter username'); //Mostramos el mensaje
 		return false; 
 	}
 
 	if(password.length==0) { //comprueba que no esté vacío
-		alert('Insert password');
+		alert('Enter password');
 		return false;
 	}
 
@@ -100,12 +100,12 @@ function Valida_login(form) {
 	  var longitud = document.getElementById("longitud").value;
 		
 	  if(latitud.length == 0) { //¿Tiene 0 caracteres?
-	  	alert('Insert latitude'); //Mostramos el mensaje
+	  	alert('Enter latitude'); //Mostramos el mensaje
 	        return false; 
 	  }
 
 	  if(longitud.length == 0) { //¿Tiene 0 caracteres?
-	  	alert('Insert longitude'); //Mostramos el mensaje
+	  	alert('Enter longitude'); //Mostramos el mensaje
 	  	return false; 
 	  }
 	

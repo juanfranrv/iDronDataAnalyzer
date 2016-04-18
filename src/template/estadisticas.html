@@ -3,6 +3,10 @@
 
 {{head|safe}}
 
+<!--/Toggle button Bootstrap-->
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
 <body class="homepage">
        <header id="header">
         <div class="top-bar">
@@ -52,7 +56,7 @@
 		<option value="anual">Annual</option>
 	</select>
 
-	<input type="checkbox" name="afirmar" id="afirmar" value="afirmar">Chart
+	<input type="checkbox" value="afirmar" id="afirmar" data-toggle="toggle" data-on="Chart" data-off="No Chart" data-onstyle="default">
 
 	<select style="display:none;" name="data_grafico" id="data_grafico" >    
 		<option value="temperatura" selected="selected">Temperature</option>
@@ -328,6 +332,8 @@
 				 }
 			      }
 			},
+
+			scrollbar: { enabled: true },
 
 			yAxis: {
 				allowDecimals: false,
