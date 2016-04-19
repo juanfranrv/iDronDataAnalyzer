@@ -5,6 +5,8 @@
 var coordenadas;
 var marker;
 var markers = [];
+var markersCity = [];
+var markersFlight = [];
 var markerAirport;
 var map;
 var checkboxAirport = false;
@@ -22,7 +24,7 @@ function actualizarMapa() {
           map.setCenter(latlng); 
 
 	  if(checkboxAirport == true){
-		  // Especificamos la localización, el radio y el tipo de lugares que queremos obtener para que se vaya actualizando a medida que avanza el drone
+		  // Especificamos la localización, el radio y el tipo de lugar que queremos obtener para que se vaya actualizando a medida que avanza el drone
 		  var service = new google.maps.places.PlacesService(map);
 		  var request = {
 		     location: latlng,
@@ -61,7 +63,7 @@ function initialize() {
 
   var myLatlng = new google.maps.LatLng(window.lat, window.lng);
   var mapOptions = {
-    zoom: 15,
+    zoom: 13,
     center: myLatlng,
     mapTypeId: 'terrain'
   }
@@ -136,7 +138,7 @@ function displayLocationElevation(location, elevator, infowindow) {
 function actualizarDatosDrone() {	
 	  $.ajax({
 		  type: 'GET',
-		  url: '/updateDatosDrone',
+		  url: '/updateDatosDrone',	//Vamos obteniendo los datos recogidos de la aplicación de Android y los actualizamos con AJAX sin recargar la página
 		  data: $(this).serialize(),
 		  dataType: 'json',
 		  success: function (data) {
@@ -159,7 +161,7 @@ function actualizarDatosDrone() {
 
 setInterval(actualizarDatosDrone, 1000);
 
-//---------------------------------------------------------------------------------------------------------------------------------------
+//------------------------------ACTUALIZACIÓN DINÁMICA DE DETECCIÓN DE ZONAS PROHIBIDAS--------------------------------------------------------------------
 
 $('#airport').change(function() { 
    	if($("#airport").is(':checked')){				//Si la checkbox está seleccionada
@@ -168,3 +170,81 @@ $('#airport').change(function() {
 	    checkboxAirport = false;
 	}
 });
+
+$('#city').change(function() { 
+   	if($("#city").is(':checked')){					  //Si la checkbox está seleccionada
+	      activarDeteccionCiudades();
+	      intervalCity = setInterval(activarDeteccionCiudades,240000);//Vamos actualizando las ciudades a medida que el drone va avanzando (cada 4 minutos)
+	} else {							  //Si la checkbox no está seleccionada
+	      clearInterval(intervalCity);				  //Paramos la actualización de ciudades
+	      //Borra todos los marker de ciudades del mapa
+	      for (var i = 0; i < markersCity.length; i++) {
+	        markersCity[i].setMap(null);
+	      } 
+
+	      markersCity = [];
+       }
+});
+
+$('#flight').change(function() { 
+   	if($("#flight").is(':checked')){				  //Si la checkbox está seleccionada
+	      activarDeteccionVuelos();
+	} else {							  //Si la checkbox no está seleccionada
+	      //Borra todos los marker de ciudades del mapa
+	      for (var i = 0; i < markersCity.length; i++) {
+	        markersFlight[i].setMap(null);
+	      } 
+
+	      markersFlight = [];
+       }
+});
+
+function activarDeteccionCiudades() {					//Activa la detección de ciudades haciendo una petición a geonames en el servidor
+  $.ajax({
+        type: 'GET',
+        url: '/getNearbyAreas',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function (data) {
+
+  	   for (var i = 0; i < data.length; i++) {
+		if(data.length != markersCity.length){
+		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lng);
+		   var markerCity = new google.maps.Marker({
+		     map: map,
+		     position: latlng,
+		     title: 'Population detected ',
+		     icon: '../static/images/population.png'
+		   });
+
+   	   	   markersCity.push(markerCity);
+		}
+	   }
+       }
+   });
+}
+
+function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo una petición a flightstats en el servidor
+  $.ajax({
+        type: 'GET',
+        url: '/getNearbyFlights',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function (data) {
+  	   for (var i = 0; i < data.length; i++) {	//Obtenemos los vuelos y los mostramos con un marker en Google maps
+		if(data.length != markersFlight.length){
+		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lon);
+		   var markerFlight = new google.maps.Marker({
+		     map: map,
+		     position: latlng,
+		     title: 'Plane detected: Altitude(m): ' + (Number(data[i].altitudeFt) * 0,3048) + ' - Speed(kph): ' + (Number(data[i].sppedMph) * 1,60934) + ' - date: ' + data[i].date,
+		     icon: '../static/images/flight.png'
+		   });
+
+   	   	   markersFlight.push(markerFlight);
+		}
+	   }
+       }
+   });
+}
+

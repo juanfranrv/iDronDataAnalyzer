@@ -29,7 +29,6 @@ contador = 0                                    #Variable que lleva la cuenta pa
 lat = 37.19699469878369                         #Variables que generan coordenadas aleatorias utilizadas en la mayoría de las clases
 lng =  -3.6241040674591507
 
-
 #Clase que recibe los datos  de login procedentes del HTTP POST de la aplicación de Android para devolver el token del usuario correspondiente
 
 class RecibirDatosLoginApp(webapp2.RequestHandler):
@@ -178,6 +177,7 @@ class formRegistro(webapp2.RequestHandler):
         
         usuario_introducido = self.request.get('usuario')
         user = model.Usuario()
+        datosRec = model.DatosRecibidos()
  
         #Si el usuario no existe, se introducen los datos en la base de datos
         
@@ -192,6 +192,15 @@ class formRegistro(webapp2.RequestHandler):
             user.telefono = self.request.get('telefono')
                         
             user.put()
+            
+            #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
+            datosRec.idDatos = str(uuid.uuid4())
+            datosRec.latitud = '0'
+            datosRec.longitud = '0'
+            datosRec.altura = '0'
+            datosRec.velocidad = '0'
+            
+            datosRec.put()
             
             self.redirect('/')
             
@@ -280,7 +289,7 @@ class geolocalizacion(webapp2.RequestHandler):
         if self.request.cookies.get("username"):
             
             username = str(self.request.cookies.get("username"))
-            
+ 
             userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
             datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
         
@@ -306,28 +315,13 @@ class coordenadas(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
-            
+ 
             userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
             coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
             
             lat = coordenadas.latitud
             lng = coordenadas.longitud
-            
-            '''
-            url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/" + lat + "/" + lng +"/200?appId=57286966&appKey=9bf92ea213f90dd82a2db88892bce75a&maxFlights=200"
-            #url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/-35.36/149.16/200?appId=57286966&appKey=9bf92ea213f90dd82a2db88892bce75a&maxFlights=200"
-            
-            r = urllib2.urlopen(url)
-    
-            result = json.load(r)
-            flights= []
-            
-            for i in range(len(result["flightPositions"])):
-                last_flight_detected = result["flightPositions"][i]["positions"][len(result["flightPositions"][i]["positions"])]
-                flights.append(last_flight_detected)
-            print flights
-            '''
-            
+              
             latLng = [lat, lng]
             
             self.response.write(json.dumps(latLng))
@@ -342,7 +336,7 @@ class updateDatosDrone(webapp2.RequestHandler):
             
             alert = 0
             datosRec = []
-            
+
             userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
             datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
     
@@ -351,7 +345,7 @@ class updateDatosDrone(webapp2.RequestHandler):
  
             vel = round(float(datos.velocidad),3)
             alt = round(float(datos.altura),3)
-            
+
             if alt > 120:       #Si la altura es mayor de 120m, lanzamos alerta ya que está prohibido
                 alert = 1
       
@@ -363,7 +357,74 @@ class updateDatosDrone(webapp2.RequestHandler):
                            })
                 
             self.response.write(json.dumps(datosRec))
+
+#Clase que obtiene las ciudades cercanas a una zona
+
+class getNearbyAreas(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username"):
             
+            try:
+                
+                #Hacemos petición al servicio web de geonames y mandamos el json al template
+                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+                
+                lat = coordenadas.latitud
+                lng = coordenadas.longitud
+                
+                url = 'http://api.geonames.org/findNearbyJSON?username=juanfranrv&country=US&lat=' + str(lat) + '&lng=' + str(lng) + '&radius=300&formatted=true&featureCode=PPL&featureClass=P'
+                
+                r = urllib2.urlopen(url)
+        
+                result = json.load(r)
+                populationAreas = []
+                               
+                populationAreas = result["geonames"]
+            
+                self.response.write(json.dumps(populationAreas))
+                
+            except KeyError, e:
+                
+                error = 'Web service is temporarily unavailable.'
+                self.response.write(json.dumps(error))
+        
+#Clase que obtiene el tráfico aéreo en tiempo real
+
+class getNearbyFlights(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username"):
+            #Hacemos petición al servicio web de flightstats y mandamos el json al template        
+            try:
+                
+                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+            
+                lat = coordenadas.latitud
+                lng = coordenadas.longitud
+                
+                url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/" + str(lat) + "/" + str(lng) +"/50?appId=3f8a0b42&appKey=bf48b6de9b12bbb5ccb59c09834c4302&maxFlights=10"
+                
+                r = urllib2.urlopen(url)
+        
+                result = json.load(r)
+                flights= []
+                
+                for i in range(len(result["flightPositions"])):
+                    last_flight_detected = result["flightPositions"][i]["positions"][len(result["flightPositions"][i]["positions"])-1]
+                    flights.append(last_flight_detected)
+                
+                self.response.write(json.dumps(flights))
+                
+            except KeyError, e:
+                
+                error = 'Web service is temporarily unavailable.'
+                self.response.write(json.dumps(error))
+                         
 #Clase que gestiona el gráfico de monitorización de datos atmosféricos en tiempo real
              
 class grafico(webapp2.RequestHandler):
@@ -897,6 +958,8 @@ urls = [('/', MainPage),
         ('/recibirDatosLoginApp',RecibirDatosLoginApp),
         ('/updateDatosDrone', updateDatosDrone),
         ('/METAR_TAF', METAR_TAF),
+        ('/getNearbyAreas', getNearbyAreas),
+        ('/getNearbyFlights', getNearbyFlights),
         ('/.*', ErrorPage)
        ]
 
