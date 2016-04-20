@@ -120,7 +120,9 @@ class formRegistro(webapp2.RequestHandler):
         
         if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
             
-            user.idUsuario = str(uuid.uuid4())
+            token = str(uuid.uuid4())
+            
+            user.idUsuario = token
             user.usuario = self.request.get('usuario')
             user.password = self.request.get('password')
             user.nombre = self.request.get('nombre')
@@ -131,7 +133,7 @@ class formRegistro(webapp2.RequestHandler):
             user.put()
             
             #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
-            datosRec.idDatos = str(uuid.uuid4())
+            datosRec.idDatos = token
             datosRec.latitud = '0'
             datosRec.longitud = '0'
             datosRec.altura = '0'

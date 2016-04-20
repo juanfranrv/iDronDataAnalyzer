@@ -205,7 +205,7 @@ $('#flight').change(function() {
 	      activarDeteccionVuelos();
 	} else {							  //Si la checkbox no está seleccionada
 	      //Borra todos los marker de ciudades del mapa
-	      for (var i = 0; i < markersCity.length; i++) {
+	      for (var i = 0; i < markersFlight.length; i++) {
 	        markersFlight[i].setMap(null);
 	      } 
 
