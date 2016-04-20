@@ -6,7 +6,10 @@
 **************************/
 
 #form_pronos{
-  margin-left:100px;
+ border: 2px ridge #282828;
+ width:850px;
+ margin-left:180px;
+
 }
 
 #recargar{
