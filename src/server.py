@@ -29,69 +29,6 @@ contador = 0                                    #Variable que lleva la cuenta pa
 lat = 37.19699469878369                         #Variables que generan coordenadas aleatorias utilizadas en la mayoría de las clases
 lng =  -3.6241040674591507
 
-#Clase que recibe los datos  de login procedentes del HTTP POST de la aplicación de Android para devolver el token del usuario correspondiente
-
-class RecibirDatosLoginApp(webapp2.RequestHandler):
-    
-    def post(self):
-                
-            username = self.request.get('username')
-            password = self.request.get('password')
-            
-            #Buscamos el usuario recibido desde Android en la base de datos y si existe devolvemos su token para iniciar sesión en la app Android
-            UserQuery = model.Usuario.query(model.Usuario.usuario == username).get()
-            
-            if UserQuery is not None:
-                
-                if UserQuery.password == password:
-                    token = UserQuery.idUsuario
-                    self.response.write(token)
-                    
-                else:
-                    token = "NoData"
-                    self.response.write(token)
-                
-            else:    
-                token = "NoData" 
-                self.response.write(token)         
-         
-#Clase que recibe los datos procedentes del HTTP POST de la aplicación de Android y los almacena para ser tratados posteriormente en el resto de funcionalidades
-
-class RecibirDatosDrone(webapp2.RequestHandler):
-    
-    def post(self):
-
-            #Obtiene los datos recibidos por Http Post desde el drone (A través de la app de Android)
-            token = self.request.get('token')
-            latitud = self.request.get('latitud')
-            longitud = self.request.get('longitud')
-            altura = self.request.get('altura')
-            velocidad = self.request.get('velocidad')
-            
-            busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == token).get()
-            
-            if busqueda is None:    #Si la base de datos está vacía, insertamos los datos recibidos del drone
-                
-                datosRec = model.DatosRecibidos()
-                        
-                datosRec.idDatos = token
-                datosRec.latitud = latitud
-                datosRec.longitud = longitud
-                datosRec.altura = altura
-                datosRec.velocidad = velocidad
-                
-                datosRec.put()
-            
-            else:                   #Si ya no está vacía, buscamos los únicos datos que tiene y sobreescribimos por los nuevos
-                
-                busqueda.idDatos = token
-                busqueda.latitud = latitud
-                busqueda.longitud = longitud
-                busqueda.altura = altura
-                busqueda.velocidad = velocidad
-                
-                busqueda.put()
-                  
 #Clase principal
 
 class MainPage(webapp2.RequestHandler):
@@ -280,6 +217,69 @@ class ErrorPage(webapp2.RequestHandler):
             
             self.redirect('/login')
 
+#Clase que recibe los datos  de login procedentes del HTTP POST de la aplicación de Android para devolver el token del usuario correspondiente
+
+class RecibirDatosLoginApp(webapp2.RequestHandler):
+    
+    def post(self):
+                
+            username = self.request.get('username')
+            password = self.request.get('password')
+            
+            #Buscamos el usuario recibido desde Android en la base de datos y si existe devolvemos su token para iniciar sesión en la app Android
+            UserQuery = model.Usuario.query(model.Usuario.usuario == username).get()
+            
+            if UserQuery is not None:
+                
+                if UserQuery.password == password:
+                    token = UserQuery.idUsuario
+                    self.response.write(token)
+                    
+                else:
+                    token = "NoData"
+                    self.response.write(token)
+                
+            else:    
+                token = "NoData" 
+                self.response.write(token)         
+         
+#Clase que recibe los datos procedentes del HTTP POST de la aplicación de Android y los almacena para ser tratados posteriormente en el resto de funcionalidades
+
+class RecibirDatosDrone(webapp2.RequestHandler):
+    
+    def post(self):
+
+            #Obtiene los datos recibidos por Http Post desde el drone (A través de la app de Android)
+            token = self.request.get('token')
+            latitud = self.request.get('latitud')
+            longitud = self.request.get('longitud')
+            altura = self.request.get('altura')
+            velocidad = self.request.get('velocidad')
+            
+            busqueda = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == token).get()
+            
+            if busqueda is None:    #Si la base de datos está vacía, insertamos los datos recibidos del drone
+                
+                datosRec = model.DatosRecibidos()
+                        
+                datosRec.idDatos = token
+                datosRec.latitud = latitud
+                datosRec.longitud = longitud
+                datosRec.altura = altura
+                datosRec.velocidad = velocidad
+                
+                datosRec.put()
+            
+            else:                   #Si ya no está vacía, buscamos los únicos datos que tiene y sobreescribimos por los nuevos
+                
+                busqueda.idDatos = token
+                busqueda.latitud = latitud
+                busqueda.longitud = longitud
+                busqueda.altura = altura
+                busqueda.velocidad = velocidad
+                
+                busqueda.put()
+                  
 #Clase que gestiona el googlemap de geolocalización
              
 class geolocalizacion(webapp2.RequestHandler):
@@ -366,8 +366,7 @@ class getNearbyAreas(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
-            try:
-                
+            try:  
                 #Hacemos petición al servicio web de geonames y mandamos el json al template
                 userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
                 coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()

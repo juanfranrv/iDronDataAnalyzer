@@ -9,6 +9,7 @@ var markersCity = [];
 var markersFlight = [];
 var markerAirport;
 var map;
+totalResults = 0;
 var checkboxAirport = false;
 
 function actualizarMapa() {
@@ -35,8 +36,21 @@ function actualizarMapa() {
 		  service.nearbySearch(request, function(results, status) {
 		     if (status === google.maps.places.PlacesServiceStatus.OK) {
 		       for (var i = 0; i < results.length; i++) {
-			  if(markers.length != results.length){
+			  if(markers.length != (results.length + totalResults)){
 			     crearMarcador(results[i]);
+			     var cityCircle = new google.maps.Circle({
+			 	      strokeColor: '#FF0000',
+			 	      strokeOpacity: 0.8,
+			 	      strokeWeight: 2,
+			 	      fillColor: '#FF0000',
+			 	      fillOpacity: 0.35,
+			 	      map: map,
+			 	      center: results[i].geometry.location,
+			 	      radius:800
+			      });
+
+			      markers.push(cityCircle);
+			      totalResults += 1                  //Incrementamos el contador cada vez que añadimos un círculo para borrarlo posteriormente
 			  }
 		       }
 		     }
@@ -174,7 +188,7 @@ $('#airport').change(function() {
 $('#city').change(function() { 
    	if($("#city").is(':checked')){					  //Si la checkbox está seleccionada
 	      activarDeteccionCiudades();
-	      intervalCity = setInterval(activarDeteccionCiudades,240000);//Vamos actualizando las ciudades a medida que el drone va avanzando (cada 4 minutos)
+	      intervalCity = setInterval(activarDeteccionCiudades,120000);//Vamos actualizando las ciudades a medida que el drone va avanzando (cada 2 minutos)
 	} else {							  //Si la checkbox no está seleccionada
 	      clearInterval(intervalCity);				  //Paramos la actualización de ciudades
 	      //Borra todos los marker de ciudades del mapa
@@ -208,17 +222,28 @@ function activarDeteccionCiudades() {					//Activa la detección de ciudades hac
         success: function (data) {
 
   	   for (var i = 0; i < data.length; i++) {
-		if(data.length != markersCity.length){
+
 		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lng);
 		   var markerCity = new google.maps.Marker({
 		     map: map,
 		     position: latlng,
-		     title: 'Population detected ',
+		     title: 'Population detected: ' + data[i].toponymName,
 		     icon: '../static/images/population.png'
+		   });
+		   var PopulationCircle = new google.maps.Circle({
+		 	      strokeColor: '#2E9AFE',
+		 	      strokeOpacity: 0.8,
+		 	      strokeWeight: 2,
+		 	      fillColor: '#2E9AFE',
+		 	      fillOpacity: 0.35,
+		 	      map: map,
+		 	      center: latlng,
+		 	      radius:4800
 		   });
 
    	   	   markersCity.push(markerCity);
-		}
+   	   	   markersCity.push(PopulationCircle);
+
 	   }
        }
    });
@@ -233,7 +258,9 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
         success: function (data) {
   	   for (var i = 0; i < data.length; i++) {	//Obtenemos los vuelos y los mostramos con un marker en Google maps
 		if(data.length != markersFlight.length){
+
 		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lon);
+
 		   var markerFlight = new google.maps.Marker({
 		     map: map,
 		     position: latlng,
@@ -241,7 +268,19 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
 		     icon: '../static/images/flight.png'
 		   });
 
+		   var PopulationCircle = new google.maps.Circle({
+		 	      strokeColor: '#64FE2E',
+		 	      strokeOpacity: 0.8,
+		 	      strokeWeight: 2,
+		 	      fillColor: '#64FE2E',
+		 	      fillOpacity: 0.35,
+		 	      map: map,
+		 	      center: latlng,
+		 	      radius:800
+		   });
+
    	   	   markersFlight.push(markerFlight);
+   	   	   markersFlight.push(flightCircle);
 		}
 	   }
        }
