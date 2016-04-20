@@ -9,7 +9,7 @@ var markersCity = [];
 var markersFlight = [];
 var markerAirport;
 var map;
-totalResults = 0;
+var totalResults = 0, totalResultsCity = 0, totalResultsFlight = 0;
 var checkboxAirport = false;
 
 function actualizarMapa() {
@@ -123,6 +123,7 @@ function setMapOnAll(map) {
     markers[i].setMap(map);
   }
 
+  totalResults = 0;
   markers = [];
 }
 
@@ -197,6 +198,7 @@ $('#city').change(function() {
 	      } 
 
 	      markersCity = [];
+	      totalResultsCity = 0;
        }
 });
 
@@ -210,6 +212,7 @@ $('#flight').change(function() {
 	      } 
 
 	      markersFlight = [];
+	      totalResultsFlight = 0;
        }
 });
 
@@ -222,6 +225,7 @@ function activarDeteccionCiudades() {					//Activa la detección de ciudades hac
         success: function (data) {
 
   	   for (var i = 0; i < data.length; i++) {
+		if(markersCity.length != (data.length + totalResultsCity)){
 
 		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lng);
 		   var markerCity = new google.maps.Marker({
@@ -243,7 +247,8 @@ function activarDeteccionCiudades() {					//Activa la detección de ciudades hac
 
    	   	   markersCity.push(markerCity);
    	   	   markersCity.push(PopulationCircle);
-
+		   totalResultsCity += 1;
+		}
 	   }
        }
    });
@@ -257,10 +262,9 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
         dataType: 'json',
         success: function (data) {
   	   for (var i = 0; i < data.length; i++) {	//Obtenemos los vuelos y los mostramos con un marker en Google maps
-		if(data.length != markersFlight.length){
+		if(markersFlight.length != (data.length + totalResultsFlight)){
 
 		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lon);
-
 		   var markerFlight = new google.maps.Marker({
 		     map: map,
 		     position: latlng,
@@ -268,7 +272,7 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
 		     icon: '../static/images/flight.png'
 		   });
 
-		   var PopulationCircle = new google.maps.Circle({
+		   var flightCircle = new google.maps.Circle({
 		 	      strokeColor: '#64FE2E',
 		 	      strokeOpacity: 0.8,
 		 	      strokeWeight: 2,
@@ -281,6 +285,7 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
 
    	   	   markersFlight.push(markerFlight);
    	   	   markersFlight.push(flightCircle);
+		   totalResultsFlight += 1;
 		}
 	   }
        }
