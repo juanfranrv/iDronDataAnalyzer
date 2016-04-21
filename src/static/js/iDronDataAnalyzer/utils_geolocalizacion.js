@@ -88,7 +88,7 @@ function actualizarMapa() {
 	       }
 
 	  }else{
-	     airportyDetected = false;
+	     airportDetected = false;
 	  }
 
 	  if(checkboxFlight == true){
@@ -197,21 +197,21 @@ function actualizarDatosDrone() {
 				var content = '<div class="col-sm-5"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
 				content = content + '<div class="col-sm-3"><label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].altura + ' m </span></div>';
 				content = content + '<div class="col-sm-4"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s </span></div>';
-
+				
 				if (data[0].alert == 1){
-				   content = content + '<div style="margin-top:80px;width:90%;"><div class="alert alert-danger"><label>If you are using a drone as a hobby or recreational use:<br/><b><u>You are flying above 120 m. Be careful, it is forbidden!</u></b><br/>Remember: What can not I do with my drone? </label><ul><li>I can not fly in urban areas.</li><li>I can not fly above crowds of people: parks, beaches, wedding...</li><li>I can not fly at night.</li> <li>I can not fly close to airports, aircrafts...</li></ul></div></div>';
+				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>If you are using a drone as a hobby or recreational use:<br/><b><u>You are flying above 120 m. Be careful, it is forbidden!</u></b><br/>Remember: What can not I do with my drone? </label><ul><li>I can not fly in urban areas.</li><li>I can not fly above crowds of people: parks, beaches, wedding...</li><li>I can not fly at night.</li> <li>I can not fly close to airports, aircrafts...</li></ul></div></div>';
 				}
 
 				if (flightDetected == true){
-				   content = content + '<div style="margin-top:px;width:90%;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area. You are flying near a plane.</label></div>';
+				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area.<b> You are flying near a plane.</b></label></div>';
 				}
 
 				if (airportDetected == true){
-				   content = content + '<div style="margin-top:50px;width:90%;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area. You are flying near an airport.</label></div>';
+				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area.<b> You are flying near an airport.</b></label></div>';
 				}
 
 				if (cityDetected == true){
-				   content = content + '<div style="margin-top:50px;width:90%;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area. You are flying near a populated city.</label></div>';
+				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area.<b> You are flying near a populated city.</b></label></div>';
 				}
 
 				return content;
@@ -219,7 +219,6 @@ function actualizarDatosDrone() {
 			)
 		  }
 	  });
-
 }
 
 setInterval(actualizarDatosDrone, 1000);
