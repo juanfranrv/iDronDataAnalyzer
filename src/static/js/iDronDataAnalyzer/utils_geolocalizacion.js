@@ -4,15 +4,12 @@
 
 var coordenadas;
 var marker;
-var markers = [];
-var markersCity = [];
-var markersCityCircle = [], markersFlightCircle = [], markersCircle = [];
-var markersFlight = [];
-var markerAirport;
 var map;
-var totalResults = 0, totalResultsCity = 0, totalResultsFlight = 0;
-var checkboxAirport = false, checkboxCity = false, checkboxFlight = false;
-var airportDetected = false, flightDetected = false, cityDetected = false;
+var markers = [], markersFlight = [], markersCity = [];				//Array para almacenar cada uno de los marker de las zonas detectadas
+var markersCityCircle = [], markersFlightCircle = [], markersCircle = [];	//Array para almacenar las áreas de círculos que simbolizan las zonas prohibidas
+var totalResults = 0, totalResultsCity = 0, totalResultsFlight = 0;		//Variable contador para llevar el número de marker que borraremos al seleccionarlo
+var checkboxAirport = false, checkboxCity = false, checkboxFlight = false;	//Variables que indican si cada checkbox ha sido pulsado
+var airportDetected = false, flightDetected = false, cityDetected = false;	//Variables que indican si se ha entrado en zona prohibida
 
 function actualizarMapa() {
   $.ajax({
@@ -35,12 +32,12 @@ function actualizarMapa() {
 		     types: ['airport']
 		   };
 		 
-		  service.nearbySearch(request, function(results, status) {
+		  service.nearbySearch(request, function(results, status) {	//Actualizamos aeropuertos a medida que el drone va avanzando
 		     if (status === google.maps.places.PlacesServiceStatus.OK) {
 		       for (var i = 0; i < results.length; i++) {
 			  if((markers.length + markersCircle.length) != (results.length + totalResults)){
 			     crearMarcador(results[i]);
-			     var cityCircle = new google.maps.Circle({
+			     var cityCircle = new google.maps.Circle({		//Dibujamos un círculo y un marker en cada aeropuerto
 			 	      strokeColor: '#FF0000',
 			 	      strokeOpacity: 0.8,
 			 	      strokeWeight: 2,
@@ -51,7 +48,7 @@ function actualizarMapa() {
 			 	      radius:800
 			      });
 
-			      markersCircle.push(cityCircle);
+			      markersCircle.push(cityCircle);	 //Almacenamos los círculos en un array para borrarlos cuando se desee
 			      totalResults += 1                  //Incrementamos el contador cada vez que añadimos un círculo para borrarlo posteriormente
 			  }
 		       }
@@ -65,11 +62,11 @@ function actualizarMapa() {
 		  }
 
 		  totalResults = 0;
-		  markers = [];
+		  markers = [];					//Reset de los array 
 		  markersCircle = [];
           }
 
-	  if(checkboxCity == true){
+	  if(checkboxCity == true){	//Si el checkbox de ciudad está activo, comprobamos si el drone está contenido en el área para informar al usuario
 	       for (var i = 0; i < markersCityCircle.length; i++) {
 		   if(markersCityCircle[i].getBounds().contains(latlng)){
 			cityDetected = true;
@@ -80,7 +77,7 @@ function actualizarMapa() {
 	     cityDetected = false;
 	  }
 
-	  if(checkboxAirport == true){
+	  if(checkboxAirport == true){  //Si el checkbox de aeropuerto está activo, comprobamos si el drone está contenido en el área para informar al usuario
 	       for (var i = 0; i < markersCircle.length; i++) {
 		   if(markersCircle[i].getBounds().contains(latlng)){
 			airportDetected = true;
@@ -91,7 +88,7 @@ function actualizarMapa() {
 	     airportDetected = false;
 	  }
 
-	  if(checkboxFlight == true){
+	  if(checkboxFlight == true){ //Si el checkbox de detección de aviones está activo, comprobamos si el drone está contenido en el área para informar al usuario
 	       for (var i = 0; i < markersFlightCircle.length; i++) {
 		   if(markersFlightCircle[i].getBounds().contains(latlng)){
 			flightDetected = true;
@@ -128,14 +125,14 @@ function initialize() {
   }
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-  marker = new google.maps.Marker({
+  marker = new google.maps.Marker({			//Creamos el marker del drone
       position: myLatlng,
       map: map,
       title: 'Drone',
       icon: '../static/images/dron_geo.png'
   });
 
-  var elevator = new google.maps.ElevationService;
+  var elevator = new google.maps.ElevationService;		
   var infowindow = new google.maps.InfoWindow({map: map});
   // Creamos el servicio PlaceService y enviamos la petición.
   var service = new google.maps.places.PlacesService(map);
@@ -198,19 +195,19 @@ function actualizarDatosDrone() {
 				content = content + '<div class="col-sm-3"><label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].altura + ' m </span></div>';
 				content = content + '<div class="col-sm-4"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s </span></div>';
 				
-				if (data[0].alert == 1){
+				if (data[0].alert == 1){	//Si se supera los 120m de altitud, informamos al usuario
 				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>If you are using a drone as a hobby or recreational use:<br/><b><u>You are flying above 120 m. Be careful, it is forbidden!</u></b><br/>Remember: What can not I do with my drone? </label><ul><li>I can not fly in urban areas.</li><li>I can not fly above crowds of people: parks, beaches, wedding...</li><li>I can not fly at night.</li> <li>I can not fly close to airports, aircrafts...</li></ul></div></div>';
 				}
 
-				if (flightDetected == true){
+				if (flightDetected == true){   //Si se entra en zona prohibida (vuelo detectado), informamos al usuario
 				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area.<b> You are flying near a plane.</b></label></div>';
 				}
 
-				if (airportDetected == true){
+				if (airportDetected == true){   //Si se entra en zona prohibida (aeropuerto detectado), informamos al usuario
 				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area.<b> You are flying near an airport.</b></label></div>';
 				}
 
-				if (cityDetected == true){
+				if (cityDetected == true){      //Si se entra en zona prohibida (ciudad detectada), informamos al usuario
 				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area.<b> You are flying near a populated city.</b></label></div>';
 				}
 
@@ -221,7 +218,7 @@ function actualizarDatosDrone() {
 	  });
 }
 
-setInterval(actualizarDatosDrone, 1000);
+setInterval(actualizarDatosDrone, 1000);		//Actualizamos la información cada segundo periódicamente
 
 //------------------------------ACTUALIZACIÓN DINÁMICA DE DETECCIÓN DE ZONAS PROHIBIDAS--------------------------------------------------------------------
 
@@ -260,12 +257,12 @@ $('#flight').change(function() {
               checkboxFlight = true;
 	} else {							  //Si la checkbox no está seleccionada
               checkboxFlight = false;
-	      //Borra todos los marker de ciudades del mapa
+	      //Borra todos los marker de vuelos del mapa
 	      for (var i = 0; i < markersFlight.length; i++) {
 	        markersFlight[i].setMap(null);
 		markersFlightCircle[i].setMap(null);
 	      } 
-
+	      //Reset de los arrays
 	      markersFlight = [];
 	      markersFlightCircle = [];
 	      totalResultsFlight = 0;
@@ -281,10 +278,10 @@ function activarDeteccionCiudades() {					//Activa la detección de ciudades hac
         success: function (data) {
 
   	   for (var i = 0; i < data.length; i++) {
-		if((markersCity.length + markersCityCircle.length) != (data.length + totalResultsCity)){
+		if((markersCity.length + markersCityCircle.length) != (data.length + totalResultsCity)){//Comprobamos si el marker existe para no volver a crearlo
 
 		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lng);
-		   var markerCity = new google.maps.Marker({
+		   var markerCity = new google.maps.Marker({			//Creamos el marker y el círculo correspondiente
 		     map: map,
 		     position: latlng,
 		     title: 'Population detected: ' + data[i].toponymName,
@@ -301,7 +298,7 @@ function activarDeteccionCiudades() {					//Activa la detección de ciudades hac
 		 	      radius:4800
 		   });
 
-   	   	   markersCity.push(markerCity);
+   	   	   markersCity.push(markerCity);				//Lo añadimos a cada array para borrarlo cuando el usuario lo seleccione
    	   	   markersCityCircle.push(PopulationCircle);
 		   totalResultsCity += 1;
 		}
@@ -321,7 +318,7 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
 		if((markersFlight.length + markersFlightCircle.length) != (data.length + totalResultsFlight)){
 
 		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lon);
-		   var markerFlight = new google.maps.Marker({
+		   var markerFlight = new google.maps.Marker({	//Creamos un marker con la información del vuelo
 		     map: map,
 		     position: latlng,
 		     title: 'Plane detected: Altitude(m): ' + (Number(data[i].altitudeFt) * 0,3048) + ' - Speed(kph): ' + (Number(data[i].sppedMph) * 1,60934) + ' - date: ' + data[i].date,
@@ -339,7 +336,7 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
 		 	      radius:800
 		   });
 
-   	   	   markersFlight.push(markerFlight);
+   	   	   markersFlight.push(markerFlight);		//Almacenamos el área y los marker
    	   	   markersFlightCircle.push(flightCircle);
 		   totalResultsFlight += 1;
 		}
