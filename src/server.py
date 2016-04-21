@@ -387,7 +387,7 @@ class getNearbyAreas(webapp2.RequestHandler):
             
                 self.response.write(json.dumps(populationAreas))
                 
-            except KeyError, e:
+            except DeadlineExceededError,e:
                 
                 error = 'Web service is temporarily unavailable.'
                 self.response.write(json.dumps(error))
@@ -902,6 +902,9 @@ class METAR_TAF(webapp2.RequestHandler):
             
             try:
                 #Gestión del METAR y parseo de la información para su interpretación
+                
+                from google.appengine.api import urlfetch #Deadline error http, poner default fetch
+                urlfetch.set_default_fetch_deadline(45)
                 
                 url_metar = 'http://avwx.rest/api/metar.php?lat=' + str(lat) + '&lon=' + str(lng) + '&format=JSON'
             
