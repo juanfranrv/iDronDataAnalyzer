@@ -6,9 +6,8 @@
 **************************/
 
 #form_pronos{
- border: 2px ridge #282828;
- width:850px;
- margin-left:180px;
+  margin:auto;
+  border: solid 2px;
 
 }
 
@@ -41,8 +40,8 @@ table{
 
 tbody{
   overflow-y: scroll;
-  height: 500px;
-  display: block;
+  height: 500px; 
+  display:block;
 }
 
 #latitud{

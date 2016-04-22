@@ -200,15 +200,15 @@ function actualizarDatosDrone() {
 				}
 
 				if (flightDetected == true){   //Si se entra en zona prohibida (vuelo detectado), informamos al usuario
-				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area.<b> You are flying near a plane.</b></label></div>';
+				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a plane.</label></div>';
 				}
 
 				if (airportDetected == true){   //Si se entra en zona prohibida (aeropuerto detectado), informamos al usuario
-				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area.<b> You are flying near an airport.</b></label></div>';
+				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near an airport.</label></div>';
 				}
 
 				if (cityDetected == true){      //Si se entra en zona prohibida (ciudad detectada), informamos al usuario
-				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>Warning: You are inside a forbidden area.<b> You are flying near a populated city.</b></label></div>';
+				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a populated place.</label></div>';
 				}
 
 				return content;
