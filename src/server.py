@@ -134,10 +134,10 @@ class formRegistro(webapp2.RequestHandler):
             
             #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
             datosRec.idDatos = token
-            datosRec.latitud = '0'
-            datosRec.longitud = '0'
-            datosRec.altura = '0'
-            datosRec.velocidad = '0'
+            datosRec.latitud = '-35.3473323'
+            datosRec.longitud = '149.1320503'
+            datosRec.altura = '0.0'
+            datosRec.velocidad = '0.0'
             
             datosRec.put()
             
@@ -797,11 +797,13 @@ def parseoTAFOR_noRepeatInfo(result_taf):
         min_temp = min_temp[2:4] + " C"
         
     for i in range(len(result_taf["Forecast"])):
-        
-        for nube in result_taf["Forecast"][i]["Cloud-List"]:    #Recorremos el array de nubes obtenidas
-            if nube[0] == '' and nube[1] == '':
-                array_nubes_taf[i].append('No data')
-            else:
+
+        if result_taf["Forecast"][i]["Cloud-List"] == []:
+            array_nubes_taf[i].append('No data')
+            
+        else:
+            
+            for nube in result_taf["Forecast"][i]["Cloud-List"]:    #Recorremos el array de nubes obtenidas
                 array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
          
     #Devolución de JSON con los datos parseados  
