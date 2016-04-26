@@ -51,7 +51,6 @@
 
 	   <div class="panel panel-primary">
 	      <h2 class="panel-heading"><b> METAR (Obtained from the nearest airport) </b></h2>
-	    {% if error == '' %}
 	      <div class="panel-body">
 	      <label>{{array_metar[0].metar}} </label><br/>
 	      <div style="font-size:80%">
@@ -80,13 +79,11 @@
 	     </div>
 	     </div>
 
-	  {% endif %}
 	   </div>
 	   <br/>
 	   <div class="panel panel-primary">
 	      <h2 class="panel-heading"><b> TAFOR (Obtained from the nearest airport) </b></h2>
 
-	  {% if error == '' %}
 	      <div class="panel-body">
 	      <label>{{array_tafN[0].taf}} </label><br/>
 	      <div style="font-size:80%">
@@ -126,7 +123,6 @@
 
 	   {% endfor %}
 	      </dl>
-	  {% endif %}
      </div>
      </div>
    </div>

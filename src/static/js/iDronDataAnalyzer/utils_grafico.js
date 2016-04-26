@@ -219,7 +219,21 @@ $(function () {
                           data: $(this).serialize(),
                           dataType: 'json',
                           success: function (data) {
-                                 num = data;
+
+				  //Si el servicio web da error, informamos al usuario, en caso contrario mostramos datos
+				  if(data == 'Chart web service is temporarily unavailable.'){	
+
+				       $('#fail').html(
+					      function(){
+						 var content = '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Error:  </u>Chart web service is temporarily unavailable.</label></div>';
+						  return content;
+					      }
+				       )
+
+				  }else{
+
+                                 	num = data;
+                                  }
                           }
                   });
             return num;

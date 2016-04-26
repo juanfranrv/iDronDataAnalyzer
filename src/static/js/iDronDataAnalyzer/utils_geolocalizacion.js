@@ -98,8 +98,6 @@ function actualizarMapa() {
 	  }else{
 	     flightDetected = false;
 	  }
-
-
        }
    });
 
@@ -191,9 +189,9 @@ function actualizarDatosDrone() {
 		  success: function (data) {
 			 $('#recargar').html(
 			    function(){
-				var content = '<div class="col-sm-5"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
+				var content = '<div style="margin-left:5%"><div class="col-sm-5"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
 				content = content + '<div class="col-sm-3"><label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].altura + ' m </span></div>';
-				content = content + '<div class="col-sm-4"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s </span></div>';
+				content = content + '<div class="col-sm-4"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s </span></div></div>';
 				
 				if (data[0].alert == 1){	//Si se supera los 120m de altitud, informamos al usuario
 				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>If you are using a drone as a hobby or recreational use:<br/><b><u>You are flying above 120 m. Be careful, it is forbidden!</u></b><br/>Remember: What can not I do with my drone? </label><ul><li>I can not fly in urban areas.</li><li>I can not fly above crowds of people: parks, beaches, wedding...</li><li>I can not fly at night.</li> <li>I can not fly close to airports, aircrafts...</li></ul></div></div>';
@@ -269,7 +267,7 @@ $('#flight').change(function() {
        }
 });
 
-function activarDeteccionCiudades() {					//Activa la detección de ciudades haciendo una petición a geonames en el servidor
+function activarDeteccionCiudades() {					       //Activa la detección de ciudades haciendo una petición a geonames en el servidor
   $.ajax({
         type: 'GET',
         url: '/getNearbyAreas',
@@ -277,32 +275,46 @@ function activarDeteccionCiudades() {					//Activa la detección de ciudades hac
         dataType: 'json',
         success: function (data) {
 
-  	   for (var i = 0; i < data.length; i++) {
-		if((markersCity.length + markersCityCircle.length) != (data.length + totalResultsCity)){//Comprobamos si el marker existe para no volver a crearlo
+           if(data == 'Geonames web service is temporarily unavailable.'){     //Si el servicio web da error, informamos al usuario, en caso contrario mostramos datos
 
-		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lng);
-		   var markerCity = new google.maps.Marker({			//Creamos el marker y el círculo correspondiente
-		     map: map,
-		     position: latlng,
-		     title: 'Population detected: ' + data[i].toponymName,
-		     icon: '../static/images/population.png'
-		   });
-		   var PopulationCircle = new google.maps.Circle({
-		 	      strokeColor: '#2E9AFE',
-		 	      strokeOpacity: 0.8,
-		 	      strokeWeight: 2,
-		 	      fillColor: '#2E9AFE',
-		 	      fillOpacity: 0.35,
-		 	      map: map,
-		 	      center: latlng,
-		 	      radius:4800
-		   });
+	       $('#fail').html(
+		      function(){
+			 var content = '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Error: </u>' + data + '</label></div>';
+			  return content;
+		      }
+	       )
 
-   	   	   markersCity.push(markerCity);				//Lo añadimos a cada array para borrarlo cuando el usuario lo seleccione
-   	   	   markersCityCircle.push(PopulationCircle);
-		   totalResultsCity += 1;
-		}
-	   }
+	   }else{
+
+	  	   for (var i = 0; i < data.length; i++) {
+
+			//Comprobamos si el marker existe para no volver a crearlo
+			if((markersCity.length + markersCityCircle.length) != (data.length + totalResultsCity)){
+
+			   var latlng = new google.maps.LatLng(data[i].lat, data[i].lng);
+			   var markerCity = new google.maps.Marker({			//Creamos el marker y el círculo correspondiente
+			     map: map,
+			     position: latlng,
+			     title: 'Population detected: ' + data[i].toponymName,
+			     icon: '../static/images/population.png'
+			   });
+			   var PopulationCircle = new google.maps.Circle({
+			 	      strokeColor: '#2E9AFE',
+			 	      strokeOpacity: 0.8,
+			 	      strokeWeight: 2,
+			 	      fillColor: '#2E9AFE',
+			 	      fillOpacity: 0.35,
+			 	      map: map,
+			 	      center: latlng,
+			 	      radius:4800
+			   });
+
+	   	   	   markersCity.push(markerCity);				//Lo añadimos a cada array para borrarlo cuando el usuario lo seleccione
+	   	   	   markersCityCircle.push(PopulationCircle);
+			   totalResultsCity += 1;
+			}
+		 }
+         }
        }
    });
 }
@@ -314,34 +326,47 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
         data: $(this).serialize(),
         dataType: 'json',
         success: function (data) {
-  	   for (var i = 0; i < data.length; i++) {	//Obtenemos los vuelos y los mostramos con un marker en Google maps
-		if((markersFlight.length + markersFlightCircle.length) != (data.length + totalResultsFlight)){
 
-		   var latlng = new google.maps.LatLng(data[i].lat, data[i].lon);
-		   var markerFlight = new google.maps.Marker({	//Creamos un marker con la información del vuelo
-		     map: map,
-		     position: latlng,
-		     title: 'Plane detected: Altitude(m): ' + (Number(data[i].altitudeFt) * 0,3048) + ' - Speed(kph): ' + (Number(data[i].sppedMph) * 1,60934) + ' - date: ' + data[i].date,
-		     icon: '../static/images/flight.png'
-		   });
+          if(data == 'Flightstats web service is temporarily unavailable.'){	//Si el servicio web da error, informamos al usuario, en caso contrario mostramos datos
 
-		   var flightCircle = new google.maps.Circle({
-		 	      strokeColor: '#64FE2E',
-		 	      strokeOpacity: 0.8,
-		 	      strokeWeight: 2,
-		 	      fillColor: '#64FE2E',
-		 	      fillOpacity: 0.35,
-		 	      map: map,
-		 	      center: latlng,
-		 	      radius:800
-		   });
+	       $('#fail').html(
+		      function(){
+			 var content = '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Error: </u>' + data + '</label></div>';
+			  return content;
+		      }
+	       )
 
-   	   	   markersFlight.push(markerFlight);		//Almacenamos el área y los marker
-   	   	   markersFlightCircle.push(flightCircle);
-		   totalResultsFlight += 1;
-		}
-	   }
-       }
+	   }else{
+
+	  	   for (var i = 0; i < data.length; i++) {	//Obtenemos los vuelos y los mostramos con un marker en Google maps
+			if((markersFlight.length + markersFlightCircle.length) != (data.length + totalResultsFlight)){
+
+			   var latlng = new google.maps.LatLng(data[i].lat, data[i].lon);
+			   var markerFlight = new google.maps.Marker({	//Creamos un marker con la información del vuelo
+			     map: map,
+			     position: latlng,
+			     title: 'Plane detected: Altitude(m): ' + (Number(data[i].altitudeFt) * 0,3048) + ' - Speed(kph): ' + (Number(data[i].sppedMph) * 1,60934) + ' - date: ' + data[i].date,
+			     icon: '../static/images/flight.png'
+			   });
+
+			   var flightCircle = new google.maps.Circle({
+			 	      strokeColor: '#64FE2E',
+			 	      strokeOpacity: 0.8,
+			 	      strokeWeight: 2,
+			 	      fillColor: '#64FE2E',
+			 	      fillOpacity: 0.35,
+			 	      map: map,
+			 	      center: latlng,
+			 	      radius:800
+			   });
+
+	   	   	   markersFlight.push(markerFlight);		//Almacenamos el área y los marker
+	   	   	   markersFlightCircle.push(flightCircle);
+			   totalResultsFlight += 1;
+			}
+		   }
+	 }
+      }
    });
 }
 

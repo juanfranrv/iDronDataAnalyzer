@@ -384,12 +384,12 @@ class getNearbyAreas(webapp2.RequestHandler):
                 populationAreas = []
                                
                 populationAreas = result["geonames"]
-            
+ 
                 self.response.write(json.dumps(populationAreas))
                 
-            except DeadlineExceededError,e:
+            except KeyError,e:
                 
-                error = 'Web service is temporarily unavailable.'
+                error = 'Geonames web service is temporarily unavailable.'
                 self.response.write(json.dumps(error))
         
 #Clase que obtiene el tráfico aéreo en tiempo real
@@ -423,7 +423,7 @@ class getNearbyFlights(webapp2.RequestHandler):
                 
             except KeyError, e:
                 
-                error = 'Web service is temporarily unavailable.'
+                error = 'Flightstats web service is temporarily unavailable.'
                 self.response.write(json.dumps(error))
                          
 #Clase que gestiona el gráfico de monitorización de datos atmosféricos en tiempo real
@@ -453,68 +453,74 @@ class datos_grafico(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
         
-            global contador
-            datoAmostrar = ''
-            
-            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
-            
-            lat = coordenadas.latitud
-            lng = coordenadas.longitud
-            
-            url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
-            r = urllib2.urlopen(url)
-    
-            result = json.load(r)
-            
-            tempe = result["main"]["temp"]          #temperatura
-            pres = result["main"]["pressure"]       #presion atmosferica
-            hum = result["main"]["humidity"]        #humedad
-            vel_wind = result["wind"]["speed"]      #velocidad del viento
-            dir_win = result["wind"]["deg"]         #direccion del viento
-            
-            temp = tempe - 273.15                   #conversión de kelvin a celsius
-            vel_win = vel_wind * 3.6                #conversión de m/s a km/h
-    
-            dato_seleccionado = self.request.get('dato')
-    
-            if dato_seleccionado == 'undefined' or dato_seleccionado == 'Temperature':
-                datoAmostrar = temp;
-            elif dato_seleccionado == 'Atmospheric pressure':
-                datoAmostrar = pres;
-            elif dato_seleccionado == 'Humidity':
-                datoAmostrar = hum;
-            elif dato_seleccionado == 'Wind Speed':
-                datoAmostrar = vel_win;
-            elif dato_seleccionado == 'Wind Direction':
-                datoAmostrar = dir_win;
-            
-            if contador is 20:               #Cada 20 datos obtenidos, almacenamos en la base de datos
-                #Almacenamos los datos en el usuario con la sesión activa
-                result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-                data = model.DatosAtmosfericos()
+            try:
+                global contador
+                datoAmostrar = ''
                 
-                data.fecha = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
-                data.date = datetime.datetime.now().strftime("%d-%m-%Y")
-                data.idUsuario = result.idUsuario
-                data.dia = datetime.date.today().strftime("%V")        #Obtiene el número de la semana 
-                data.mes = datetime.date.today().strftime("%m")
-                data.anio = datetime.date.today().strftime("%Y")  
-                data.temperatura = round(temp,2)
-                data.pres_atmos = round(pres,2)
-                data.humedad = hum
-                data.vel_viento = round(vel_win,2)
-                data.dir_viento = round(dir_win,2)
-                                
-                data.put()
+                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
                 
-                contador = 0
-            
-            else:
-                contador = contador + 1
-            
-            self.response.write(json.dumps(datoAmostrar)) 
-
+                lat = coordenadas.latitud
+                lng = coordenadas.longitud
+                
+                url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
+                r = urllib2.urlopen(url)
+        
+                result = json.load(r)
+                
+                tempe = result["main"]["temp"]          #temperatura
+                pres = result["main"]["pressure"]       #presion atmosferica
+                hum = result["main"]["humidity"]        #humedad
+                vel_wind = result["wind"]["speed"]      #velocidad del viento
+                dir_win = result["wind"]["deg"]         #direccion del viento
+                
+                temp = tempe - 273.15                   #conversión de kelvin a celsius
+                vel_win = vel_wind * 3.6                #conversión de m/s a km/h
+        
+                dato_seleccionado = self.request.get('dato')
+        
+                if dato_seleccionado == 'undefined' or dato_seleccionado == 'Temperature':
+                    datoAmostrar = temp;
+                elif dato_seleccionado == 'Atmospheric pressure':
+                    datoAmostrar = pres;
+                elif dato_seleccionado == 'Humidity':
+                    datoAmostrar = hum;
+                elif dato_seleccionado == 'Wind Speed':
+                    datoAmostrar = vel_win;
+                elif dato_seleccionado == 'Wind Direction':
+                    datoAmostrar = dir_win;
+                
+                if contador is 50:         #Cada 50 datos obtenidos, almacenamos en la base de datos
+                    #Almacenamos los datos en el usuario con la sesión activa
+                    result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+                    data = model.DatosAtmosfericos()
+                    
+                    data.fecha = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+                    data.date = datetime.datetime.now().strftime("%d-%m-%Y")
+                    data.idUsuario = result.idUsuario
+                    data.dia = datetime.date.today().strftime("%V")        #Obtiene el número de la semana 
+                    data.mes = datetime.date.today().strftime("%m")
+                    data.anio = datetime.date.today().strftime("%Y")  
+                    data.temperatura = round(temp,2)
+                    data.pres_atmos = round(pres,2)
+                    data.humedad = hum
+                    data.vel_viento = round(vel_win,2)
+                    data.dir_viento = round(dir_win,2)
+                                    
+                    data.put()
+                    
+                    contador = 0
+                
+                else:
+                    contador = contador + 1
+                
+                self.response.write(json.dumps(datoAmostrar)) 
+                
+            except KeyError,e:
+                
+                error = 'Chart web service is temporarily unavailable.'
+                self.response.write(json.dumps(error))
+                
 #Clase que gestiona las estadisticas de la monitorización de datos atmosféricos obtenida
 
 class estadisticas(webapp2.RequestHandler):
@@ -926,7 +932,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 array_taf = parseoTAFOR_RepeatInfo(result_taf)
                 
             except KeyError, e:
-                error = 'At this moment, it is not possible to verify the place where drone is circulating.'
+                error = 'TAFOR or METAR  is temporarily unavailable.'
                 
             self.response.headers['Content-Type'] = 'text/html'
 

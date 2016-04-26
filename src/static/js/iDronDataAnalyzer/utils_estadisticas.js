@@ -118,7 +118,7 @@ $('#tiempo').change(function(){			//Select asociado al tiempo
 	  success: function (data) {
 		 $('table').html(
 		    function(){
-			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temperature</th><th>Atm. pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>'; 
+			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>Pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>'; 
 			for(var i = 0; i < data.length; i++){
 			      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + ' UTC</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
@@ -175,7 +175,7 @@ $('#datepicker').change(function () {		//Actualiza los datos al cambiar de fecha
 	  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la página
 		 $('table').html(
 		    function(){
-			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temperature</th><th>Atm. pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>';
+			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>Pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>';
 
 			for(var i = 0; i < data.length; i++){
 			      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + ' UTC</td>';

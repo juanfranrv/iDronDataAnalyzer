@@ -94,7 +94,7 @@
 	      {% endif %}
 
 	      {% if radio_elegido == 'dias' %}
-		      <td style="font-size:14px;">{{datos.date.weekday_short}}, {{datos.date.day}} de {{datos.date.monthname_short}}</td>
+		      <td style="font-size:14px;">{{datos.date.weekday_short}}, {{datos.date.day}} - {{datos.date.monthname_short}}</td>
 		      <td>{{datos.high.celsius}}/{{datos.low.celsius}} ºC</td>
 		      <td style="font-size:16px;">{{datos.conditions}} <img src="{{datos.icon_url}}" style="width:40px;height:40px;"></td>
 		      <td style="font-size:16px;">{{datos.avewind.dir}} - {{datos.avewind.kph}} kph - {{datos.avewind.degrees}}º</td>

@@ -8,11 +8,11 @@
 #form_pronos{
   margin:auto;
   border: solid 2px;
-
 }
 
 #recargar{
-  margin-left:5%;
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom:1%;
 }
 
@@ -31,8 +31,14 @@ td,th{
    width:300px;
 }
 
+@media only screen and (min-width: 1382px) {
+   td,th{
+	width:1000px;
+   }
+}
+
 table{
- height: 500px; 
+ height: 200px;
  margin-top: 100px;
  border-left: 2px solid #282828;
  border-right: 2px solid #282828;
@@ -67,8 +73,6 @@ tbody{
    float:left;
 }
 
-
-
 #datepicker{
    margin-top:1.55%;
 }
@@ -98,7 +102,7 @@ tbody{
 
 #map-canvas{
   height: 720px;
-  width: 1200px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
   border: solid 2px;
@@ -106,7 +110,7 @@ tbody{
 
 #formulario{
   margin: auto;
-  width: 800px;
+  width: 70%;
   border: solid 2px;
   padding: 50px;
 }
