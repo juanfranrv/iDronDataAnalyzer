@@ -44,20 +44,20 @@
    <div style="background:transparent !important" class="jumbotron">
    <form id="formulario" role="form" onsubmit="return Valida_pronostico(this);" method="post" action="/pronostico">
     <div class="row">
-	<div class="col-md-3">
+	<div class="col-md-4">
           <input id="latitud" type="text" class="form-control" name="latitud" value="{{latitud_actual}}" placeholder="Latitude">
 	</div>
-        <div class="col-md-5">
+        <div class="col-md-4">
 	  <input id="longitud" type="text" class="form-control" name="longitud" value="{{longitud_actual}}" placeholder="Longitude">
 	</div>
     	<button id="boton-enviar" name="boton-enviar" type="submit" class="btn btn-danger">Make forecast</button>
     </div>
 
     <div style="margin-top:50px;font-size:85%;" class="row">
-	<div class="col-md-3">
+	<div class="col-md-4">
 	  <label><input type="radio" value="horas" name="optradio" checked="checked">Hourly forecast</label>
 	</div>
-	<div class="col-md-3">
+	<div class="col-md-4">
 	  <label><input type="radio" value="dias" name="optradio">Daily forecast</label>
 	</div>
      </div>
