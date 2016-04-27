@@ -387,7 +387,7 @@ class getNearbyAreas(webapp2.RequestHandler):
  
                 self.response.write(json.dumps(populationAreas))
                 
-            except KeyError,e:
+            except (ValueError, KeyError, DeadlineExceededError) as e:
                 
                 error = 'Geonames web service is temporarily unavailable.'
                 self.response.write(json.dumps(error))
@@ -421,7 +421,7 @@ class getNearbyFlights(webapp2.RequestHandler):
                 
                 self.response.write(json.dumps(flights))
                 
-            except KeyError, e:
+            except (ValueError, KeyError, DeadlineExceededError) as e:
                 
                 error = 'Flightstats web service is temporarily unavailable.'
                 self.response.write(json.dumps(error))
@@ -516,7 +516,7 @@ class datos_grafico(webapp2.RequestHandler):
                 
                 self.response.write(json.dumps(datoAmostrar)) 
                 
-            except KeyError,e:
+            except (ValueError, KeyError, DeadlineExceededError) as e:
                 
                 error = 'Chart web service is temporarily unavailable.'
                 self.response.write(json.dumps(error))
@@ -642,7 +642,7 @@ class pronostico(webapp2.RequestHandler):
                 latitud_actual = result["current_observation"]["display_location"]["latitude"]
                 longitud_actual = result["current_observation"]["display_location"]["longitude"]
                 
-            except KeyError, e:
+            except (ValueError, KeyError, DeadlineExceededError) as e:
                 error = 'There is not any city with those coordinates. Please, verify the place.'
                 
             self.response.headers['Content-Type'] = 'text/html'
@@ -931,7 +931,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 array_tafN = parseoTAFOR_noRepeatInfo(result_taf)   #Llamamos a las funciones parseadoras
                 array_taf = parseoTAFOR_RepeatInfo(result_taf)
                 
-            except KeyError, e:
+            except (ValueError, KeyError, DeadlineExceededError) as e:
                 error = 'TAFOR or METAR  is temporarily unavailable.'
                 
             self.response.headers['Content-Type'] = 'text/html'
