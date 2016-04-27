@@ -6,7 +6,7 @@
 
 Se pronostica que se va a proceder a invertir en drones más de 100.000 millones de dólares en 5 años aprox. Sin embargo, no se disponen de aplicaciones destinadas a la seguridad para drones en las que se muestre el avance del drone y las medidas de seguridad simultáneamente. 
 
-Debido a la no disponibilidad de estas aplicaciones, se están produciendo numerosas incidencias entre drones y aviones, entre otras. Este sistema pretende solucionar dichos problemas:
+Debido a la no disponibilidad de estas aplicaciones, se están produciendo numerosas incidencias entre drones y aviones. Este sistema pretende solucionar dichos problemas:
 
 * Captura de información: Cuando un drone está en movimiento, es necesario tener una serie de personas encargadas de estudiar y observar los diversos datos que presenta la zona por la que va circulando, como la humedad, la temperatura, la velocidad del viento o la trayectoria, que son datos necesarios para decidir, por ejemplo, si cambiar la trayectoria del drone o ver si está en peligro. Para realizar estas tareas sería de gran utilidad la disposición de un sistema web que nos permita monitorizar y analizar dichos datos de suma importancia para el desarrollo con éxito de la misión.
 
@@ -23,7 +23,7 @@ La aplicación tendrá que cumplir los siguientes requisitos:
 * [X] Pronóstico de datos atmosféricos por horas o por días.
 * [X] Almacenamiento de datos monitorizados para el posterior estudio de la misión. Estudio con gráficos.
 * [X] Detección de los datos atmosféricos procedentes del METAR y TAF del aeropuerto más cercano por el que vaya circulando el drone en ese momento.
-* [ ] Detección de tráfico aéreo y/o fronteras con poblaciones (zonas restringidas).
+* [X] Detección de tráfico aéreo y/o fronteras con poblaciones (zonas restringidas).
  
 ***
 

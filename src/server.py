@@ -53,10 +53,10 @@ class Login(webapp2.RequestHandler):
     
     def get(self):
             
-            self.response.headers['Content-Type'] = 'text/html'
-            template_values={}
-            template = JINJA_ENVIRONMENT.get_template('template/login.html')
-            self.response.write(template.render(template_values))
+        self.response.headers['Content-Type'] = 'text/html'
+        template_values={}
+        template = JINJA_ENVIRONMENT.get_template('template/login.html')
+        self.response.write(template.render(template_values))
     
     def post(self):
         
