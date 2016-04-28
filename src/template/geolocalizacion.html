@@ -45,39 +45,37 @@
     </header><!--/header-->
 
     <div style="background:transparent !important" class="jumbotron">
-    <div id="recargar" class="row">
-	<div style="margin-left:5%">
-	  <div class="col-sm-5">
+    <div id="border1">
+    <div id="recargar" style="margin-left:2%;" class="row">
+	  <div style="float:left;">
 	  	<label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{lat}}, {{lng}}</span>
 	  </div>
-	  <div class="col-sm-3">
+	  <div style="float:left;margin-left:10%;">
 	   	<label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{alt}} m</span>
 	  </div>
-	  <div class="col-sm-4">
+	  <div style="float:left;margin-left:10%;">
 	  	<label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{vel}} m/s</span>
 	  </div>
-	</div>
     </div>
 
     <hr  size="6" noshade>
 
     <div id="recargar" class="row">
-	<div style="margin-left:5%">
-	  <div class="col-sm-2"></div>
-	  <div class="col-sm-3">
+	<div style="margin-top:30px;">
+	  <div style="float:left;margin-left:20%;">
 	    <input type="checkbox" value="airport" id="airport" name="airport" data-toggle="toggle" data-on="Airports detection" data-off="No airport detection" data-onstyle="default">
 	  </div>
-          <div class="col-sm-3">
+          <div style="float:left;margin-left:10%;">
 	    <input type="checkbox" value="city" id="city" name="city" data-toggle="toggle" data-on="Population detection" data-off="No population detection" data-onstyle="default">
 	  </div>
-          <div class="col-sm-3">
+          <div style="float:left;margin-left:10%;">
 	    <input type="checkbox" value="flight" id="flight" name="flight" data-toggle="toggle" data-on="Air traffic detection" data-off="No air traffic detection" data-onstyle="default">
 	  </div>
 	</div>
         <div id="fail"></div>
     </div>
+    </div>
     <div id="map-canvas" class="jumbotron"></div>
-
     </div>
 
 {{footer|safe}}

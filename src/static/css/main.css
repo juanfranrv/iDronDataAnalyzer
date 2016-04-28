@@ -28,8 +28,17 @@ thead{
 }
 
 td,th{
-   width:300px;
+   width:400px;
 }
+
+hr { 
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border-width: 5px;
+} 
 
 @media only screen and (min-width: 1382px) {
    td,th{
@@ -112,6 +121,22 @@ tbody{
   margin: auto;
   width: 60%;
   border: solid 2px;
+  padding: 50px;
+}
+
+#border{
+  margin: auto;
+  margin-bottom:50px;
+  width: 60%;
+  border: solid 4px white;
+  padding: 50px;
+}
+
+#border1{
+  margin: auto;
+  margin-bottom:50px;
+  width: 100%;
+  border: solid 4px white;
   padding: 50px;
 }
 
