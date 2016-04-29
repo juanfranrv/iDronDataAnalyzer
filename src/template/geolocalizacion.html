@@ -46,7 +46,7 @@
 
     <div style="background:transparent !important" class="jumbotron">
     <div id="border1">
-    <div id="recargar" style="margin-left:2%;" class="row">
+    <div id="recargar" class="row">
 	  <div style="float:left;">
 	  	<label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{lat}}, {{lng}}</span>
 	  </div>
@@ -62,8 +62,8 @@
 
     <div id="recargar" class="row">
 	<div style="margin-top:30px;">
-	  <div style="float:left;margin-left:20%;">
-	    <input type="checkbox" value="airport" id="airport" name="airport" data-toggle="toggle" data-on="Airports detection" data-off="No airport detection" data-onstyle="default">
+	  <div style="float:left;margin-left:18%;">
+	    <input type="checkbox" value="airport" id="airport" name="airport" data-toggle="toggle" data-on="Airport detection" data-off="No airport detection" data-onstyle="default">
 	  </div>
           <div style="float:left;margin-left:10%;">
 	    <input type="checkbox" value="city" id="city" name="city" data-toggle="toggle" data-on="Population detection" data-off="No population detection" data-onstyle="default">
@@ -72,8 +72,8 @@
 	    <input type="checkbox" value="flight" id="flight" name="flight" data-toggle="toggle" data-on="Air traffic detection" data-off="No air traffic detection" data-onstyle="default">
 	  </div>
 	</div>
-        <div id="fail"></div>
     </div>
+    <div id="fail"></div>
     </div>
     <div id="map-canvas" class="jumbotron"></div>
     </div>

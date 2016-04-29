@@ -74,6 +74,7 @@ function actualizarMapa() {
 		}
 
 	  }else{
+
 	     cityDetected = false;
 	  }
 
@@ -85,6 +86,7 @@ function actualizarMapa() {
 	       }
 
 	  }else{
+
 	     airportDetected = false;
 	  }
 
@@ -96,6 +98,7 @@ function actualizarMapa() {
 	       }
 
 	  }else{
+
 	     flightDetected = false;
 	  }
        }

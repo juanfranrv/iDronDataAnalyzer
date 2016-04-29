@@ -42,7 +42,7 @@ hr {
 
 @media only screen and (min-width: 1382px) {
    td,th{
-	width:1000px;
+	width:1200px;
    }
 }
 
@@ -127,8 +127,9 @@ tbody{
 #border{
   margin: auto;
   margin-bottom:50px;
+  background:white;
   width: 60%;
-  border: solid 4px white;
+  border: solid 4px black;
   padding: 50px;
 }
 
