@@ -52,28 +52,28 @@
 	   <div class="panel panel-primary">
 	      <h2 class="panel-heading"><b> METAR (Obtained from the nearest airport) </b></h2>
 	      <div class="panel-body">
-	      <label>{{array_metar[0].metar}} </label><br/>
+	      <label>{{array_metar.metar}} </label><br/>
 	      <div style="font-size:80%">
 	      <dl class="dl-horizontal">
-		<label>Report was made {{array_metar[0].dia}} at {{array_metar[0].hora}} </label><br/>
+		<label>Report was made {{array_metar.dia}} at {{array_metar.hora}} </label><br/>
 		<dt>Temperature: </dt>
-		<dd>{{array_metar[0].temperatura}}</dd>
+		<dd>{{array_metar.temperatura}}</dd>
 		<dt>Atm. pressure:</dt>
-		<dd>{{array_metar[0].presion_atmosferica}} </dd>
+		<dd>{{array_metar.presion_atmosferica}} </dd>
 		<dt>Clouds: </dt>
 
-	  	   {% for nube in array_metar[0].array_nubes %}
+	  	   {% for nube in array_metar.array_nubes %}
 		   <dd> {{nube}} </dd>
 		   {% endfor %}
 
 		<dt>Visibility:</dt>
-		<dd>{{array_metar[0].visibilidad}} </dd>
+		<dd>{{array_metar.visibilidad}} </dd>
 		<dt>Wind direction:</dt>
-		<dd> {{array_metar[0].direccion_viento}} </dd>
+		<dd> {{array_metar.direccion_viento}} </dd>
 		<dt>Wind gust:</dt>
-		<dd>{{array_metar[0].rafaga_viento}} </dd>
+		<dd>{{array_metar.rafaga_viento}} </dd>
 		<dt>Wind speed: </dt>
-		<dd>{{array_metar[0].velocidad_viento}} </dd>
+		<dd>{{array_metar.velocidad_viento}} </dd>
 
 	      </dl>
 	     </div>
@@ -85,15 +85,15 @@
 	      <h2 class="panel-heading"><b> TAFOR (Obtained from the nearest airport) </b></h2>
 
 	      <div class="panel-body">
-	      <label>{{array_tafN[0].taf}} </label><br/>
+	      <label>{{array_tafN.taf}} </label><br/>
 	      <div style="font-size:80%">
 	      <dl class="dl-horizontal">
-		<label>Report was made {{array_tafN[0].dia_taf}} at {{array_tafN[0].hora_taf}} UTC </label><br/>
+		<label>Report was made {{array_tafN.dia_taf}} at {{array_tafN.hora_taf}} UTC </label><br/>
 		<dt>Max. temperature:</dt>
-		<dd>{{array_tafN[0].max_temp}} </dd>
+		<dd>{{array_tafN.max_temp}} </dd>
 
 		<dt>Min. temperature:</dt>
-		<dd>{{array_tafN[0].min_temp}} </dd>
+		<dd>{{array_tafN.min_temp}} </dd>
 
 	    {% set count = 0 %}
 	    {% for taf in array_taf %}
@@ -107,7 +107,7 @@
 		<dt>Clouds: </dt>
 
 		   {% for j in range(2) %}
-		   <dd> {{array_tafN[0].array_nubes_taf[count][j]}} </dd>
+		   <dd> {{array_tafN.array_nubes_taf[count][j]}} </dd>
 		   {% endfor %}
 		   
 		{% set count = count + 1 %}

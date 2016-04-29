@@ -713,7 +713,6 @@ def parseoMETAR(result_metar):
     direccion_viento = ''
     velocidad_viento = ''
     rafaga_viento = ''
-    datos_metar = []
 
     #Inicio del parseo
     metar = result_metar["Raw-Report"]
@@ -758,17 +757,17 @@ def parseoMETAR(result_metar):
         rafaga_viento = 'No data'
      
     #Devolución de JSON con los datos parseados      
-    datos_metar.append({'presion_atmosferica':presion_atmosferica,
-                        'visibilidad':visibilidad,
-                        'direccion_viento':direccion_viento,
-                        'rafaga_viento':rafaga_viento,
-                        'velocidad_viento':velocidad_viento,
-                        'temperatura':temperatura,
-                        'metar':metar,
-                        'array_nubes':array_nubes,
-                        'dia':dia,
-                        'hora':hora,
-                       })
+    datos_metar =  {'presion_atmosferica':presion_atmosferica,
+                    'visibilidad':visibilidad,
+                    'direccion_viento':direccion_viento,
+                    'rafaga_viento':rafaga_viento,
+                    'velocidad_viento':velocidad_viento,
+                    'temperatura':temperatura,
+                    'metar':metar,
+                    'array_nubes':array_nubes,
+                    'dia':dia,
+                    'hora':hora,
+                    }
     
     return datos_metar
 
@@ -777,7 +776,6 @@ def parseoMETAR(result_metar):
 def parseoTAFOR_noRepeatInfo(result_taf):
 
     #Inicialización de variables
-    datos_taf = []
     array_nubes_taf = defaultdict(list)
     taf = ''
     max_temp = ''
@@ -813,13 +811,13 @@ def parseoTAFOR_noRepeatInfo(result_taf):
                 array_nubes_taf[i].append(getInfoNubosidad(nube[0], nube[1]))
          
     #Devolución de JSON con los datos parseados  
-    datos_taf.append({'taf':taf,
-                      'max_temp':max_temp,
-                      'min_temp':min_temp,
-                      'dia_taf':dia_taf,
-                      'hora_taf':hora_taf,
-                      'array_nubes_taf':array_nubes_taf
-                    })
+    datos_taf = {'taf':taf,
+                'max_temp':max_temp,
+                'min_temp':min_temp,
+                'dia_taf':dia_taf,
+                'hora_taf':hora_taf,
+                'array_nubes_taf':array_nubes_taf
+                }
 
     return datos_taf
 
