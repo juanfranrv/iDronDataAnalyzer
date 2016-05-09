@@ -478,16 +478,16 @@ class datos_grafico(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
-
-            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
-            
-            lat = coordenadas.latitud
-            lng = coordenadas.longitud
                 
             try:
                 global contador
                 datoAmostrar = ''
+                
+                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+                
+                lat = coordenadas.latitud
+                lng = coordenadas.longitud
                 
                 url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
                 r = urllib2.urlopen(url)
