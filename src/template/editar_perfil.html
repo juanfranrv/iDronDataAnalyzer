@@ -42,6 +42,11 @@
     </header><!--/header-->
 
     <div style="background:transparent !important" class="jumbotron">
+
+      {% if error != '' %}
+	  <div id="mensaje_error" class="alert alert-danger">{{error}}</div>
+      {% endif %}
+
       <div id="formulario">
          {% for n in usuarios %}
             <form action="/editar_perfil" method="post" role="form">

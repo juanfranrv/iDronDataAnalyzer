@@ -62,8 +62,15 @@ class Login(webapp2.RequestHandler):
         
         usu=self.request.get('user')
         pas=self.request.get('pass')
-        result=model.Usuario.query(model.Usuario.usuario==usu)
-        usur=result.get()
+        usur = None
+        error = ''
+        
+        try:
+            result=model.Usuario.query(model.Usuario.usuario==usu)
+            usur=result.get()
+        except:
+            error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+
         
         if usur is not None:
 
@@ -83,8 +90,11 @@ class Login(webapp2.RequestHandler):
                 template = JINJA_ENVIRONMENT.get_template('template/login.html')
                 self.response.write(template.render(template_values))
         else:
-        
-            template_values={'mensaje':'Wrong username.'}
+            
+            if error == '':   #Si no falla la quota, el error es por usuario incorrecto
+                error = 'Wrong username.'
+    
+            template_values={'mensaje':error}
             template = JINJA_ENVIRONMENT.get_template('template/login.html')
             self.response.write(template.render(template_values))
             
@@ -160,17 +170,24 @@ class editar_perfil(webapp2.RequestHandler):
             
             username = str(self.request.cookies.get("username"))
             usuarios = []
-            result= model.Usuario.query(model.Usuario.usuario == username)
             
-            if result is not None:    #Existe el usuario
+            try:
+                result= model.Usuario.query(model.Usuario.usuario == username)
                 
-                for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
-                    usuarios.append(usuario)
+                if result is not None:    #Existe el usuario
                     
-                self.response.headers['Content-Type'] = 'text/html'
-                template_values = {'usuarios':usuarios,'sesion':username, 'footer': footer,'head':head}
-                template = JINJA_ENVIRONMENT.get_template('template/editar_perfil.html')
-                self.response.write(template.render(template_values,message=""))
+                    for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
+                        usuarios.append(usuario)
+                        
+            except:
+                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+                
+                    
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values = {'usuarios':usuarios, 'error':error, 'sesion':username, 'footer': footer,'head':head}
+            template = JINJA_ENVIRONMENT.get_template('template/editar_perfil.html')
+            self.response.write(template.render(template_values,message=""))
+            
         else:
             
             self.redirect('/login')
@@ -290,22 +307,31 @@ class geolocalizacion(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
-            username = str(self.request.cookies.get("username"))
- 
-            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
-        
-            lat = datos.latitud
-            lng = datos.longitud
-
-            vel = round(float(datos.velocidad),3)
-            alt = round(float(datos.altura),3)
-
+            lat = 37.19699469878369                         
+            lng =  -3.6241040674591507
+            vel = 0
+            alt = 0
+            
+            try:
+                username = str(self.request.cookies.get("username"))
+     
+                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+                datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+            
+                lat = datos.latitud
+                lng = datos.longitud
+    
+                vel = round(float(datos.velocidad),3)
+                alt = round(float(datos.altura),3)
+            
+            except:
+                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+    
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username,'footer': footer,'head':head,'lat':lat,'lng':lng,'vel':vel,'alt':alt}
+            template_values={'sesion':username, 'error':error, 'footer': footer,'head':head,'lat':lat,'lng':lng,'vel':vel,'alt':alt}
             template = JINJA_ENVIRONMENT.get_template('template/geolocalizacion.html')
             self.response.write(template.render(template_values))
-            
+                        
         else:
             
             self.redirect('/login')
@@ -452,16 +478,16 @@ class datos_grafico(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
-        
+
+            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+            
+            lat = coordenadas.latitud
+            lng = coordenadas.longitud
+                
             try:
                 global contador
                 datoAmostrar = ''
-                
-                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
-                
-                lat = coordenadas.latitud
-                lng = coordenadas.longitud
                 
                 url = 'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lng) + '&appid=' + Api_key
                 r = urllib2.urlopen(url)
@@ -528,7 +554,7 @@ class estadisticas(webapp2.RequestHandler):
     def get(self):
                 
         if self.request.cookies.get("username"):
-            
+    
             username = str(self.request.cookies.get("username"))
                         
             self.response.headers['Content-Type'] = 'text/html'
@@ -891,23 +917,31 @@ class METAR_TAF(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
-                       
-            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
-            
-            lat = coordenadas.latitud
-            lng = coordenadas.longitud
-            
+
             #Inicialización de variables para que siga funcionando en el que caso de que no exista alguna
-            
-            username = str(self.request.cookies.get("username")) 
+                 
+            lat = ''                   
+            lng = ''
             error = ''
+            username = str(self.request.cookies.get("username")) 
             array_metar = []
             array_taf = []
             array_tafN = []
             
+            try:    #Comprobacion error de quota
+                       
+                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+                
+                lat = coordenadas.latitud
+                lng = coordenadas.longitud
+                
+            except:
+                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+
+            #Gestión del METAR y parseo de la información para su interpretación
+                 
             try:
-                #Gestión del METAR y parseo de la información para su interpretación
                 
                 from google.appengine.api import urlfetch #Deadline error http, poner default fetch
                 urlfetch.set_default_fetch_deadline(45)
@@ -930,7 +964,9 @@ class METAR_TAF(webapp2.RequestHandler):
                 array_taf = parseoTAFOR_RepeatInfo(result_taf)
                 
             except (ValueError, KeyError, DeadlineExceededError) as e:
-                error = 'TAFOR or METAR  is temporarily unavailable.'
+                
+                if error == '':    #Si el error de quota está activo se mantiene, si es nulo se modifica
+                    error = 'TAFOR or METAR  is temporarily unavailable.'
                 
             self.response.headers['Content-Type'] = 'text/html'
 

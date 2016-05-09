@@ -60,6 +60,10 @@
 
     <hr  size="6" noshade>
 
+   {% if error != '' %}
+      <div id="mensaje_error" class="alert alert-danger">{{error}}</div>
+   {% endif %}
+
     <div id="recargar" class="row">
 	<div style="margin-top:30px;">
 	  <div style="float:left;margin-left:18%;">
