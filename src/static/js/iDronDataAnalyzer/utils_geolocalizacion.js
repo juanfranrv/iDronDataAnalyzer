@@ -10,6 +10,7 @@ var markersCityCircle = [], markersFlightCircle = [], markersCircle = [];	//Arra
 var totalResults = 0, totalResultsCity = 0, totalResultsFlight = 0;		//Variable contador para llevar el número de marker que borraremos al seleccionarlo
 var checkboxAirport = false, checkboxCity = false, checkboxFlight = false;	//Variables que indican si cada checkbox ha sido pulsado
 var airportDetected = false, flightDetected = false, cityDetected = false;	//Variables que indican si se ha entrado en zona prohibida
+var num_CityDetected = 100, num_airportDetected = 100, num_flightDetected = 100 ;  //Variables que almacenan la última zona restringida invadida (iniciadas a 100)
 
 function actualizarMapa() {
   $.ajax({
@@ -70,6 +71,15 @@ function actualizarMapa() {
 	       for (var i = 0; i < markersCityCircle.length; i++) {
 		   if(markersCityCircle[i].getBounds().contains(latlng)){
 			cityDetected = true;
+			num_CityDetected = i;	//Almacenado la última ciudad invadida
+		   }
+
+		   if(num_CityDetected != 100){	//Nunca habrá 100 ciudades en la misma zona
+			   //Si la última ciudad contenida, ya no se encuentra contenida, quitamos alerta
+			   if(markersCityCircle[num_CityDetected].getBounds().contains(latlng) == false){ 
+				cityDetected = false;
+				num_CityDetected = 100;
+			   }
 		   }
 		}
 
@@ -82,6 +92,15 @@ function actualizarMapa() {
 	       for (var i = 0; i < markersCircle.length; i++) {
 		   if(markersCircle[i].getBounds().contains(latlng)){
 			airportDetected = true;
+			num_airportDetected = i;	//Almacenamos el último aeropuerto invadido
+		   }
+
+		   if(num_airportDetected != 100){	//Nunca habrá 100 aeropuertos en la misma zona
+			   //Si el último aeropuerto contenido, ya no se encuentra contenido, quitamos alerta
+			   if(markersCircle[num_airportDetected].getBounds().contains(latlng) == false){ 
+				airportDetected = false;
+				num_airportDetected = 100;
+			   }
 		   }
 	       }
 
@@ -94,6 +113,15 @@ function actualizarMapa() {
 	       for (var i = 0; i < markersFlightCircle.length; i++) {
 		   if(markersFlightCircle[i].getBounds().contains(latlng)){
 			flightDetected = true;
+			num_flightDetected = i;		//Almacenado el último vuelo invadido
+		   }
+
+		   if(num_flightDetected != 100){	//Nunca habrá 100 vuelos en la misma zona
+			   //Si el último vuelo contenido ya no se encuentra contenido, quitamos alerta
+			   if(markersFlightCircle[num_flightDetected].getBounds().contains(latlng) == false){ 
+				flightDetected = false;
+				num_flightDetected = 100;
+			   }
 		   }
 	       }
 
