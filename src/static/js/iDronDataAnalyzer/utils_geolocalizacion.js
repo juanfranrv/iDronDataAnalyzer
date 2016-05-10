@@ -376,7 +376,7 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
 			   var markerFlight = new google.maps.Marker({	//Creamos un marker con la información del vuelo
 			     map: map,
 			     position: latlng,
-			     title: 'Plane detected: Altitude(m): ' + (Number(data[i].altitudeFt) * 0,3048) + ' - Speed(kph): ' + (Number(data[i].sppedMph) * 1,60934) + ' - date: ' + data[i].date,
+			     title: 'Plane detected: Altitude(m): ' + Math.round((Number(data[i].altitudeFt) * 0.3048)) + ' - Speed(kph): ' + Math.round((Number(data[i].speedMph) * 1.60934)) + ' - date: ' + data[i].date,
 			     icon: '../static/images/flight.png'
 			   });
 
