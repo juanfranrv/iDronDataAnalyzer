@@ -170,6 +170,7 @@ class editar_perfil(webapp2.RequestHandler):
             
             username = str(self.request.cookies.get("username"))
             usuarios = []
+            error = ''
             
             try:
                 result= model.Usuario.query(model.Usuario.usuario == username)
@@ -307,10 +308,12 @@ class geolocalizacion(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
+            #Inicialización de variables
             lat = 37.19699469878369                         
             lng =  -3.6241040674591507
             vel = 0
             alt = 0
+            error = ''
             
             try:
                 username = str(self.request.cookies.get("username"))
