@@ -38,6 +38,13 @@ indexes:
   properties:
   - name: anio
   - name: idUsuario
+  - name: fecha
+  - name: mes
+
+- kind: DatosAtmosfericos
+  properties:
+  - name: anio
+  - name: idUsuario
   - name: mes
   - name: fecha
 

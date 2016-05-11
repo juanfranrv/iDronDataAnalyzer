@@ -10,11 +10,11 @@ var myFechas = [];
 var clima = "temperatura";
 
 function setClima(tipoAasignar) {
-  clima = tipoAasignar;
+	clima = tipoAasignar;
 }
 
 function getClima() {
-  return clima;
+	return clima;
 }
 
 //Hace peticiones al servidor para actualizar los datos del gráfico
@@ -62,36 +62,116 @@ function loadAjaxClima(){
 
 }
 
+//Hace peticiones al servidor para actualizar los datos del gráfico y tabla
+function loadAjax(fecha, tiempo){
+
+  $.ajax({
+	  type: 'GET',
+	  url: '/getDatosAtmosfericos?fecha=' + fecha + '&tiempo=' + tiempo,
+	  data: $(this).serialize(),
+	  dataType: 'json',
+	  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la página
+		 $('table').html(
+		    function(){
+			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>A. Pressure</th><th>Wind</th><th>Humidity</th><th><p style="visibility:hidden">Delete</p></th></tr></thead><tbody>';
+
+			for(var i = 0; i < data.length; i++){
+			      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + ' UTC</td>';
+			      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
+			      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
+			      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
+			      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
+                    	      content = content + '<td><form id="form-' + data[i].id + '" action="/deleteStatistic" method="POST"><input id="id" name="id" type="hidden" value="' + data[i].id + '"/><button id="button-' + data[i].id + '" type="submit" class="btn btn-danger">Delete</button></form></td>'
+
+			      myFechas.push([data[i].fecha]);
+
+			      if (checkbox == true){
+
+				      switch(getClima()){
+				      	case 'temperatura':
+				      		mySeries.push([i, data[i].temperatura]);
+						break;
+					case 'presion':
+				      		mySeries.push([i, data[i].presion]);
+						break;
+					case 'vel_viento':
+				      		mySeries.push([i, data[i].vel_viento]);
+						break;
+					case 'dir_viento':
+				      		mySeries.push([i, data[i].dir_viento]);
+						break;
+					case 'humedad':
+				      		mySeries.push([i, data[i].humedad]);
+						break;
+				      }
+			     }
+
+			}
+
+			load();						//Pintamos el gráfico con los datos del array
+			mySeries = [];
+			myFechas = [];
+			content = content + '</tr></tbody></table>';
+
+			return content;
+		    }
+		)
+	  }
+  });
+
+}
+
 //Si la checkbox cambia, dependiendo de si está seleccionada o no, vamos a proceder a mostrar el gráfico y su select asociado
 $('#afirmar').change(function() { 
    	if($("#afirmar").is(':checked')){				//Si la checkbox está seleccionada
+
 	    $("#data_grafico").show();					//Mostramos los dos select asociados y el gráfico
 	    $("#shape_grafico").show();
 	    $("#chart").show();
-  	    loadAjaxClima();						//Llamamos a AJAX para actualizar el gráfico
-	   // document.getElementById("tiempo").disabled = true;		//Deshabilitamos el select asociado a tiempo que no sirve para el gráfico
-	    //$("#tiempo [value='diario']").attr("selected","selected");	//Habilitamos por defecto "Diario", ya que los datos van a ser diarios
 	    checkbox = true;
 
+  	    loadAjaxClima();
+
 	} else {							//Si la checkbox no está seleccionada
+
 	    $("#data_grafico").hide();					
 	    $("#shape_grafico").hide();					//Escondemos los select asociados y el gráfico
 	    $("#chart").hide();
-	   // document.getElementById("tiempo").disabled = false;		//Activamos el select Tiempo que sí sirve para la tabla
 	    checkbox = false;
 	}
 });
 
 $('#data_grafico').change(function () {			//Evento que obtiene el tipo de dato a mostrar en el gráfico y actualiza este
-  var dato_clima = document.getElementById('data_grafico').value;
-  setClima(dato_clima);
-  loadAjaxClima();
+
+	var dato_clima = document.getElementById('data_grafico').value;
+	setClima(dato_clima);
+
+	loadAjaxClima();
 });
 
 $('#shape_grafico').change(function () {			//Evento que obtiene el tipo de dato a mostrar en el gráfico y actualiza este
-  var forma_grafico = document.getElementById('shape_grafico').value;
-  window.forma = forma_grafico;
-  loadAjaxClima();
+
+	var forma_grafico = document.getElementById('shape_grafico').value;
+	window.forma = forma_grafico;
+
+  	loadAjaxClima();
+});
+
+$('#tiempo').change(function(){			//Select asociado al tiempo
+
+	var tipo_tiempo = document.getElementById('tiempo').value;
+	window.tiempo = tipo_tiempo;     		//Almacenamos la variable para poder usarla en el evento de abajo
+
+	loadAjax(window.fecha, tipo_tiempo);
+
+});
+
+$('#datepicker').change(function () {		//Actualiza los datos al cambiar de fecha,sin recargar la página, utilizando AJAX
+
+	var tipo_dato = document.getElementById('datepicker').value;
+	window.fecha = tipo_dato;
+
+	loadAjax(tipo_dato, window.tiempo);
 
 });
 
@@ -104,122 +184,6 @@ $(document).ready(				//Lanza la selección de fecha
 	    });
 	}
 );
-
-$('#tiempo').change(function(){			//Select asociado al tiempo
-  var tipo_tiempo = document.getElementById('tiempo').value;
-  window.tiempo = tipo_tiempo;     		//Almacenamos la variable para poder usarla en el evento de abajo
-  var tipo_dat = window.fecha;
-
-  $.ajax({
-	  type: 'GET',
-	  url: '/getDatosAtmosfericos?fecha=' + tipo_dat + '&tiempo=' + tipo_tiempo,
-	  data: $(this).serialize(),
-	  dataType: 'json',
-	  success: function (data) {
-		 $('table').html(
-		    function(){
-			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>Pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>'; 
-			for(var i = 0; i < data.length; i++){
-			      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + ' UTC</td>';
-			      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
-			      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
-			      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
-			      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
-			      myFechas.push([data[i].fecha]);
-
-			      if (checkbox == true){
-
-				      switch(getClima()){
-				      	case 'temperatura':
-				      		mySeries.push([i, data[i].temperatura]);
-						break;
-					case 'presion':
-				      		mySeries.push([i, data[i].presion]);
-						break;
-					case 'vel_viento':
-				      		mySeries.push([i, data[i].vel_viento]);
-						break;
-					case 'dir_viento':
-				      		mySeries.push([i, data[i].dir_viento]);
-						break;
-					case 'humedad':
-				      		mySeries.push([i, data[i].humedad]);
-						break;
-				      }
-			     }
-			}
-
-			load();						//Pintamos el gráfico con los datos del array
-			mySeries = [];
-			myFechas = [];
-			content = content + '</tr></tbody></table>';
-			return content;
-		    }
-		)
-	  }
-  });
-});
-
-$('#datepicker').change(function () {		//Actualiza los datos al cambiar de fecha,sin recargar la página, utilizando AJAX
-
-  var tipo_dato = document.getElementById('datepicker').value;
-  window.fecha = tipo_dato;
-  var tipo_tiem = window.tiempo;		//Recuperamos la variable anteriormente almacenada
-  clima = window.clima;
-
-  $.ajax({
-	  type: 'GET',
-	  url: '/getDatosAtmosfericos?fecha=' + tipo_dato + '&tiempo=' + tipo_tiem,
-	  data: $(this).serialize(),
-	  dataType: 'json',
-	  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la página
-		 $('table').html(
-		    function(){
-			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>Pressure</th><th>Wind</th><th>Humidity</th></tr></thead><tbody>';
-
-			for(var i = 0; i < data.length; i++){
-			      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + ' UTC</td>';
-			      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
-			      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
-			      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
-			      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
-			      myFechas.push([data[i].fecha]);
-
-			      if (checkbox == true){
-
-				      switch(getClima()){
-				      	case 'temperatura':
-				      		mySeries.push([i, data[i].temperatura]);
-						break;
-					case 'presion':
-				      		mySeries.push([i, data[i].presion]);
-						break;
-					case 'vel_viento':
-				      		mySeries.push([i, data[i].vel_viento]);
-						break;
-					case 'dir_viento':
-				      		mySeries.push([i, data[i].dir_viento]);
-						break;
-					case 'humedad':
-				      		mySeries.push([i, data[i].humedad]);
-						break;
-				      }
-			     }
-
-			}
-
-			load();						//Pintamos el gráfico con los datos del array
-			mySeries = [];
-			myFechas = [];
-			content = content + '</tr></tbody></table>';
-
-			return content;
-		    }
-		)
-	  }
-  });
-
-});
 
 //GRÁFICO HIGHCHART DE ESTADÍSTICAS
 
@@ -285,6 +249,7 @@ function load(){
 	});
 
 	switch(getClima()){			//Dependiendo del dato atmosférico seleccionado vamos cambiando los valores
+
 		case 'temperatura':		//Cambios dinámicos de extremos, título y nombre de series tanto para presión como para temperatura
 		     chart.yAxis[0].setExtremes(0, 50);
 		     chart.yAxis[0].axisTitle.attr({
@@ -333,7 +298,7 @@ function load(){
 
 	if(window.forma == 'spline'){	//Si la forma "Línea" está seleccionada, pintamos el gráfico con dicha forma. En caso contrario, como columna 3D
 	     chart.series[0].update({
-	    	type: window.forma
+		type: window.forma
 	     });
 	}
 

@@ -4,10 +4,12 @@
 from google.appengine.ext import ndb
 from google.appengine.ext.webapp.util import run_wsgi_app
 from collections import defaultdict
-from google.appengine.runtime import DeadlineExceededError
+from google.appengine.api.urlfetch_errors import DeadlineExceededError
 from google.appengine.api import urlfetch
 import os, model, webapp2, jinja2, json, math, urllib, urllib2, sys, subprocess, random, datetime, time, uuid
 from httplib import HTTPResponse
+from google.appengine.api import urlfetch
+import threading
 
 # Declaración del entorno de jinja2 y el sistema de templates.
 
@@ -23,11 +25,7 @@ footer = JINJA_ENVIRONMENT.get_template('template/footer.html').render()
 
 #Variables globales
 
-API_pronostico = 'c6f8c98fd1da5785'             #Key para la API del pronóstico
-Api_key = 'fffa0ba60d5357235f5782313216b8ae'    #Key para la API del gráfico de monitorización
 contador = 0                                    #Variable que lleva la cuenta para la inserción de datos en la base de datos
-lat = 37.19699469878369                         #Variables que generan coordenadas aleatorias utilizadas en la mayoría de las clases
-lng =  -3.6241040674591507
 
 #Clase principal
 
@@ -405,6 +403,9 @@ class getNearbyAreas(webapp2.RequestHandler):
                 lat = coordenadas.latitud
                 lng = coordenadas.longitud
                 
+                #Deadline error http, poner default fetch
+                urlfetch.set_default_fetch_deadline(45)
+                
                 url = 'http://api.geonames.org/findNearbyJSON?username=juanfranrv&country=US&lat=' + str(lat) + '&lng=' + str(lng) + '&radius=300&formatted=true&featureCode=PPL&featureClass=P'
                 
                 r = urllib2.urlopen(url)
@@ -485,6 +486,7 @@ class datos_grafico(webapp2.RequestHandler):
             try:
                 global contador
                 datoAmostrar = ''
+                Api_key = 'fffa0ba60d5357235f5782313216b8ae'    #Key para la API del gráfico de monitorización
                 
                 userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
                 coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
@@ -519,7 +521,7 @@ class datos_grafico(webapp2.RequestHandler):
                 elif dato_seleccionado == 'Wind Direction':
                     datoAmostrar = dir_win;
                 
-                if contador is 50:         #Cada 50 datos obtenidos, almacenamos en la base de datos
+                if contador is 2:         #Cada 50 datos obtenidos, almacenamos en la base de datos
                     #Almacenamos los datos en el usuario con la sesión activa
                     result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
                     data = model.DatosAtmosfericos()
@@ -535,7 +537,7 @@ class datos_grafico(webapp2.RequestHandler):
                     data.humedad = hum
                     data.vel_viento = round(vel_win,2)
                     data.dir_viento = round(dir_win,2)
-                                    
+                    
                     data.put()
                     
                     contador = 0
@@ -549,7 +551,21 @@ class datos_grafico(webapp2.RequestHandler):
                 
                 error = 'Chart web service is temporarily unavailable.'
                 self.response.write(json.dumps(error))
-                
+
+#Clase para borrar datos procedentes de estadisticas
+
+class deleteStatistic(webapp2.RequestHandler):
+    
+    def post(self):
+        
+        deleteID = long(self.request.get("id"))
+
+        weatherData = model.DatosAtmosfericos.get_by_id(deleteID)   #Elimina el dato elegido por el usuario
+        weatherData.key.delete()
+                 
+        self.redirect('/estadisticas') 
+        
+                 
 #Clase que gestiona las estadisticas de la monitorización de datos atmosféricos obtenida
 
 class estadisticas(webapp2.RequestHandler):
@@ -591,19 +607,21 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
                 result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.dia == num_semana, model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
                                                 
             elif tiempo_elegido == 'anual':     #Si el tiempo es anual, comprobamos el año antes de añadir
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha).order(model.DatosAtmosfericos.mes)
 
             else:          
                 result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.date  == fecha_elegida, model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
 
-            if result is not None:          
+            if result is not None: 
+                         
                 for dato in result:             #Crear un array de tipo json para parsear en el cliente    
                          datos_atmos.append({'fecha': dato.fecha,
                                             'temperatura': dato.temperatura,
                                             'presion': dato.pres_atmos,
                                             'humedad': dato.humedad,
                                             'vel_viento': dato.vel_viento,
-                                            'dir_viento': dato.dir_viento
+                                            'dir_viento': dato.dir_viento,
+                                            'id': dato.key.id()
                                             })
 
             self.response.write(json.dumps(datos_atmos)) 
@@ -641,6 +659,7 @@ class pronostico(webapp2.RequestHandler):
             longitud = self.request.get('longitud')
             radio_elegido = self.request.get('optradio')
             
+            API_pronostico = 'c6f8c98fd1da5785'             #Key para la API del pronóstico
             array_datos = []
             error = ''
             latitud_actual = ''
@@ -946,7 +965,7 @@ class METAR_TAF(webapp2.RequestHandler):
                  
             try:
                 
-                from google.appengine.api import urlfetch #Deadline error http, poner default fetch
+                #Deadline error http, poner default fetch
                 urlfetch.set_default_fetch_deadline(45)
                 
                 url_metar = 'http://avwx.rest/api/metar.php?lat=' + str(lat) + '&lon=' + str(lng) + '&format=JSON'
@@ -1009,6 +1028,7 @@ urls = [('/', MainPage),
         ('/METAR_TAF', METAR_TAF),
         ('/getNearbyAreas', getNearbyAreas),
         ('/getNearbyFlights', getNearbyFlights),
+        ('/deleteStatistic', deleteStatistic),
         ('/.*', ErrorPage)
        ]
 
@@ -1018,7 +1038,6 @@ application = webapp2.WSGIApplication(urls, debug=True)
     
 def main():
     run_wsgi_app(application)
-    #drone_utils.conexion_drone()
 
 if __name__ == "__main__":
     main()
