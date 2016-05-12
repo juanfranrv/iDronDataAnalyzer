@@ -135,7 +135,7 @@ function actualizarMapa() {
 }
 
 function initialize() {
-  $.ajax({
+	$.ajax({
 	  type: 'GET',			//Obtiene la latitud y longitud inicial para posicionar el drone. Llamada AJAX al servidor.
 	  url: '/updateDatosDrone',
 	  data: $(this).serialize(),
@@ -144,69 +144,70 @@ function initialize() {
 		window.lat = data[0].latitud;
 		window.lng = data[0].longitud;
 	  }
-  });
+	});
 
-  var myLatlng = new google.maps.LatLng(window.lat, window.lng);
-  var mapOptions = {
-    zoom: 13,
-    center: myLatlng,
-    mapTypeId: 'terrain'
-  }
+	var myLatlng = new google.maps.LatLng(window.lat, window.lng);
+	var mapOptions = {
+	zoom: 13,
+	center: myLatlng,
+	mapTypeId: 'terrain'
+	}
 
-  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-  marker = new google.maps.Marker({			//Creamos el marker del drone
-      position: myLatlng,
-      map: map,
-      title: 'Drone',
-      icon: '../static/images/dron_geo.png'
-  });
+	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+	marker = new google.maps.Marker({			//Creamos el marker del drone
+		position: myLatlng,
+		map: map,
+		title: 'Drone',
+		icon: '../static/images/dron_geo.png'
+	});
 
-  var elevator = new google.maps.ElevationService;		
-  var infowindow = new google.maps.InfoWindow({map: map});
-  // Creamos el servicio PlaceService y enviamos la petición.
-  var service = new google.maps.places.PlacesService(map);
- 
+	var elevator = new google.maps.ElevationService;		
+	var infowindow = new google.maps.InfoWindow({map: map});
+	// Creamos el servicio PlaceService y enviamos la petición.
+	var service = new google.maps.places.PlacesService(map);
 
-  // Lanza la elevación del terreno al dar click a una zona
-  map.addListener('click', function(event) {
-     displayLocationElevation(event.latLng, elevator, infowindow);
-  });
 
-  google.maps.event.addDomListener(window, 'load', initialize);
-  setInterval(actualizarMapa, 1000);
+	// Lanza la elevación del terreno al dar click a una zona
+	map.addListener('click', function(event) {
+		displayLocationElevation(event.latLng, elevator, infowindow);
+	});
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+	setInterval(actualizarMapa, 1000);
 }
 
 function crearMarcador(place){
-   // Creamos un marcador para los aeropuertos
-   var markerAirport = new google.maps.Marker({
-     map: map,
-     position: place.geometry.location,
-     title: 'Airport detected ',
-     icon: '../static/images/airport.png'
-   });
+	// Creamos un marcador para los aeropuertos
+	var markerAirport = new google.maps.Marker({
+		map: map,
+		position: place.geometry.location,
+		title: 'Airport detected ',
+		icon: '../static/images/airport.png'
+	});
 
-   markers.push(markerAirport);
+	markers.push(markerAirport);
 }
 
 function displayLocationElevation(location, elevator, infowindow) {
-  // Petición de localización
-  elevator.getElevationForLocations({
-    'locations': [location]
-  }, function(results, status) {
-    infowindow.setPosition(location);
-    if (status === google.maps.ElevationStatus.OK) {
-      // Cogemos el primer resultado
-      if (results[0]) {
-        // Abrimos la infowindow para mostrar la elevación en el punto deseado
-        infowindow.setContent('Elevation at this point <br> is ' +
-            results[0].elevation + ' meters.');
-      } else {
-        infowindow.setContent('No data');
-      }
-    } else {
-      infowindow.setContent('Elevation service has failed because of: ' + status);
-    }
-  });
+	// Petición de localización
+	elevator.getElevationForLocations({
+	'locations': [location]
+	}, function(results, status) {
+			infowindow.setPosition(location);
+			if (status === google.maps.ElevationStatus.OK) {
+				// Cogemos el primer resultado
+				if (results[0]) {
+				// Abrimos la infowindow para mostrar la elevación en el punto deseado
+				infowindow.setContent('Elevation at this point <br> is ' +
+				    results[0].elevation + ' meters.');
+				} else {
+					infowindow.setContent('No data');
+				}
+
+			} else {
+				infowindow.setContent('Elevation service has failed because of: ' + status);
+			}
+	});
 }
 
 //--------------------------------ACTUALIZACIÓN DINÁMICA DE LOS DATOS RECIBIDOS DEL DRONE--------------------------------------------
@@ -238,6 +239,11 @@ function actualizarDatosDrone() {
 
 				if (cityDetected == true){      //Si se entra en zona prohibida (ciudad detectada), informamos al usuario
 				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a populated place.</label></div>';
+				}
+				
+				//Activa sonido cuando hay una alerta
+				if(data[0].alert ==1 || flightDetected == true || airportDetected == true || cityDetected == true){
+				   content = content + '<audio style="visibility:hidden" controls autoplay><source src="../static/sound/alerta.mp3" type="audio/mpeg"></audio>';
 				}
 
 				return content;

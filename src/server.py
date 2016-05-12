@@ -521,7 +521,7 @@ class datos_grafico(webapp2.RequestHandler):
                 elif dato_seleccionado == 'Wind Direction':
                     datoAmostrar = dir_win;
                 
-                if contador is 2:         #Cada 50 datos obtenidos, almacenamos en la base de datos
+                if contador is 10:         #Cada 80 datos obtenidos, almacenamos en la base de datos
                     #Almacenamos los datos en el usuario con la sesión activa
                     result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
                     data = model.DatosAtmosfericos()
@@ -556,15 +556,14 @@ class datos_grafico(webapp2.RequestHandler):
 
 class deleteStatistic(webapp2.RequestHandler):
     
-    def post(self):
+    def get(self):
         
         deleteID = long(self.request.get("id"))
 
         weatherData = model.DatosAtmosfericos.get_by_id(deleteID)   #Elimina el dato elegido por el usuario
         weatherData.key.delete()
-                 
-        self.redirect('/estadisticas') 
         
+        self.response.write(json.dumps("Deleted")) 
                  
 #Clase que gestiona las estadisticas de la monitorización de datos atmosféricos obtenida
 

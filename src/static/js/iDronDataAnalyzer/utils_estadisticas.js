@@ -64,7 +64,6 @@ function loadAjaxClima(){
 
 //Hace peticiones al servidor para actualizar los datos del gráfico y tabla
 function loadAjax(fecha, tiempo){
-
   $.ajax({
 	  type: 'GET',
 	  url: '/getDatosAtmosfericos?fecha=' + fecha + '&tiempo=' + tiempo,
@@ -81,7 +80,8 @@ function loadAjax(fecha, tiempo){
 			      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
-                    	      content = content + '<td><form id="form-' + data[i].id + '" action="/deleteStatistic" method="POST"><input id="id" name="id" type="hidden" value="' + data[i].id + '"/><button id="button-' + data[i].id + '" type="submit" class="btn btn-danger">Delete</button></form></td>'
+                    	      //content = content + '<td><form id="form-' + data[i].id + '" action="/deleteStatistic" method="POST"><input id="id" name="id" type="hidden" value="' + data[i].id + '"/><button id="button-' + data[i].id + '" type="submit" class="btn btn-danger">Delete</button></form></td>'
+			      content = content + '<td><button id="button-' + data[i].id + '" class="btn btn-danger borrarBoton" data-item="' + data[i].id + '" type="submit" class="btn btn-danger">Delete</button></td>';
 
 			      myFechas.push([data[i].fecha]);
 
@@ -120,6 +120,23 @@ function loadAjax(fecha, tiempo){
   });
 
 }
+
+$(document).on('click', ".borrarBoton", function () {
+
+	var catid = $(this).attr("data-item")
+
+	$.ajax({
+		type: 'GET',
+		url: '/deleteStatistic?id=' + catid,
+		data: $(this).serialize(),
+		dataType: 'json',
+		success: function (data) {
+			loadAjax(window.fecha, window.tiempo);	
+		}
+  	});
+
+ 	loadAjax(window.fecha, window.tiempo);	
+});
 
 //Si la checkbox cambia, dependiendo de si está seleccionada o no, vamos a proceder a mostrar el gráfico y su select asociado
 $('#afirmar').change(function() { 
