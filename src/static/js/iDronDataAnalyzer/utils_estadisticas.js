@@ -80,7 +80,6 @@ function loadAjax(fecha, tiempo){
 			      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
-                    	      //content = content + '<td><form id="form-' + data[i].id + '" action="/deleteStatistic" method="POST"><input id="id" name="id" type="hidden" value="' + data[i].id + '"/><button id="button-' + data[i].id + '" type="submit" class="btn btn-danger">Delete</button></form></td>'
 			      content = content + '<td><button id="button-' + data[i].id + '" class="btn btn-danger borrarBoton" data-item="' + data[i].id + '" type="submit" class="btn btn-danger">Delete</button></td>';
 
 			      myFechas.push([data[i].fecha]);

@@ -328,8 +328,20 @@ class geolocalizacion(webapp2.RequestHandler):
             except:
                 error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
     
+            try:
+                url = 'http://api.sunrise-sunset.org/json?lat=' + str(lat) + '&lng=' + str(lng)
+                
+                r = urllib2.urlopen(url)
+            
+                sunset_sunrise = json.load(r)
+            
+            except (ValueError, KeyError, DeadlineExceededError) as e:
+                
+                if error == '':
+                    error = "Sunset and sunrise is temporarily unavailable"
+                    
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username, 'error':error, 'footer': footer,'head':head,'lat':lat,'lng':lng,'vel':vel,'alt':alt}
+            template_values={'sesion':username, 'sunset_sunrise':sunset_sunrise, 'error':error, 'footer': footer,'head':head,'lat':lat,'lng':lng,'vel':vel,'alt':alt}
             template = JINJA_ENVIRONMENT.get_template('template/geolocalizacion.html')
             self.response.write(template.render(template_values))
                         
@@ -521,7 +533,7 @@ class datos_grafico(webapp2.RequestHandler):
                 elif dato_seleccionado == 'Wind Direction':
                     datoAmostrar = dir_win;
                 
-                if contador is 10:         #Cada 80 datos obtenidos, almacenamos en la base de datos
+                if contador is 80:         #Cada 80 datos obtenidos, almacenamos en la base de datos
                     #Almacenamos los datos en el usuario con la sesión activa
                     result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
                     data = model.DatosAtmosfericos()
