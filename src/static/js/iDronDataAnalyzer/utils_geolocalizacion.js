@@ -243,7 +243,8 @@ function actualizarDatosDrone() {
 				
 				//Activa sonido cuando hay una alerta
 				if(data[0].alert ==1 || flightDetected == true || airportDetected == true || cityDetected == true){
-				   content = content + '<audio style="visibility:hidden" controls autoplay><source src="../static/sound/alerta.mp3" type="audio/mpeg"></audio>';
+					   content = content + '<audio id="myAudio" style="visibility:hidden" controls autoplay><source src="../static/sound/beep.mp3" type="audio/mpeg"></audio>';
+					
 				}
 
 				return content;
