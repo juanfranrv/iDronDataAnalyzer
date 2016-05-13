@@ -257,7 +257,7 @@ class RecibirDatosLoginApp(webapp2.RequestHandler):
                 else:
                     self.response.write(token)
                 
-            else:     
+            else:    
                 self.response.write(token)         
          
 #Clase que recibe los datos procedentes del HTTP POST de la aplicación de Android y los almacena para ser tratados posteriormente en el resto de funcionalidades
