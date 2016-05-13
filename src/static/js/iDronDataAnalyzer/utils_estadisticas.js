@@ -117,7 +117,7 @@ function loadAjax(fecha, tiempo){
 		    }
 		)
 
- 		$('#myTableBody').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
+ 		$('#myTableBody').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:8});
 	  }
   });
 

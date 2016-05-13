@@ -9,7 +9,6 @@ from google.appengine.api import urlfetch
 import os, model, webapp2, jinja2, json, math, urllib, urllib2, sys, subprocess, random, datetime, time, uuid
 from httplib import HTTPResponse
 from google.appengine.api import urlfetch
-import threading
 
 # Declaración del entorno de jinja2 y el sistema de templates.
 
@@ -969,6 +968,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 lng = coordenadas.longitud
                 
             except:
+                
                 error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
 
             #Gestión del METAR y parseo de la información para su interpretación
