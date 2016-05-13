@@ -243,6 +243,7 @@ class RecibirDatosLoginApp(webapp2.RequestHandler):
                 
             username = self.request.get('username')
             password = self.request.get('password')
+            token = "NoData"
             
             #Buscamos el usuario recibido desde Android en la base de datos y si existe devolvemos su token para iniciar sesión en la app Android
             UserQuery = model.Usuario.query(model.Usuario.usuario == username).get()
@@ -254,11 +255,9 @@ class RecibirDatosLoginApp(webapp2.RequestHandler):
                     self.response.write(token)
                     
                 else:
-                    token = "NoData"
                     self.response.write(token)
                 
-            else:    
-                token = "NoData" 
+            else:     
                 self.response.write(token)         
          
 #Clase que recibe los datos procedentes del HTTP POST de la aplicación de Android y los almacena para ser tratados posteriormente en el resto de funcionalidades
@@ -997,7 +996,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 array_taf = parseoTAFOR_RepeatInfo(result_taf)
                 
             except (ValueError, KeyError, DeadlineExceededError) as e:
-                
+                #No se pueden dar dos errores a la vez
                 if error == '':    #Si el error de quota está activo se mantiene, si es nulo se modifica
                     error = 'TAFOR or METAR  is temporarily unavailable.'
                 

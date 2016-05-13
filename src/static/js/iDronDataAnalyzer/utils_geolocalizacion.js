@@ -11,6 +11,7 @@ var totalResults = 0, totalResultsCity = 0, totalResultsFlight = 0;		//Variable 
 var checkboxAirport = false, checkboxCity = false, checkboxFlight = false;	//Variables que indican si cada checkbox ha sido pulsado
 var airportDetected = false, flightDetected = false, cityDetected = false;	//Variables que indican si se ha entrado en zona prohibida
 var num_CityDetected = 100, num_airportDetected = 100, num_flightDetected = 100 ;  //Variables que almacenan la última zona restringida invadida (iniciadas a 100)
+var checkboxSound = false;
 
 function actualizarMapa() {
   $.ajax({
@@ -242,9 +243,10 @@ function actualizarDatosDrone() {
 				}
 				
 				//Activa sonido cuando hay una alerta
-				if(data[0].alert ==1 || flightDetected == true || airportDetected == true || cityDetected == true){
-					   content = content + '<audio id="myAudio" style="visibility:hidden" controls autoplay><source src="../static/sound/beep.mp3" type="audio/mpeg"></audio>';
-					
+				if(checkboxSound == true){
+					if(data[0].alert ==1 || flightDetected == true || airportDetected == true || cityDetected == true){
+						   content = content + '<audio id="myAudio" style="display:None" controls autoplay><source src="../static/sound/beep.mp3" type="audio/mpeg"></audio>';
+					}	
 				}
 
 				return content;
@@ -263,6 +265,14 @@ $('#airport').change(function() {
 	    checkboxAirport = true;
 	} else {							//Si la checkbox no está seleccionada
 	    checkboxAirport = false;
+	}
+});
+
+$('#sound').change(function() { 
+   	if($("#sound").is(':checked')){				//Si la checkbox está seleccionada
+	    checkboxSound = true;
+	} else {							//Si la checkbox no está seleccionada
+	    checkboxSound = false;
 	}
 });
 

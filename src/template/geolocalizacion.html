@@ -80,11 +80,14 @@
     <div id="fail"></div>
     </div>
    <div class="row">
-	  <div style="float:left;margin-left:20%;">
-	  	<label>Sunrise: {{sunset_sunrise.results.sunrise}} UTC</label>
+	  <div style="float:left;margin-left:10%;">
+	  	<label><u>Sunrise:</u> {{sunset_sunrise.results.sunrise}} UTC</label>
 	  </div>
-	  <div style="float:left;margin-left:20%;">
-	  	<label>Sunset: {{sunset_sunrise.results.sunset}} UTC</label>
+          <div style="float:left;margin-left:15%;">
+	    <input type="checkbox" value="sound" id="sound" name="sound" data-toggle="toggle" data-on="Alert sound" data-off="No alert sound" data-onstyle="default">
+	  </div>
+	  <div style="float:left;margin-left:15%;">
+	  	<label><u>Sunset:</u> {{sunset_sunrise.results.sunset}} UTC</label>
 	  </div>
     </div>
 
