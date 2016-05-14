@@ -72,9 +72,10 @@ class Login(webapp2.RequestHandler):
         if usur is not None:
 
             if usur.password==pas:
-                
+                #Creamos una cookie para el nombre de usuario y otra para token
                 self.response.headers.add_header('Set-Cookie',"username=" + str(usur.usuario))
-        
+                self.response.headers.add_header('Set-Cookie',"idUsername=" + str(usur.idUsuario))
+                
                 template_values={'sesion':usur.usuario,'head':head,'footer':footer}
                 template = JINJA_ENVIRONMENT.get_template('template/index.html')
                 self.response.write(template.render(template_values))
@@ -125,7 +126,6 @@ class formRegistro(webapp2.RequestHandler):
         try:
             
             #Si el usuario no existe, se introducen los datos en la base de datos
-            
             if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
                 
                 user = model.Usuario()
@@ -325,9 +325,9 @@ class geolocalizacion(webapp2.RequestHandler):
             try:
                 
                 username = str(self.request.cookies.get("username"))
+                idUsername = self.request.cookies.get("idUsername")
      
-                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-                datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+                datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
             
                 lat = datos.latitud
                 lng = datos.longitud
@@ -370,9 +370,9 @@ class coordenadas(webapp2.RequestHandler):
  
             alert = 0
             datosRec = []
-
-            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+            idUsername = self.request.cookies.get("idUsername")
+            
+            coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
             
             lat = coordenadas.latitud
             lng = coordenadas.longitud
@@ -403,8 +403,9 @@ class getNearbyAreas(webapp2.RequestHandler):
             try:  
 
                 #Hacemos petición al servicio web de geonames y mandamos el json al template
-                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+                idUsername = self.request.cookies.get("idUsername")
+            
+                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
                 
                 lat = coordenadas.latitud
                 lng = coordenadas.longitud
@@ -438,8 +439,9 @@ class getNearbyFlights(webapp2.RequestHandler):
             #Hacemos petición al servicio web de flightstats y mandamos el json al template        
             try:
                 
-                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+                idUsername = self.request.cookies.get("idUsername")
+                
+                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
             
                 lat = coordenadas.latitud
                 lng = coordenadas.longitud
@@ -493,9 +495,9 @@ class datos_grafico(webapp2.RequestHandler):
                 global contador
                 datoAmostrar = ''
                 Api_key = 'fffa0ba60d5357235f5782313216b8ae'    #Key para la API del gráfico de monitorización
-                
-                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+                idUsername = self.request.cookies.get("idUsername")               
+               
+                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
                 
                 lat = coordenadas.latitud
                 lng = coordenadas.longitud
@@ -529,12 +531,11 @@ class datos_grafico(webapp2.RequestHandler):
                 
                 if contador is 80:         #Cada 80 datos obtenidos, almacenamos en la base de datos
                     #Almacenamos los datos en el usuario con la sesión activa
-                    result = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
                     data = model.DatosAtmosfericos()
                     
                     data.fecha = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
                     data.date = datetime.datetime.now().strftime("%d-%m-%Y")
-                    data.idUsuario = result.idUsuario
+                    data.idUsuario = idUsername
                     data.dia = datetime.date.today().strftime("%V")        #Obtiene el número de la semana 
                     data.mes = datetime.date.today().strftime("%m")
                     data.anio = datetime.date.today().strftime("%Y")  
@@ -601,21 +602,20 @@ class getDatosAtmosfericos(webapp2.RequestHandler):
             datos_atmos = []
             fecha_elegida = self.request.get('fecha') 
             tiempo_elegido = self.request.get('tiempo')
-            
-            UserQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            idUsername = self.request.cookies.get("idUsername")
                         
             if tiempo_elegido == 'mensual':     #Si el tiempo es mensual, comprobamos el mes antes de añadir
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.mes == fecha_elegida[3:5], model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.mes == fecha_elegida[3:5], model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == idUsername).order(model.DatosAtmosfericos.fecha)
             
             elif tiempo_elegido == 'semanal':
                 num_semana = datetime.date(int(fecha_elegida[6:11]), int(fecha_elegida[3:5]), int(fecha_elegida[0:2])).strftime("%V") 
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.dia == num_semana, model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.dia == num_semana, model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == idUsername).order(model.DatosAtmosfericos.fecha)
                                                 
             elif tiempo_elegido == 'anual':     #Si el tiempo es anual, comprobamos el año antes de añadir
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha).order(model.DatosAtmosfericos.mes)
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.anio == fecha_elegida[6:11], model.DatosAtmosfericos.idUsuario == idUsername).order(model.DatosAtmosfericos.fecha).order(model.DatosAtmosfericos.mes)
 
             else:          
-                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.date  == fecha_elegida, model.DatosAtmosfericos.idUsuario == UserQuery.idUsuario).order(model.DatosAtmosfericos.fecha)
+                result = model.DatosAtmosfericos.query(model.DatosAtmosfericos.date  == fecha_elegida, model.DatosAtmosfericos.idUsuario == idUsername).order(model.DatosAtmosfericos.fecha)
 
             if result is not None: 
                          
@@ -954,11 +954,11 @@ class METAR_TAF(webapp2.RequestHandler):
             array_metar = []
             array_taf = []
             array_tafN = []
+            idUsername = self.request.cookies.get("idUsername")
             
             try:    #Comprobacion error de quota
                        
-                userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
+                coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
                 
                 lat = coordenadas.latitud
                 lng = coordenadas.longitud
