@@ -91,7 +91,7 @@ function actualizarMapa() {
 
 
 	  }else{
-
+		num_CityDetected = [];
 	  	cityDetected = false;
 	  }
 
@@ -118,7 +118,7 @@ function actualizarMapa() {
 		   }
 
 	  }else{
-
+		num_airportDetected = [];
 	  	airportDetected = false;
 	  }
 
@@ -145,7 +145,7 @@ function actualizarMapa() {
 		}
 
 	  }else{
-
+		num_flightDetected = [];
 	  	flightDetected = false;
 	  }
 
@@ -153,7 +153,7 @@ function actualizarMapa() {
 
 	 $('#recargar').html(
 	    function(){
-		var content = '<div style="float:left;"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
+		var content = '<div style="float:left;margin-left:5%;"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
 		content = content + '<div style="float:left; margin-left:10%"><label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].altura + ' m</span></div>';
 		content = content + '<div style="float:left; margin-left:10%;"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s</span></div>';
 		
@@ -303,7 +303,6 @@ $('#city').change(function() {
 
 	      markersCity = [];
 	      markersCityCircle = [];
-	      totalResultsCity = 0;
        }
 });
 
@@ -321,7 +320,6 @@ $('#flight').change(function() {
 	      //Reset de los arrays
 	      markersFlight = [];
 	      markersFlightCircle = [];
-	      totalResultsFlight = 0;
        }
 });
 

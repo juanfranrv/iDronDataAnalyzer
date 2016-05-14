@@ -189,7 +189,6 @@ class editar_perfil(webapp2.RequestHandler):
                         usuarios.append(usuario)
                         
             except:
-                
                 error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
                 
                     
@@ -324,6 +323,7 @@ class geolocalizacion(webapp2.RequestHandler):
             error = ''
             
             try:
+                
                 username = str(self.request.cookies.get("username"))
      
                 userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
@@ -339,6 +339,7 @@ class geolocalizacion(webapp2.RequestHandler):
                 error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
     
             try:
+                
                 url = 'http://api.sunrise-sunset.org/json?lat=' + str(lat) + '&lng=' + str(lng)
                 
                 r = urllib2.urlopen(url)
