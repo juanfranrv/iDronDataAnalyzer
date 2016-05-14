@@ -120,43 +120,54 @@ class formRegistro(webapp2.RequestHandler):
     def post(self):
         
         usuario_introducido = self.request.get('usuario')
-        user = model.Usuario()
-        datosRec = model.DatosRecibidos()
- 
-        #Si el usuario no existe, se introducen los datos en la base de datos
+        error = ''
         
-        if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
+        try:
             
-            token = str(uuid.uuid4())
+            #Si el usuario no existe, se introducen los datos en la base de datos
             
-            user.idUsuario = token
-            user.usuario = self.request.get('usuario')
-            user.password = self.request.get('password')
-            user.nombre = self.request.get('nombre')
-            user.apellido = self.request.get('apellido')
-            user.correo = self.request.get('correo')
-            user.telefono = self.request.get('telefono')
-                        
-            user.put()
+            if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
+                
+                user = model.Usuario()
+                datosRec = model.DatosRecibidos()
             
-            #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
-            datosRec.idDatos = token
-            datosRec.latitud = '-35.3473323'
-            datosRec.longitud = '149.1320503'
-            datosRec.altura = '0.0'
-            datosRec.velocidad = '0.0'
+                token = str(uuid.uuid4())
+                
+                user.idUsuario = token
+                user.usuario = self.request.get('usuario')
+                user.password = self.request.get('password')
+                user.nombre = self.request.get('nombre')
+                user.apellido = self.request.get('apellido')
+                user.correo = self.request.get('correo')
+                user.telefono = self.request.get('telefono')
+                            
+                user.put()
+                
+                #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
+                datosRec.idDatos = token
+                datosRec.latitud = '-35.3473323'
+                datosRec.longitud = '149.1320503'
+                datosRec.altura = '0.0'
+                datosRec.velocidad = '0.0'
+                
+                datosRec.put()
+                
+                self.redirect('/')
+                
+            else:
+                 #Si el usuario existe, se muestra un mensaje de error 
+                error = 'Username is already in use'
             
-            datosRec.put()
-            
-            self.redirect('/')
-            
-        else:
-             #Si el usuario existe, se muestra un mensaje de error
-
-            self.response.headers['Content-Type'] = 'text/html'
-            template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-            self.response.write(template.render(message="Username is already in use"))
-
+        except:
+             
+            if error == '':   
+                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+                
+        self.response.headers['Content-Type'] = 'text/html'
+        template_values={'message':error}
+        template = JINJA_ENVIRONMENT.get_template('template/registro.html')
+        self.response.write(template.render(template_values))
+ 
 #Clase para cambiar los datos de usuario
 
 class editar_perfil(webapp2.RequestHandler):
@@ -178,6 +189,7 @@ class editar_perfil(webapp2.RequestHandler):
                         usuarios.append(usuario)
                         
             except:
+                
                 error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
                 
                     
