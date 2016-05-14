@@ -367,35 +367,17 @@ class coordenadas(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
  
+            alert = 0
+            datosRec = []
+            
             userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
             coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
             
             lat = coordenadas.latitud
             lng = coordenadas.longitud
-              
-            latLng = [lat, lng]
             
-            self.response.write(json.dumps(latLng))
-
-#Clase que gestiona la obtención de datos de seguridad en tiempo real
-
-class updateDatosDrone(webapp2.RequestHandler):
-    
-    def get(self):
-        
-        if self.request.cookies.get("username"):
-            
-            alert = 0
-            datosRec = []
-
-            userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
-    
-            lat = datos.latitud
-            lng = datos.longitud
- 
-            vel = round(float(datos.velocidad),3)
-            alt = round(float(datos.altura),3)
+            vel = round(float(coordenadas.velocidad),3)
+            alt = round(float(coordenadas.altura),3)
 
             if alt > 120:       #Si la altura es mayor de 120m, lanzamos alerta ya que está prohibido
                 alert = 1
@@ -1046,7 +1028,6 @@ urls = [('/', MainPage),
         ('/pronostico', pronostico),
         ('/recibirDatosDrone', RecibirDatosDrone),
         ('/recibirDatosLoginApp',RecibirDatosLoginApp),
-        ('/updateDatosDrone', updateDatosDrone),
         ('/METAR_TAF', METAR_TAF),
         ('/getNearbyAreas', getNearbyAreas),
         ('/getNearbyFlights', getNearbyFlights),

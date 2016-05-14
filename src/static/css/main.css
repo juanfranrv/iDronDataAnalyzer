@@ -47,12 +47,12 @@ hr {
 
 @media (max-width: 623px) {
     tbody {
-        width:400px;
+        width:300px;
 	overflow-x:scroll;
     }
 
     thead{
-	width:400px;
+	width:300px;
 	overflow-x:scroll;
     }
 }
@@ -68,13 +68,7 @@ tbody{
   overflow: auto;
 }
 
-#latitud{
-   width:150px;
-}
 
-#longitud{
-   width:150px;
-}
 
 #container-temp-grande{
   width:99%;

@@ -20,8 +20,7 @@ function actualizarMapa() {
         data: $(this).serialize(),
         dataType: 'json',
         success: function (data) {
-          coordenadas = data;	//Cogemos coordenadas del drone del servidor y vamos actualizando la posición en el mapa
-          var latlng = new google.maps.LatLng(coordenadas[0], coordenadas[1]);
+          var latlng = new google.maps.LatLng(data[0].latitud, data[0].longitud);
           marker.setPosition(latlng);
           map.setCenter(latlng); 
 
@@ -30,7 +29,7 @@ function actualizarMapa() {
 		  var service = new google.maps.places.PlacesService(map);
 		  var request = {
 		     location: latlng,
-		     radius: 50000,
+		     radius: 7000,
 		     types: ['airport']
 		   };
 		 
@@ -47,7 +46,7 @@ function actualizarMapa() {
 			 	      fillOpacity: 0.35,
 			 	      map: map,
 			 	      center: results[i].geometry.location,
-			 	      radius:800
+			 	      radius:500
 			      });
 
 			      markersCircle.push(cityCircle);	 //Almacenamos los círculos en un array para borrarlos cuando se desee
@@ -130,24 +129,61 @@ function actualizarMapa() {
 
 	     flightDetected = false;
 	  }
+
+	 //Recarga de datos si se entra en zona prohibida y cuando recibimos nueva información procedente del dron
+
+	 $('#recargar').html(
+	    function(){
+		var content = '<div style="float:left;"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
+		content = content + '<div style="float:left; margin-left:10%"><label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].altura + ' m</span></div>';
+		content = content + '<div style="float:left; margin-left:10%;"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s</span></div>';
+		
+		if (data[0].alert == 1){	//Si se supera los 120m de altitud, informamos al usuario
+		   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>If you are using a drone as a hobby or recreational use:<br/><b><u>You are flying above 120 m. Be careful, it is forbidden!</u></b><br/>Remember: What can not I do with my drone? </label><ul><li>I can not fly in urban areas.</li><li>I can not fly above crowds of people: parks, beaches, wedding...</li><li>I can not fly at night.</li> <li>I can not fly close to airports, aircrafts...</li></ul></div></div>';
+		}
+
+		if (flightDetected == true){   //Si se entra en zona prohibida (vuelo detectado), informamos al usuario
+		   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a plane.</label></div>';
+		}
+
+		if (airportDetected == true){   //Si se entra en zona prohibida (aeropuerto detectado), informamos al usuario
+		   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near an airport.</label></div>';
+		}
+
+		if (cityDetected == true){      //Si se entra en zona prohibida (ciudad detectada), informamos al usuario
+		   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a populated place.</label></div>';
+		}
+		
+		//Activa sonido cuando hay una alerta
+		if(checkboxSound == true){
+			if(data[0].alert ==1 || flightDetected == true || airportDetected == true || cityDetected == true){
+				   content = content + '<audio id="myAudio" style="display:None" controls autoplay><source src="../static/sound/beep.mp3" type="audio/mpeg"></audio>';
+			}	
+		}
+
+		return content;
+	    }
+	)
        }
    });
 
 }
 
 function initialize() {
+
+	var myLatlng;
+
 	$.ajax({
 	  type: 'GET',			//Obtiene la latitud y longitud inicial para posicionar el drone. Llamada AJAX al servidor.
 	  url: '/updateDatosDrone',
 	  data: $(this).serialize(),
 	  dataType: 'json',
 	  success: function (data) {
-		window.lat = data[0].latitud;
-		window.lng = data[0].longitud;
+		myLatlng = new google.maps.LatLng(data[0].latitud, data[0].longitud);
 	  }
 	});
 
-	var myLatlng = new google.maps.LatLng(window.lat, window.lng);
+
 	var mapOptions = {
 	zoom: 13,
 	center: myLatlng,
@@ -211,52 +247,6 @@ function displayLocationElevation(location, elevator, infowindow) {
 	});
 }
 
-//--------------------------------ACTUALIZACIÓN DINÁMICA DE LOS DATOS RECIBIDOS DEL DRONE--------------------------------------------
-
-function actualizarDatosDrone() {	
-	  $.ajax({
-		  type: 'GET',
-		  url: '/updateDatosDrone',	//Vamos obteniendo los datos recogidos de la aplicación de Android y los actualizamos con AJAX sin recargar la página
-		  data: $(this).serialize(),
-		  dataType: 'json',
-		  success: function (data) {
-			 $('#recargar').html(
-			    function(){
-				var content = '<div style="float:left;"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
-				content = content + '<div style="float:left; margin-left:10%"><label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].altura + ' m</span></div>';
-				content = content + '<div style="float:left; margin-left:10%;"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s</span></div>';
-				
-				if (data[0].alert == 1){	//Si se supera los 120m de altitud, informamos al usuario
-				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>If you are using a drone as a hobby or recreational use:<br/><b><u>You are flying above 120 m. Be careful, it is forbidden!</u></b><br/>Remember: What can not I do with my drone? </label><ul><li>I can not fly in urban areas.</li><li>I can not fly above crowds of people: parks, beaches, wedding...</li><li>I can not fly at night.</li> <li>I can not fly close to airports, aircrafts...</li></ul></div></div>';
-				}
-
-				if (flightDetected == true){   //Si se entra en zona prohibida (vuelo detectado), informamos al usuario
-				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a plane.</label></div>';
-				}
-
-				if (airportDetected == true){   //Si se entra en zona prohibida (aeropuerto detectado), informamos al usuario
-				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near an airport.</label></div>';
-				}
-
-				if (cityDetected == true){      //Si se entra en zona prohibida (ciudad detectada), informamos al usuario
-				   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a populated place.</label></div>';
-				}
-				
-				//Activa sonido cuando hay una alerta
-				if(checkboxSound == true){
-					if(data[0].alert ==1 || flightDetected == true || airportDetected == true || cityDetected == true){
-						   content = content + '<audio id="myAudio" style="display:None" controls autoplay><source src="../static/sound/beep.mp3" type="audio/mpeg"></audio>';
-					}	
-				}
-
-				return content;
-			    }
-			)
-		  }
-	  });
-}
-
-setInterval(actualizarDatosDrone, 1000);		//Actualizamos la información cada segundo periódicamente
 
 //------------------------------ACTUALIZACIÓN DINÁMICA DE DETECCIÓN DE ZONAS PROHIBIDAS--------------------------------------------------------------------
 
@@ -280,8 +270,9 @@ $('#city').change(function() {
    	if($("#city").is(':checked')){					  //Si la checkbox está seleccionada
               checkboxCity = true;
 	      activarDeteccionCiudades();
-	      intervalCity = setInterval(activarDeteccionCiudades,120000);//Vamos actualizando las ciudades a medida que el drone va avanzando (cada 2 minutos)
 
+	      intervalCity = setInterval(activarDeteccionCiudades,60000); //Vamos actualizando las ciudades a medida que el drone va avanzando (cada minuto)
+	
 	} else {							  //Si la checkbox no está seleccionada
 	      checkboxCity = false;
 	      clearInterval(intervalCity);				  //Paramos la actualización de ciudades
@@ -354,7 +345,7 @@ function activarDeteccionCiudades() {					       //Activa la detección de ciuda
 			 	      fillOpacity: 0.35,
 			 	      map: map,
 			 	      center: latlng,
-			 	      radius:4800
+			 	      radius:2000
 			   });
 
 	   	   	   markersCity.push(markerCity);				//Lo añadimos a cada array para borrarlo cuando el usuario lo seleccione
