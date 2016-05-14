@@ -72,7 +72,7 @@ class Login(webapp2.RequestHandler):
         if usur is not None:
 
             if usur.password==pas:
-                #Creamos una cookie para el nombre de usuario y otra para token
+                #Creamos una cookie para el nombre de usuario y otra para token (evitamos consultar la BD)
                 self.response.headers.add_header('Set-Cookie',"username=" + str(usur.usuario))
                 self.response.headers.add_header('Set-Cookie',"idUsername=" + str(usur.idUsuario))
                 
@@ -404,7 +404,8 @@ class getNearbyAreas(webapp2.RequestHandler):
 
                 #Hacemos petición al servicio web de geonames y mandamos el json al template
                 idUsername = self.request.cookies.get("idUsername")
-            
+                populationAreas = []
+                
                 coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
                 
                 lat = coordenadas.latitud
@@ -418,7 +419,6 @@ class getNearbyAreas(webapp2.RequestHandler):
                 r = urllib2.urlopen(url)
         
                 result = json.load(r)
-                populationAreas = []
                                
                 populationAreas = result["geonames"]
  

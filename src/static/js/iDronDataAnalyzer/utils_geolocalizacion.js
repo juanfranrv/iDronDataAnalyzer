@@ -158,19 +158,19 @@ function actualizarMapa() {
 		content = content + '<div style="float:left; margin-left:10%;"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s</span></div>';
 		
 		if (data[0].alert == 1){	//Si se supera los 120m de altitud, informamos al usuario
-		   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label>If you are using a drone as a hobby or recreational use:<br/><b><u>You are flying above 120 m. Be careful, it is forbidden!</u></b><br/>Remember: What can not I do with my drone? </label><ul><li>I can not fly in urban areas.</li><li>I can not fly above crowds of people: parks, beaches, wedding...</li><li>I can not fly at night.</li> <li>I can not fly close to airports, aircrafts...</li></ul></div></div>';
+		   content = content + '<div id="warning"><div class="alert alert-danger"><label>If you are using a drone as a hobby or recreational use:<br/><b><u>You are flying above 120 m. Be careful, it is forbidden!</u></b><br/>Remember: What can not I do with my drone? </label><ul><li>I can not fly in urban areas.</li><li>I can not fly above crowds of people: parks, beaches, wedding...</li><li>I can not fly at night.</li> <li>I can not fly close to airports, aircrafts...</li></ul></div></div>';
 		}
 
 		if (flightDetected == true){   //Si se entra en zona prohibida (vuelo detectado), informamos al usuario
-		   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a plane.</label></div>';
+		   content = content + '<div id="warning"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a plane.</label></div>';
 		}
 
 		if (airportDetected == true){   //Si se entra en zona prohibida (aeropuerto detectado), informamos al usuario
-		   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near an airport.</label></div>';
+		   content = content + '<div id="warning"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near an airport.</label></div>';
 		}
 
 		if (cityDetected == true){      //Si se entra en zona prohibida (ciudad detectada), informamos al usuario
-		   content = content + '<div style="margin-top:50px;"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a populated place.</label></div>';
+		   content = content + '<div id="warning"><div class="alert alert-danger"><label><u>Warning:</u> You are inside a forbidden area. You are flying near a populated place.</label></div>';
 		}
 		
 		//Activa sonido cuando hay una alerta

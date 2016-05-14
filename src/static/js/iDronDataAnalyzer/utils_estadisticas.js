@@ -74,6 +74,9 @@ function loadAjax(fecha, tiempo){
 		    function(){
 			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>A. Pressure</th><th>Wind</th><th>Humidity</th><th><p style="visibility:hidden">Delete</p></th></tr></thead><tbody id="myTableBody">';
 
+			if(data.length == 0)
+				content = content + '<tr><td>No data found.</td>';
+
 			for(var i = 0; i < data.length; i++){
 			      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + ' UTC</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';

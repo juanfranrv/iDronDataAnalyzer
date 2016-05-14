@@ -45,10 +45,32 @@ hr {
    }
 }
 
+#warning{
+    margin-top:50px;
+}
+
+@media (max-width: 1000px) {
+
+    #warning{
+        margin-top:100px;
+    }
+}
+
+@media (max-width: 1200px) {
+
+    #warning{
+        margin-top:100px;
+    }
+}
+
 @media (max-width: 623px) {
     tbody {
         width:300px;
 	overflow-x:scroll;
+    }
+
+    #warning{
+        margin-top:200px;
     }
 
     thead{
@@ -187,7 +209,7 @@ tbody{
   margin-right:550px;
   margin-top:50px;
   border: 2px;
-  width: 1200px;
+  width: 100%;
  
 }
 
