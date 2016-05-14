@@ -317,7 +317,7 @@ $(function () {
 
 	    $('#tipoGrafica-temp1').change(function () {
                 charts.setTitle({text: document.getElementById('tipoGrafica-temp1').value});
-		charts.series[0].update({name: document.getElementById('tipoGrafica-temp1').value}, false);
+		charts.series[0].update({name: document.getElementById('tipoGrafica-temp1').value}, true);
 		var tipo_dato = document.getElementById('tipoGrafica-temp1').value;
 		setDato(tipo_dato);
             });

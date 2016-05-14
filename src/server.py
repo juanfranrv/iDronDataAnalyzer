@@ -145,8 +145,8 @@ class formRegistro(webapp2.RequestHandler):
                 
                 #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
                 datosRec.idDatos = token
-                datosRec.latitud = '-35.3473323'
-                datosRec.longitud = '149.1320503'
+                datosRec.latitud = '37.187236'
+                datosRec.longitud = '-3.779362' 
                 datosRec.altura = '0.0'
                 datosRec.velocidad = '0.0'
                 
@@ -317,8 +317,8 @@ class geolocalizacion(webapp2.RequestHandler):
         if self.request.cookies.get("username"):
             
             #Inicialización de variables
-            lat = 37.19699469878369                         
-            lng =  -3.6241040674591507
+            lat = 37.187236
+            lng = -3.779362
             vel = 0
             alt = 0
             error = ''
@@ -369,7 +369,7 @@ class coordenadas(webapp2.RequestHandler):
  
             alert = 0
             datosRec = []
-            
+
             userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
             coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
             
@@ -378,7 +378,7 @@ class coordenadas(webapp2.RequestHandler):
             
             vel = round(float(coordenadas.velocidad),3)
             alt = round(float(coordenadas.altura),3)
-
+            
             if alt > 120:       #Si la altura es mayor de 120m, lanzamos alerta ya que está prohibido
                 alert = 1
       
@@ -400,13 +400,14 @@ class getNearbyAreas(webapp2.RequestHandler):
         if self.request.cookies.get("username"):
             
             try:  
+
                 #Hacemos petición al servicio web de geonames y mandamos el json al template
                 userQuery = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
                 coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userQuery.idUsuario).get()
                 
                 lat = coordenadas.latitud
                 lng = coordenadas.longitud
-                
+
                 #Deadline error http, poner default fetch
                 urlfetch.set_default_fetch_deadline(45)
                 

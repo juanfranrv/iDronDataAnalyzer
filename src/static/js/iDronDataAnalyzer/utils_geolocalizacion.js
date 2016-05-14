@@ -7,10 +7,10 @@ var marker;
 var map;
 var markers = [], markersFlight = [], markersCity = [];				//Array para almacenar cada uno de los marker de las zonas detectadas
 var markersCityCircle = [], markersFlightCircle = [], markersCircle = [];	//Array para almacenar las áreas de círculos que simbolizan las zonas prohibidas
-var totalResults = 0, totalResultsCity = 0, totalResultsFlight = 0;		//Variable contador para llevar el número de marker que borraremos al seleccionarlo
+var totalResults = 0;								//Variable contador para llevar el número de marker que borraremos al seleccionarlo
 var checkboxAirport = false, checkboxCity = false, checkboxFlight = false;	//Variables que indican si cada checkbox ha sido pulsado
 var airportDetected = false, flightDetected = false, cityDetected = false;	//Variables que indican si se ha entrado en zona prohibida
-var num_CityDetected = 100, num_airportDetected = 100, num_flightDetected = 100 ;  //Variables que almacenan la última zona restringida invadida (iniciadas a 100)
+var num_CityDetected = [], num_airportDetected = [], num_flightDetected = [];   //Arrays que almacenan las zonas invadidas de cada restricción
 var checkboxSound = false;
 
 function actualizarMapa() {
@@ -29,7 +29,7 @@ function actualizarMapa() {
 		  var service = new google.maps.places.PlacesService(map);
 		  var request = {
 		     location: latlng,
-		     radius: 7000,
+		     radius: 7500,
 		     types: ['airport']
 		   };
 		 
@@ -71,63 +71,82 @@ function actualizarMapa() {
 	       for (var i = 0; i < markersCityCircle.length; i++) {
 		   if(markersCityCircle[i].getBounds().contains(latlng)){
 			cityDetected = true;
-			num_CityDetected = i;	//Almacenado la última ciudad invadida
+			if(num_CityDetected[i] != i)
+				num_CityDetected.push(i);	//Almacenamos las poblaciones invadidas en un array
 		   }
+	  	}
+		   
+		if(num_CityDetected.length > 0){	//Si el array de poblaciones invadidas no está vacío
+			//Recorremos y si alguno ha dejado de ser invadido, lo sacamos del array
+			for(var i = 0; i < num_CityDetected.length; i++){
+				if(markersCityCircle[i].getBounds().contains(latlng) == false){ 
+					num_CityDetected.splice(i,1);
+				}
+			}
 
-		   if(num_CityDetected != 100){	//Nunca habrá 100 ciudades en la misma zona
-			   //Si la última ciudad contenida, ya no se encuentra contenida, quitamos alerta
-			   if(markersCityCircle[num_CityDetected].getBounds().contains(latlng) == false){ 
+			if(num_CityDetected.length == 0){	//Si finalmente el array de poblaciones invadidas está vacío, eliminamos la alerta
 				cityDetected = false;
-				num_CityDetected = 100;
-			   }
-		   }
+			}
 		}
+
 
 	  }else{
 
-	     cityDetected = false;
+	  	cityDetected = false;
 	  }
 
 	  if(checkboxAirport == true){  //Si el checkbox de aeropuerto está activo, comprobamos si el drone está contenido en el área para informar al usuario
 	       for (var i = 0; i < markersCircle.length; i++) {
 		   if(markersCircle[i].getBounds().contains(latlng)){
 			airportDetected = true;
-			num_airportDetected = i;	//Almacenamos el último aeropuerto invadido
-		   }
-
-		   if(num_airportDetected != 100){	//Nunca habrá 100 aeropuertos en la misma zona
-			   //Si el último aeropuerto contenido, ya no se encuentra contenido, quitamos alerta
-			   if(markersCircle[num_airportDetected].getBounds().contains(latlng) == false){ 
-				airportDetected = false;
-				num_airportDetected = 100;
-			   }
+			if(num_airportDetected[i] != i)
+				num_airportDetected.push(i);	//Almacenamos los aeropuertos invadidos en un array
 		   }
 	       }
 
+	       if(num_airportDetected.length > 0){	//Si el array de aeropuertos invadidos no está vacío
+			//Recorremos los aeropuertos invadidos y si alguno ha dejado de ser invadido, lo sacamos del array
+			for(var i = 0; i < num_airportDetected.length; i++){
+				if(markersCircle[i].getBounds().contains(latlng) == false){ 
+					num_airportDetected.splice(i,1);
+				}
+			}
+
+			if(num_airportDetected.length == 0){	//Si finalmente el array de aeropuertos invadidos está vacío, eliminamos la alerta
+				airportDetected = false;
+			}
+		   }
+
 	  }else{
 
-	     airportDetected = false;
+	  	airportDetected = false;
 	  }
 
 	  if(checkboxFlight == true){ //Si el checkbox de detección de aviones está activo, comprobamos si el drone está contenido en el área para informar al usuario
 	       for (var i = 0; i < markersFlightCircle.length; i++) {
 		   if(markersFlightCircle[i].getBounds().contains(latlng)){
 			flightDetected = true;
-			num_flightDetected = i;		//Almacenado el último vuelo invadido
-		   }
-
-		   if(num_flightDetected != 100){	//Nunca habrá 100 vuelos en la misma zona
-			   //Si el último vuelo contenido ya no se encuentra contenido, quitamos alerta
-			   if(markersFlightCircle[num_flightDetected].getBounds().contains(latlng) == false){ 
-				flightDetected = false;
-				num_flightDetected = 100;
-			   }
+			if(num_flightDetected[i] != i)
+				num_flightDetected.push(i);		//Almacenamos los vuelos invadidos
 		   }
 	       }
 
+		if(num_flightDetected.length > 0){	//Si el array de vuelos invadidos no está vacío
+		//Recorremos los vuelos invadidos y si alguno ha dejado de ser invadido, lo sacamos del array
+			for(var i = 0; i < num_flightDetected.length; i++){
+				if(markersFlightCircle[i].getBounds().contains(latlng) == false){ 
+					num_flightDetected.splice(i,1);
+				}
+			}
+
+			if(num_flightDetected.length == 0){	//Si finalmente el array de vuelos invadidos está vacío, eliminamos la alerta
+				flightDetected = false;
+			}
+		}
+
 	  }else{
 
-	     flightDetected = false;
+	  	flightDetected = false;
 	  }
 
 	 //Recarga de datos si se entra en zona prohibida y cuando recibimos nueva información procedente del dron
@@ -271,7 +290,7 @@ $('#city').change(function() {
               checkboxCity = true;
 	      activarDeteccionCiudades();
 
-	      intervalCity = setInterval(activarDeteccionCiudades,60000); //Vamos actualizando las ciudades a medida que el drone va avanzando (cada minuto)
+	      intervalCity = setInterval(activarDeteccionCiudades,120000); //Vamos actualizando las ciudades a medida que el drone va avanzando (cada 2 minutos)
 	
 	} else {							  //Si la checkbox no está seleccionada
 	      checkboxCity = false;
@@ -325,10 +344,15 @@ function activarDeteccionCiudades() {					       //Activa la detección de ciuda
 
 	   }else{
 
-	  	   for (var i = 0; i < data.length; i++) {
+	           for (var i = 0; i < markersCity.length; i++) {		      //Borra todos los marker de ciudades del mapa
+	              markersCity[i].setMap(null);
+		      markersCityCircle[i].setMap(null);
+	           } 
 
-			//Comprobamos si el marker existe para no volver a crearlo
-			if((markersCity.length + markersCityCircle.length) != (data.length + totalResultsCity)){
+	           markersCity = [];
+	           markersCityCircle =[];
+	
+	  	   for (var i = 0; i < data.length; i++) {
 
 			   var latlng = new google.maps.LatLng(data[i].lat, data[i].lng);
 			   var markerCity = new google.maps.Marker({			//Creamos el marker y el círculo correspondiente
@@ -350,8 +374,7 @@ function activarDeteccionCiudades() {					       //Activa la detección de ciuda
 
 	   	   	   markersCity.push(markerCity);				//Lo añadimos a cada array para borrarlo cuando el usuario lo seleccione
 	   	   	   markersCityCircle.push(PopulationCircle);
-			   totalResultsCity += 1;
-			}
+			
 		 }
          }
        }
@@ -378,7 +401,6 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
 	   }else{
 
 	  	   for (var i = 0; i < data.length; i++) {	//Obtenemos los vuelos y los mostramos con un marker en Google maps
-			if((markersFlight.length + markersFlightCircle.length) != (data.length + totalResultsFlight)){
 
 			   var latlng = new google.maps.LatLng(data[i].lat, data[i].lon);
 			   var markerFlight = new google.maps.Marker({	//Creamos un marker con la información del vuelo
@@ -401,10 +423,8 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
 
 	   	   	   markersFlight.push(markerFlight);		//Almacenamos el área y los marker
 	   	   	   markersFlightCircle.push(flightCircle);
-			   totalResultsFlight += 1;
-			}
 		   }
-	 }
+	   }
       }
    });
 }
