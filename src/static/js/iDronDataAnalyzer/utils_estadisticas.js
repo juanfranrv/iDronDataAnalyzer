@@ -75,7 +75,7 @@ function loadAjax(fecha, tiempo){
 			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>A. Pressure</th><th>Wind</th><th>Humidity</th><th><p style="visibility:hidden">Delete</p></th></tr></thead><tbody id="myTableBody">';
 
 			if(data.length == 0)
-				content = content + '<tr><td>No data found.</td>';
+				content = content + '<tr><td>No data found.</td><td></td><td></td><td></td><td></td>';
 
 			for(var i = 0; i < data.length; i++){
 			      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + ' UTC</td>';
@@ -120,6 +120,7 @@ function loadAjax(fecha, tiempo){
 		    }
 		)
 
+		//Paginamos la tabla cada vez que nos la traemos. 8 elementos por página
  		$('#myTableBody').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:8});
 	  }
   });
@@ -129,8 +130,9 @@ function loadAjax(fecha, tiempo){
 $(document).on('click', ".borrarBoton", function () {
 
 	var catid = $(this).attr("data-item")
+	alert('Are you sure?');
 
-	$.ajax({
+	$.ajax({						//Borramos por id de botón el item elegido por el usuario, utilizando AJAX para llamar al servidor
 		type: 'GET',
 		url: '/deleteStatistic?id=' + catid,
 		data: $(this).serialize(),
@@ -326,7 +328,7 @@ function load(){
 
 }
 
-//Paginación de la tabla
+//Paginación de la tabla. 
 
 $.fn.pageMe = function(opts){
 	var $this = this,

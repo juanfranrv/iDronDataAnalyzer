@@ -103,6 +103,8 @@ class cerrar_sesion(webapp2.RequestHandler):
     def get(self):
         
         self.response.headers.add_header("Set-Cookie", "username=; Expires=Thu, 01-Jan-1970 00:00:00 GMT")
+        self.response.headers.add_header("Set-Cookie", "idUsername=; Expires=Thu, 01-Jan-1970 00:00:00 GMT")
+        
         self.redirect('/login')
 
 #Clase que devuelve un formulario de registro.
@@ -110,64 +112,76 @@ class cerrar_sesion(webapp2.RequestHandler):
 class formRegistro(webapp2.RequestHandler):
     
     def get(self):
-         
-        self.response.headers['Content-Type'] = 'text/html'
-        template_values={'message':"",'head':head}
-        template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-        self.response.write(template.render(template_values))
-
+        
+        if self.request.cookies.get("username") == 'admin':
+                
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'message':"",'head':head}
+            template = JINJA_ENVIRONMENT.get_template('template/registro.html')
+            self.response.write(template.render(template_values))
+            
+        else:
+            
+            self.redirect('/')
+            
     #Método que registra usuario si pasa las restricciones.
 
     def post(self):
         
-        usuario_introducido = self.request.get('usuario')
-        error = ''
-        
-        try:
+        if self.request.cookies.get("username") == 'admin':
             
-            #Si el usuario no existe, se introducen los datos en la base de datos
-            if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
-                
-                user = model.Usuario()
-                datosRec = model.DatosRecibidos()
+            usuario_introducido = self.request.get('usuario')
+            error = ''
             
-                token = str(uuid.uuid4())
+            try:
                 
-                user.idUsuario = token
-                user.usuario = self.request.get('usuario')
-                user.password = self.request.get('password')
-                user.nombre = self.request.get('nombre')
-                user.apellido = self.request.get('apellido')
-                user.correo = self.request.get('correo')
-                user.telefono = self.request.get('telefono')
-                            
-                user.put()
+                #Si el usuario no existe, se introducen los datos en la base de datos
+                if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
+                    
+                    user = model.Usuario()
+                    datosRec = model.DatosRecibidos()
                 
-                #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
-                datosRec.idDatos = token
-                datosRec.latitud = '37.187236'
-                datosRec.longitud = '-3.779362' 
-                datosRec.altura = '0.0'
-                datosRec.velocidad = '0.0'
+                    token = str(uuid.uuid4())
+                    
+                    user.idUsuario = token
+                    user.usuario = self.request.get('usuario')
+                    user.password = self.request.get('password')
+                    user.nombre = self.request.get('nombre')
+                    user.apellido = self.request.get('apellido')
+                    user.correo = self.request.get('correo')
+                    user.telefono = self.request.get('telefono')
+                                
+                    user.put()
+                    
+                    #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
+                    datosRec.idDatos = token
+                    datosRec.latitud = '37.187236'
+                    datosRec.longitud = '-3.779362' 
+                    datosRec.altura = '0.0'
+                    datosRec.velocidad = '0.0'
+                    
+                    datosRec.put()
+                    
+                    self.redirect('/usuarios')
+                    
+                else:
+                     #Si el usuario existe, se muestra un mensaje de error 
+                    error = 'Username is already in use'
                 
-                datosRec.put()
-                
-                self.redirect('/')
-                
-            else:
-                 #Si el usuario existe, se muestra un mensaje de error 
-                error = 'Username is already in use'
+            except:
+                 
+                if error == '':   
+                    error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+                    
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'message':error}
+            template = JINJA_ENVIRONMENT.get_template('template/registro.html')
+            self.response.write(template.render(template_values))
             
-        except:
-             
-            if error == '':   
-                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
-                
-        self.response.headers['Content-Type'] = 'text/html'
-        template_values={'message':error}
-        template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-        self.response.write(template.render(template_values))
- 
+        else:
+            
+            self.redirect('/')
+            
 #Clase para cambiar los datos de usuario
 
 class editar_perfil(webapp2.RequestHandler):
@@ -181,17 +195,28 @@ class editar_perfil(webapp2.RequestHandler):
             error = ''
             
             try:
-                result= model.Usuario.query(model.Usuario.usuario == username)
-                
-                if result is not None:    #Existe el usuario
+                editID = self.request.get("id")
+
+                if editID == '':    #Si no se recibe ID (no es edición por admin) por lo que mostramos el usuario activo
                     
-                    for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
-                        usuarios.append(usuario)
+                    result= model.Usuario.query(model.Usuario.usuario == username)
+                    
+                    if result is not None:    #Existe el usuario
+                        
+                        for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
+                            usuarios.append(usuario)
+
+                else:
+                    
+                    result = model.Usuario.get_by_id(long(editID)) 
+
+                    if result is not None:    #Existe el usuario
+                        
+                        usuarios.append(result)
                         
             except:
                 error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
                 
-                    
             self.response.headers['Content-Type'] = 'text/html'
             template_values = {'usuarios':usuarios, 'error':error, 'sesion':username, 'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/editar_perfil.html')
@@ -207,10 +232,11 @@ class editar_perfil(webapp2.RequestHandler):
             
             username = str(self.request.cookies.get("username"))
             result = model.Usuario.query()
+            usuario = self.request.get('usuario')
             
             for us in result:
                 
-                if us.usuario == username:            # Se introducen los nuevos datos modificados en la base de datos
+                if us.usuario == usuario:            # Se introducen los nuevos datos modificados en la base de datos
                     
                     password = self.request.get('password')
                     name = self.request.get('nombre')
@@ -1013,7 +1039,93 @@ class METAR_TAF(webapp2.RequestHandler):
         else:
             
             self.redirect('/login')
-              
+
+# Clase que devuelve la lista de usuarios para el administrador
+
+class usuarios(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username") == 'admin':
+            
+            username = str(self.request.cookies.get("username"))
+            usuarios = []
+            error = ''
+            
+            try:
+                result= model.Usuario.query()
+                
+                if result is not None:   
+                    
+                    for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
+                        usuarios.append(usuario)
+                        
+            except:
+                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+                
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'sesion':username, 
+                             'footer': footer,
+                             'usuarios': usuarios,
+                             'head':head
+                            }
+            
+            template = JINJA_ENVIRONMENT.get_template('template/usuarios.html')
+            self.response.write(template.render(template_values)) 
+            
+        else:
+            
+            self.redirect('/login')
+            
+# Clase que actualiza la lista de usuarios para el administrador
+
+class getUsuarios(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username") == 'admin':
+            
+            username = str(self.request.cookies.get("username"))
+            usuarios = []
+            result= model.Usuario.query()
+            
+            if result is not None:   
+                
+                for user in result:  #Lo buscamos y lo añadimos al array de usuarios   
+                    usuarios.append({'usuario': user.usuario,
+                                    'password': user.password,
+                                    'nombre': user.nombre,
+                                    'apellido': user.apellido,
+                                    'correo': user.correo,
+                                    'telefono': user.telefono,
+                                    'id': user.key.id()
+                                    })
+                                        
+            self.response.write(json.dumps(usuarios)) 
+            
+        else:
+            
+            self.redirect('/login')
+            
+#Clase para borrar usuarios por admin
+
+class deleteUsuario(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username") == 'admin':
+            
+            deleteID = long(self.request.get("id"))
+    
+            user = model.Usuario.get_by_id(deleteID) 
+            user.key.delete()
+            
+            self.response.write(json.dumps("Deleted"))
+            
+        else:
+            
+            self.redirect('/login')
+                
 # Urls de la aplicación con sus clases asociadas.
 
 urls = [('/', MainPage),
@@ -1034,6 +1146,9 @@ urls = [('/', MainPage),
         ('/getNearbyAreas', getNearbyAreas),
         ('/getNearbyFlights', getNearbyFlights),
         ('/deleteStatistic', deleteStatistic),
+        ('/usuarios', usuarios),
+        ('/getUsuarios', getUsuarios),
+        ('/deleteUsuario', deleteUsuario),
         ('/.*', ErrorPage)
        ]
 

@@ -3,12 +3,7 @@
 
 {{head|safe}}
 
-<!-- Libreria highcharts y libreria proyecto grafico js -->
-
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
-<script type='text/javascript' src='../static/js/iDronDataAnalyzer/utils_grafico.js'></script>
-
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 
 <body class="homepage">
        <header id="header">
@@ -39,11 +34,11 @@
                 <div class="collapse navbar-collapse navbar-right">
                     <ul class="nav navbar-nav">
                         <li><a href="/">Home</a></li>
-                        <li class="active"><a href="/grafico">Monitoring</a></li>
+                        <li><a href="/grafico">Monitoring</a></li>
 			<li><a href="/pronostico">Forecast</a></li>
                         <li><a href="/estadisticas">Statistics</a></li>
                         <li><a href="/geolocalizacion">Geolocation</a></li>
-                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>                      
+                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>                     
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -52,31 +47,20 @@
     </header><!--/header-->
 
    <div style="background:transparent !important" class="jumbotron">
-    <div class="row">	    
-    <div class="col-md-2" class="panel panel-primary">
-	<select name="tipoGrafica-temp" id="tipoGrafica-temp" >    
-		<option value="column" selected="selected">Column</option>
-		<option value="spline">Spline</option>
-		<option value="scatter">Scatter</option>
-		<option value="area">Area</option>
-		<option value="areaspline">Area and spline</option>
 
-	</select>
-     </div>
+    <!-- Libreria proyecto js -->
 
-     <div class="col-md-2" class="panel panel-primary">
-	<select name="tipoGrafica-temp1" id="tipoGrafica-temp1" >    
-		<option value="Temperature" selected="selected">Temperature (ºC)</option>
-		<option value="Atmospheric pressure">Atmospheric pressure (hPa)</option>
-		<option value="Humidity">Humidity (%)</option>>
-		<option value="Wind Speed">Wind Speed (km/h)</option>
-		<option value="Wind Direction">Wind Direction (º)</option>
-	</select>
-      </div>	
-      </div>	
-      <div id="fail"></div>
-      <div style="margin-bottom:150px;" id="container-temp-grande"></div>
+    <script type='text/javascript' src='../static/js/iDronDataAnalyzer/utils_usuarios.js'></script>
+
+    <button class="btn btn-success" onclick="location.href='/formRegistro';" type="submit"> New user</button>
+
+    <div id="paginador">
+
    </div>
+</div>
+
+</div>
+</div>
 
 {{footer|safe}}
 
