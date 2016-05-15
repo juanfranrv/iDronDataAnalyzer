@@ -55,8 +55,35 @@
     <button class="btn btn-success" onclick="location.href='/formRegistro';" type="submit"> New user</button>
 
     <div id="paginador">
+	<table class="table table-striped table-hover">
 
+	<thead><tr>
+	<th>User Information</th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead>
+	<tbody id="myTableBody">
+
+		  {% for user in usuarios %}
+
+		  <tr>
+		      <td style="font-size:14px;">{{user.usuario}}</td>
+		      <td style="font-size:16px;">{{user.password}}</td>
+		      <td style="font-size:16px;">{{user.nombre}}</td>
+		      <td style="font-size:16px;">{{user.apellido}}</td>
+		      <td style="font-size:16px;">{{user.correo}}</td>
+		      <td style="font-size:16px;">{{user.telefono}}</td>
+		      <td><button id="{{user.id}}" class="btn btn-warning editarBoton" data-item="{{user.id}}" type="submit"> Edit</button><button style="margin-left:5%;" id="{{user.id}}" class="btn btn-danger borrarBoton" data-item="{{user.id}}" type="submit"><i class="fa fa-trash"></i></button></td>
+		  </tr>
+
+		  {% endfor %}
+
+	</tbody>
+	</table>
+
+	<div class="col-md-12 text-center">
+	    <ul class="pagination pagination-lg pager" id="myPager"></ul>
+	</div>
    </div>
+   </div>
+
 </div>
 
 </div>

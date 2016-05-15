@@ -30,7 +30,7 @@ function loadAjaxUsuarios(){
 	  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la página
 		 $('#paginador').html(
 		    function(){
-			var content = '<table class="table table-striped table-hover"><thead><tr><th>Users Information</th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody id="myTableBody">';
+			var content = '<table class="table table-striped table-hover"><thead><tr><th>User Information</th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody id="myTableBody">';
 
 			if(data.length == 0)
 				content = content + '<tr><td>No user found.</td><td></td><td></td><td></td><td></td>';
