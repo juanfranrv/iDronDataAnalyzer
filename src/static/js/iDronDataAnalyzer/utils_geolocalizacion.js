@@ -367,7 +367,7 @@ function activarDeteccionCiudades() {					       //Activa la detección de ciuda
 			 	      fillOpacity: 0.35,
 			 	      map: map,
 			 	      center: latlng,
-			 	      radius:2000
+			 	      radius:2500
 			   });
 
 	   	   	   markersCity.push(markerCity);				//Lo añadimos a cada array para borrarlo cuando el usuario lo seleccione
