@@ -10,10 +10,10 @@
         <div class="top-bar">
             <div class="container">
                     <a href="http://www.ugr.es"><img id="logo-ugr" name="logo-ugr" src="../static/images/logo_ugr.png" alt="logo"></a>
-                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{sesion}}</b></div>
+                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{user.usuario}}</b></div>
                     <input id="boton-cerrar" name="boton-cerrar" type="button" value="Log out" onclick="location.href='/logout';" class="btn btn-warning" />
  		    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Edit profile" onclick="location.href='/editar_perfil';" class="btn btn-warning" />
-		    {% if sesion == 'admin' %}
+		    {% if user.tipo == 'admin' %}
  		    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Users" onclick="location.href='/usuarios';" class="btn btn-warning" />
 		    {% endif %}
 
@@ -58,7 +58,7 @@
 	<table class="table table-striped table-hover">
 
 	<thead><tr>
-	<th>User Information</th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead>
+	<th>User Information</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead>
 	<tbody id="myTableBody">
 
 		  {% for user in usuarios %}
@@ -70,6 +70,7 @@
 		      <td style="font-size:16px;">{{user.apellido}}</td>
 		      <td style="font-size:16px;">{{user.correo}}</td>
 		      <td style="font-size:16px;">{{user.telefono}}</td>
+		      <td style="font-size:16px;">{{user.tipo}}</td>
 		      <td><button id="{{user.id}}" class="btn btn-warning editarBoton" data-item="{{user.id}}" type="submit"> Edit</button><button style="margin-left:5%;" id="{{user.id}}" class="btn btn-danger borrarBoton" data-item="{{user.id}}" type="submit"><i class="fa fa-trash"></i></button></td>
 		  </tr>
 

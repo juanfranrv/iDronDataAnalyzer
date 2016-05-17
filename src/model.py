@@ -8,6 +8,7 @@ from google.appengine.ext import ndb
 class Usuario(ndb.Model):
     idUsuario = ndb.StringProperty()
     usuario = ndb.StringProperty()
+    tipo = ndb.StringProperty()
     password = ndb.StringProperty()
     nombre = ndb.StringProperty()
     apellido = ndb.StringProperty()

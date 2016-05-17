@@ -130,19 +130,18 @@ function loadAjax(fecha, tiempo){
 $(document).on('click', ".borrarBoton", function () {
 
 	var catid = $(this).attr("data-item")
-	alert('Are you sure?');
 
-	$.ajax({						//Borramos por id de botón el item elegido por el usuario, utilizando AJAX para llamar al servidor
-		type: 'GET',
-		url: '/deleteStatistic?id=' + catid,
-		data: $(this).serialize(),
-		dataType: 'json',
-		success: function (data) {
-			loadAjax(window.fecha, window.tiempo);	
-		}
-  	});
-
- 	loadAjax(window.fecha, window.tiempo);	
+	if (confirm("Are you sure?")) {
+		$.ajax({				//Borramos por id de botón el item elegido por el usuario, utilizando AJAX para llamar al servidor
+			type: 'GET',
+			url: '/deleteStatistic?id=' + catid,
+			data: $(this).serialize(),
+			dataType: 'json',
+			success: function (data) {
+				loadAjax(window.fecha, window.tiempo);	
+			}
+	  	});
+	}
 });
 
 //Si la checkbox cambia, dependiendo de si está seleccionada o no, vamos a proceder a mostrar el gráfico y su select asociado

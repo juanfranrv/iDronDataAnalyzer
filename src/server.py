@@ -34,9 +34,10 @@ class MainPage(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
-            user=self.request.cookies.get("username")
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
+
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':user,'footer': footer,'head':head}
+            template_values={'user':user,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/index.html')
             self.response.write(template.render(template_values))
             
@@ -62,13 +63,9 @@ class Login(webapp2.RequestHandler):
         usur = None
         error = ''
         
-        try:
-            result=model.Usuario.query(model.Usuario.usuario==usu)
-            usur=result.get()
-        except:
-            error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+        result=model.Usuario.query(model.Usuario.usuario==usu)
+        usur=result.get()
 
-        
         if usur is not None:
 
             if usur.password==pas:
@@ -76,7 +73,7 @@ class Login(webapp2.RequestHandler):
                 self.response.headers.add_header('Set-Cookie',"username=" + str(usur.usuario))
                 self.response.headers.add_header('Set-Cookie',"idUsername=" + str(usur.idUsuario))
                 
-                template_values={'sesion':usur.usuario,'head':head,'footer':footer}
+                template_values={'user':usur,'head':head,'footer':footer}
                 template = JINJA_ENVIRONMENT.get_template('template/index.html')
                 self.response.write(template.render(template_values))
                                 
@@ -89,8 +86,7 @@ class Login(webapp2.RequestHandler):
                 self.response.write(template.render(template_values))
         else:
             
-            if error == '':   #Si no falla la quota, el error es por usuario incorrecto
-                error = 'Wrong username.'
+            error = 'Wrong username.'
     
             template_values={'mensaje':error}
             template = JINJA_ENVIRONMENT.get_template('template/login.html')
@@ -112,14 +108,16 @@ class cerrar_sesion(webapp2.RequestHandler):
 class formRegistro(webapp2.RequestHandler):
     
     def get(self):
+
+        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
         
-        if self.request.cookies.get("username") == 'admin':
-                
+        if user.tipo == 'admin':
+            
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'message':"",'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/registro.html')
             self.response.write(template.render(template_values))
-            
+        
         else:
             
             self.redirect('/')
@@ -128,13 +126,12 @@ class formRegistro(webapp2.RequestHandler):
 
     def post(self):
         
-        if self.request.cookies.get("username") == 'admin':
-            
-            usuario_introducido = self.request.get('usuario')
-            error = ''
-            
-            try:
-                
+        usuario_introducido = self.request.get('usuario')
+        error = ''
+        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+        
+        if user.tipo == 'admin':
+            try: 
                 #Si el usuario no existe, se introducen los datos en la base de datos
                 if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
                     
@@ -150,6 +147,7 @@ class formRegistro(webapp2.RequestHandler):
                     user.apellido = self.request.get('apellido')
                     user.correo = self.request.get('correo')
                     user.telefono = self.request.get('telefono')
+                    user.tipo = self.request.get('type')
                                 
                     user.put()
                     
@@ -177,7 +175,7 @@ class formRegistro(webapp2.RequestHandler):
             template_values={'message':error}
             template = JINJA_ENVIRONMENT.get_template('template/registro.html')
             self.response.write(template.render(template_values))
-            
+       
         else:
             
             self.redirect('/')
@@ -191,34 +189,39 @@ class editar_perfil(webapp2.RequestHandler):
         if self.request.cookies.get("username"):  #Si la cookie está activada
             
             username = str(self.request.cookies.get("username"))
+            user = ''
             usuarios = []
             error = ''
+            admin = False
             
             try:
+                user = model.Usuario.query(model.Usuario.usuario == username).get() 
                 editID = self.request.get("id")
 
                 if editID == '':    #Si no se recibe ID (no es edición por admin) por lo que mostramos el usuario activo
                     
+                    admin = False   #Si el editar perfil es llamado por un usuario
                     result= model.Usuario.query(model.Usuario.usuario == username)
                     
                     if result is not None:    #Existe el usuario
-                        
                         for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
                             usuarios.append(usuario)
 
                 else:
                     
-                    result = model.Usuario.get_by_id(long(editID)) 
-
-                    if result is not None:    #Existe el usuario
+                    if user.tipo == 'admin':
                         
-                        usuarios.append(result)
+                        admin = True   #Si el editar perfil es llamado por un admin
+                        result = model.Usuario.get_by_id(long(editID)) 
+    
+                        if result is not None:    #Existe el usuario   
+                            usuarios.append(result)
                         
             except:
                 error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
                 
             self.response.headers['Content-Type'] = 'text/html'
-            template_values = {'usuarios':usuarios, 'error':error, 'sesion':username, 'footer': footer,'head':head}
+            template_values = {'usuarios':usuarios, 'admin':admin, 'error':error, 'user':user, 'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/editar_perfil.html')
             self.response.write(template.render(template_values,message=""))
             
@@ -260,10 +263,15 @@ class ErrorPage(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
-
-            username = str(self.request.cookies.get("username"))
+            
+            try:
+                user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            
+            except:
+                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.' 
+            
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username,'footer': footer,'head':head}
+            template_values={'user':user,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/error.html')
             self.response.write(template.render(template_values))
             
@@ -347,10 +355,10 @@ class geolocalizacion(webapp2.RequestHandler):
             vel = 0
             alt = 0
             error = ''
+            user = ''
             
             try:
-                
-                username = str(self.request.cookies.get("username"))
+                user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
                 idUsername = self.request.cookies.get("idUsername")
      
                 datos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
@@ -378,7 +386,7 @@ class geolocalizacion(webapp2.RequestHandler):
                     error = "Sunset and sunrise is temporarily unavailable"
                     
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username, 'sunset_sunrise':sunset_sunrise, 'error':error, 'footer': footer,'head':head,'lat':lat,'lng':lng,'vel':vel,'alt':alt}
+            template_values={'user':user, 'sunset_sunrise':sunset_sunrise, 'error':error, 'footer': footer,'head':head,'lat':lat,'lng':lng,'vel':vel,'alt':alt}
             template = JINJA_ENVIRONMENT.get_template('template/geolocalizacion.html')
             self.response.write(template.render(template_values))
                         
@@ -466,6 +474,7 @@ class getNearbyFlights(webapp2.RequestHandler):
             try:
                 
                 idUsername = self.request.cookies.get("idUsername")
+                flights= []
                 
                 coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
             
@@ -477,7 +486,6 @@ class getNearbyFlights(webapp2.RequestHandler):
                 r = urllib2.urlopen(url)
         
                 result = json.load(r)
-                flights= []
                 
                 for i in range(len(result["flightPositions"])):
                     last_flight_detected = result["flightPositions"][i]["positions"][len(result["flightPositions"][i]["positions"])-1]
@@ -498,10 +506,16 @@ class grafico(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
-            username = str(self.request.cookies.get("username"))
+            error = ''
             
+            try:
+                user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            
+            except:
+                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+      
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username,'footer': footer,'head':head}
+            template_values={'user':user,'footer': footer,'head':head, 'error':error}
             template = JINJA_ENVIRONMENT.get_template('template/grafico.html')
             self.response.write(template.render(template_values))
             
@@ -605,11 +619,11 @@ class estadisticas(webapp2.RequestHandler):
     def get(self):
                 
         if self.request.cookies.get("username"):
-    
-            username = str(self.request.cookies.get("username"))
+            
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
                         
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username,'footer': footer,'head':head}
+            template_values={'user':user,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/estadisticas.html')
             self.response.write(template.render(template_values))
             
@@ -669,10 +683,16 @@ class pronostico(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
-            username = str(self.request.cookies.get("username"))
+            error = ''
             
+            try:
+                user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
+            
+            except:
+                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+      
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username,'footer': footer,'head':head}
+            template_values={'user':user,'footer': footer,'head':head, 'error':error}
             template = JINJA_ENVIRONMENT.get_template('template/pronostico.html')
             self.response.write(template.render(template_values))
             
@@ -683,7 +703,8 @@ class pronostico(webapp2.RequestHandler):
     def post(self):
         
         if self.request.cookies.get("username"):
-
+            
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
             username = str(self.request.cookies.get("username"))
             
             latitud = self.request.get('latitud')
@@ -725,7 +746,7 @@ class pronostico(webapp2.RequestHandler):
                 error = 'There is not any city with those coordinates. Please, verify the place.'
                 
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username, 
+            template_values={'user':user, 
                              'array_datos':array_datos,
                              'radio_elegido':radio_elegido,
                              'latitud_actual':latitud_actual,
@@ -976,14 +997,14 @@ class METAR_TAF(webapp2.RequestHandler):
             lat = ''                   
             lng = ''
             error = ''
-            username = str(self.request.cookies.get("username")) 
+            user = '' 
             array_metar = []
             array_taf = []
             array_tafN = []
             idUsername = self.request.cookies.get("idUsername")
             
             try:    #Comprobacion error de quota
-                       
+                user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()       
                 coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
                 
                 lat = coordenadas.latitud
@@ -1024,7 +1045,7 @@ class METAR_TAF(webapp2.RequestHandler):
                 
             self.response.headers['Content-Type'] = 'text/html'
 
-            template_values={'sesion':username,
+            template_values={'user':user,
                              'array_metar':array_metar,
                              'array_taf':array_taf,
                              'array_tafN':array_tafN,
@@ -1046,8 +1067,14 @@ class usuarios(webapp2.RequestHandler):
     
     def get(self):
         
-        if self.request.cookies.get("username") == 'admin':
-            
+        try:
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+        
+        except:
+             error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+                
+        if user.tipo == 'admin':
+  
             username = str(self.request.cookies.get("username"))
             usuarios = []
             error = ''
@@ -1064,7 +1091,7 @@ class usuarios(webapp2.RequestHandler):
                 error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
                 
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'sesion':username, 
+            template_values={'user':user, 
                              'footer': footer,
                              'usuarios': usuarios,
                              'head':head
@@ -1075,7 +1102,7 @@ class usuarios(webapp2.RequestHandler):
             
         else:
             
-            self.redirect('/login')
+            self.redirect('/')
             
 # Clase que actualiza la lista de usuarios para el administrador
 
@@ -1083,7 +1110,9 @@ class getUsuarios(webapp2.RequestHandler):
     
     def get(self):
         
-        if self.request.cookies.get("username") == 'admin':
+        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+
+        if user.tipo == 'admin':
             
             username = str(self.request.cookies.get("username"))
             usuarios = []
@@ -1098,14 +1127,15 @@ class getUsuarios(webapp2.RequestHandler):
                                     'apellido': user.apellido,
                                     'correo': user.correo,
                                     'telefono': user.telefono,
-                                    'id': user.key.id()
+                                    'id': user.key.id(),
+                                    'tipo':user.tipo
                                     })
                                         
             self.response.write(json.dumps(usuarios)) 
             
         else:
             
-            self.redirect('/login')
+            self.redirect('/')
             
 #Clase para borrar usuarios por admin
 
@@ -1113,7 +1143,9 @@ class deleteUsuario(webapp2.RequestHandler):
     
     def get(self):
         
-        if self.request.cookies.get("username") == 'admin':
+        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+        
+        if user.tipo == 'admin':
             
             deleteID = long(self.request.get("id"))
     
@@ -1124,7 +1156,7 @@ class deleteUsuario(webapp2.RequestHandler):
             
         else:
             
-            self.redirect('/login')
+            self.redirect('/')
                 
 # Urls de la aplicación con sus clases asociadas.
 

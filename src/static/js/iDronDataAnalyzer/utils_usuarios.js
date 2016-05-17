@@ -1,17 +1,18 @@
 $(document).on('click', ".borrarBoton", function () {
 
 	var catid = $(this).attr("data-item")
-	alert('Are you sure?');
 
-	$.ajax({						//Borramos por id de boton el item elegido por el usuario, utilizando AJAX para llamar al servidor
-		type: 'GET',
-		url: '/deleteUsuario?id=' + catid,
-		data: $(this).serialize(),
-		dataType: 'json',
-		success: function (data) {
-			loadAjaxUsuarios();	
-		}
-  	});	
+	if (confirm("Are you sure?")) {
+		$.ajax({			//Borramos por id de boton el item elegido por el usuario, utilizando AJAX para llamar al servidor
+			type: 'GET',
+			url: '/deleteUsuario?id=' + catid,
+			data: $(this).serialize(),
+			dataType: 'json',
+			success: function (data) {
+				loadAjaxUsuarios();	
+			}
+	  	});
+	}	
 });
 
 $(document).on('click', ".editarBoton", function () {
@@ -30,7 +31,7 @@ function loadAjaxUsuarios(){
 	  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la página
 		 $('#paginador').html(
 		    function(){
-			var content = '<table class="table table-striped table-hover"><thead><tr><th>User Information</th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody id="myTableBody">';
+			var content = '<table class="table table-striped table-hover"><thead><tr><th>User Information</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody id="myTableBody">';
 
 			if(data.length == 0)
 				content = content + '<tr><td>No user found.</td><td></td><td></td><td></td><td></td>';
@@ -42,6 +43,7 @@ function loadAjaxUsuarios(){
 			      content = content + '<td style="font-size:16px;">' + data[i].apellido + '</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].correo + '</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].telefono + '</td>';
+			      content = content + '<td style="font-size:16px;">' + data[i].tipo + '</td>';
 			      content = content + '<td><button id="button-' + data[i].id + '" class="btn btn-warning editarBoton" data-item="' + data[i].id + '" type="submit"> Edit</button><button style="margin-left:5%;" id="button-' + data[i].id + '" class="btn btn-danger borrarBoton" data-item="' + data[i].id + '" type="submit"><i class="fa fa-trash"></i></button></td>';
 			}
 

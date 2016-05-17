@@ -194,7 +194,7 @@ function initialize() {
 
 	$.ajax({
 	  type: 'GET',			//Obtiene la latitud y longitud inicial para posicionar el drone. Llamada AJAX al servidor.
-	  url: '/updateDatosDrone',
+	  url: '/coordenadas',
 	  data: $(this).serialize(),
 	  dataType: 'json',
 	  success: function (data) {

@@ -9,11 +9,11 @@
         <div class="top-bar">
             <div class="container">
                     <a href="http://www.ugr.es"><img id="logo-ugr" name="logo-ugr" src="../static/images/logo_ugr.png" alt="logo"></a>
-                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{sesion}}</b></div>
+                    <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{user.usuario}}</b></div>
                     <input id="boton-cerrar" name="boton-cerrar" type="button" value="Log out" onclick="location.href='/logout';" class="btn btn-warning" />
 		    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Edit profile" onclick="location.href='/editar_perfil';" class="btn btn-warning" />
 
-		    {% if sesion == 'admin' %}
+		    {% if user.tipo == 'admin' %}
  		    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Users" onclick="location.href='/usuarios';" class="btn btn-warning" />
 		    {% endif %}
 
