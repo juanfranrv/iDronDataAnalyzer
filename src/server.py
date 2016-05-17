@@ -693,7 +693,6 @@ class pronostico(webapp2.RequestHandler):
         if self.request.cookies.get("username"):
             
             user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
-            username = str(self.request.cookies.get("username"))
             
             latitud = self.request.get('latitud')
             longitud = self.request.get('longitud')
@@ -1096,6 +1095,7 @@ class getUsuarios(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
+            
             user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
     
             if user.tipo == 'admin':
@@ -1130,8 +1130,8 @@ class deleteUsuario(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
+            
             user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            idUsername = self.request.cookies.get("idUsername")
             
             if user.tipo == 'admin':
                 

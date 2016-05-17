@@ -37,7 +37,7 @@ function loadAjaxUsuarios(){
 				content = content + '<tr><td>No user found.</td><td></td><td></td><td></td><td></td>';
 
 			for(var i = 0; i < data.length; i++){
-			      content = content+'<tr><td style="font-size:14px;">' + data[i].usuario + '</td>';
+			      content = content+'<tr><td style="font-size:14px;"><b>' + data[i].usuario + '</b></td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].password + '</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].nombre + '</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].apellido + '</td>';
