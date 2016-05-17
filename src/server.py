@@ -1140,14 +1140,23 @@ class deleteUsuario(webapp2.RequestHandler):
     def get(self):
         
         user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+        idUsername = self.request.cookies.get("idUsername")
         
         if user.tipo == 'admin':
             
             deleteID = long(self.request.get("id"))
     
-            user = model.Usuario.get_by_id(deleteID) 
-            user.key.delete()
+            userDelete = model.Usuario.get_by_id(deleteID) 
+            datosRecibidos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userDelete.idUsuario).get()
+            datosAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == userDelete.idUsuario)
             
+            userDelete.key.delete()           #Borramos usuario junto con sus datos asociados
+            datosRecibidos.key.delete()
+            
+            if datosAtmos is not None:
+                for datoAtmo in datosAtmos:
+                    datoAtmo.key.delete()
+
             self.response.write(json.dumps("Deleted"))
             
         else:
