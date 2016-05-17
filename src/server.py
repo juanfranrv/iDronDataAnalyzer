@@ -63,34 +63,38 @@ class Login(webapp2.RequestHandler):
         usur = None
         error = ''
         
-        result=model.Usuario.query(model.Usuario.usuario==usu)
-        usur=result.get()
-
-        if usur is not None:
-
-            if usur.password==pas:
-                #Creamos una cookie para el nombre de usuario y otra para token (evitamos consultar la BD)
-                self.response.headers.add_header('Set-Cookie',"username=" + str(usur.usuario))
-                self.response.headers.add_header('Set-Cookie',"idUsername=" + str(usur.idUsuario))
-                
-                template_values={'user':usur,'head':head,'footer':footer}
-                template = JINJA_ENVIRONMENT.get_template('template/index.html')
-                self.response.write(template.render(template_values))
-                                
-                self.redirect('/')
-                
-            else:
-        
-                template_values={'mensaje':'Wrong password.'}
-                template = JINJA_ENVIRONMENT.get_template('template/login.html')
-                self.response.write(template.render(template_values))
-        else:
-            
-            error = 'Wrong username.'
+        try:
+            result=model.Usuario.query(model.Usuario.usuario==usu)
+            usur=result.get()
     
-            template_values={'mensaje':error}
-            template = JINJA_ENVIRONMENT.get_template('template/login.html')
-            self.response.write(template.render(template_values))
+            if usur is not None:
+    
+                if usur.password==pas:
+                    #Creamos una cookie para el nombre de usuario y otra para token (evitamos consultar la BD)
+                    self.response.headers.add_header('Set-Cookie',"username=" + str(usur.usuario))
+                    self.response.headers.add_header('Set-Cookie',"idUsername=" + str(usur.idUsuario))
+                    
+                    template_values={'user':usur,'head':head,'footer':footer}
+                    template = JINJA_ENVIRONMENT.get_template('template/index.html')
+                    self.response.write(template.render(template_values))
+                                    
+                    self.redirect('/')
+                    
+                else:
+            
+                    error = 'Wrong password.'
+
+            else:
+                
+                error = 'Wrong username.'
+        
+        except:
+                if error == '':   
+                    error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+                    
+        template_values={'mensaje':error}
+        template = JINJA_ENVIRONMENT.get_template('template/login.html')
+        self.response.write(template.render(template_values))
             
 # Clase que cierra la sesión del usuario.
 
@@ -128,10 +132,13 @@ class formRegistro(webapp2.RequestHandler):
         
         usuario_introducido = self.request.get('usuario')
         error = ''
-        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-        
-        if user.tipo == 'admin':
-            try: 
+        user = ''
+            
+        try: 
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+    
+            if user.tipo == 'admin':
+                
                 #Si el usuario no existe, se introducen los datos en la base de datos
                 if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
                     
@@ -165,20 +172,19 @@ class formRegistro(webapp2.RequestHandler):
                 else:
                      #Si el usuario existe, se muestra un mensaje de error 
                     error = 'Username is already in use'
+            else:
+        
+                self.redirect('/')
+           
+        except:
+             
+            if error == '':   
+                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
                 
-            except:
-                 
-                if error == '':   
-                    error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
-                    
-            self.response.headers['Content-Type'] = 'text/html'
-            template_values={'message':error}
-            template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-            self.response.write(template.render(template_values))
-       
-        else:
-            
-            self.redirect('/')
+        self.response.headers['Content-Type'] = 'text/html'
+        template_values={'message':error}
+        template = JINJA_ENVIRONMENT.get_template('template/registro.html')
+        self.response.write(template.render(template_values))
             
 #Clase para cambiar los datos de usuario
 
@@ -264,12 +270,8 @@ class ErrorPage(webapp2.RequestHandler):
         
         if self.request.cookies.get("username"):
             
-            try:
-                user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            
-            except:
-                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.' 
-            
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'user':user,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/error.html')
@@ -621,7 +623,7 @@ class estadisticas(webapp2.RequestHandler):
         if self.request.cookies.get("username"):
             
             user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
-                        
+
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'user':user,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/estadisticas.html')
@@ -1066,30 +1068,22 @@ class METAR_TAF(webapp2.RequestHandler):
 class usuarios(webapp2.RequestHandler):
     
     def get(self):
-        
-        try:
-            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-        
-        except:
-             error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
-                
+
+        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+
         if user.tipo == 'admin':
   
             username = str(self.request.cookies.get("username"))
             usuarios = []
             error = ''
             
-            try:
-                result= model.Usuario.query()
+            result= model.Usuario.query()
+            
+            if result is not None:   
                 
-                if result is not None:   
-                    
-                    for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
-                        usuarios.append(usuario)
-                        
-            except:
-                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
-                
+                for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
+                    usuarios.append(usuario)
+                 
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'user':user, 
                              'footer': footer,
@@ -1099,11 +1093,11 @@ class usuarios(webapp2.RequestHandler):
             
             template = JINJA_ENVIRONMENT.get_template('template/usuarios.html')
             self.response.write(template.render(template_values)) 
-            
+
         else:
             
             self.redirect('/')
-            
+
 # Clase que actualiza la lista de usuarios para el administrador
 
 class getUsuarios(webapp2.RequestHandler):
