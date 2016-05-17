@@ -115,7 +115,7 @@ class formRegistro(webapp2.RequestHandler):
 
         user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
         
-        if user.tipo == 'admin':
+        if user.tipo == 'admin':    #Sólo lo pueden hacer los administradores
             
             self.response.headers['Content-Type'] = 'text/html'
             template_values={'message':"",'head':head}
@@ -134,58 +134,52 @@ class formRegistro(webapp2.RequestHandler):
         error = ''
         user = ''
             
-        try: 
-            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-    
-            if user.tipo == 'admin':
-                
-                #Si el usuario no existe, se introducen los datos en la base de datos
-                if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
-                    
-                    user = model.Usuario()
-                    datosRec = model.DatosRecibidos()
-                
-                    token = str(uuid.uuid4())
-                    
-                    user.idUsuario = token
-                    user.usuario = self.request.get('usuario')
-                    user.password = self.request.get('password')
-                    user.nombre = self.request.get('nombre')
-                    user.apellido = self.request.get('apellido')
-                    user.correo = self.request.get('correo')
-                    user.telefono = self.request.get('telefono')
-                    user.tipo = self.request.get('type')
-                                
-                    user.put()
-                    
-                    #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
-                    datosRec.idDatos = token
-                    datosRec.latitud = '37.187236'
-                    datosRec.longitud = '-3.779362' 
-                    datosRec.altura = '0.0'
-                    datosRec.velocidad = '0.0'
-                    
-                    datosRec.put()
-                    
-                    self.redirect('/usuarios')
-                    
-                else:
-                     #Si el usuario existe, se muestra un mensaje de error 
-                    error = 'Username is already in use'
-            else:
-        
-                self.redirect('/')
-           
-        except:
-             
-            if error == '':   
-                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
-                
-        self.response.headers['Content-Type'] = 'text/html'
-        template_values={'message':error}
-        template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-        self.response.write(template.render(template_values))
+        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+
+        if user.tipo == 'admin':    #Sólo lo pueden hacer los administradores
             
+            #Si el usuario no existe, se introducen los datos en la base de datos
+            if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
+                
+                user = model.Usuario()
+                datosRec = model.DatosRecibidos()
+            
+                token = str(uuid.uuid4())
+                
+                user.idUsuario = token
+                user.usuario = self.request.get('usuario')
+                user.password = self.request.get('password')
+                user.nombre = self.request.get('nombre')
+                user.apellido = self.request.get('apellido')
+                user.correo = self.request.get('correo')
+                user.telefono = self.request.get('telefono')
+                user.tipo = self.request.get('type')
+                            
+                user.put()
+                
+                #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
+                datosRec.idDatos = token
+                datosRec.latitud = '37.187236'
+                datosRec.longitud = '-3.779362' 
+                datosRec.altura = '0.0'
+                datosRec.velocidad = '0.0'
+                
+                datosRec.put()
+                
+                self.redirect('/usuarios')
+                
+            else:
+                 #Si el usuario existe, se muestra un mensaje de error 
+                error = 'Username is already in use'
+                
+                self.response.headers['Content-Type'] = 'text/html'
+                template_values={'message':error}
+                template = JINJA_ENVIRONMENT.get_template('template/registro.html')
+                self.response.write(template.render(template_values))
+        else:
+    
+            self.redirect('/')
+     
 #Clase para cambiar los datos de usuario
 
 class editar_perfil(webapp2.RequestHandler):
@@ -200,32 +194,28 @@ class editar_perfil(webapp2.RequestHandler):
             error = ''
             admin = False
             
-            try:
-                user = model.Usuario.query(model.Usuario.usuario == username).get() 
-                editID = self.request.get("id")
+            user = model.Usuario.query(model.Usuario.usuario == username).get() 
+            editID = self.request.get("id")
 
-                if editID == '':    #Si no se recibe ID (no es edición por admin) por lo que mostramos el usuario activo
-                    
-                    admin = False   #Si el editar perfil es llamado por un usuario
-                    result= model.Usuario.query(model.Usuario.usuario == username)
-                    
-                    if result is not None:    #Existe el usuario
-                        for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
-                            usuarios.append(usuario)
-
-                else:
-                    
-                    if user.tipo == 'admin':
-                        
-                        admin = True   #Si el editar perfil es llamado por un admin
-                        result = model.Usuario.get_by_id(long(editID)) 
-    
-                        if result is not None:    #Existe el usuario   
-                            usuarios.append(result)
-                        
-            except:
-                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
+            if editID == '':    #Si no se recibe ID (no es edición por admin) por lo que mostramos el usuario activo
                 
+                admin = False   #Si el editar perfil es llamado por un usuario
+                result= model.Usuario.query(model.Usuario.usuario == username)
+                
+                if result is not None:    #Existe el usuario
+                    for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
+                        usuarios.append(usuario)
+
+            else:
+                
+                if user.tipo == 'admin':
+                    
+                    admin = True   #Si el editar perfil es llamado por un admin
+                    result = model.Usuario.get_by_id(long(editID)) 
+    
+                    if result is not None:    #Existe el usuario   
+                        usuarios.append(result)
+                        
             self.response.headers['Content-Type'] = 'text/html'
             template_values = {'usuarios':usuarios, 'admin':admin, 'error':error, 'user':user, 'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/editar_perfil.html')
@@ -509,17 +499,11 @@ class grafico(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
-            
-            error = ''
-            
-            try:
-                user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-            
-            except:
-                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
-      
+
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'user':user,'footer': footer,'head':head, 'error':error}
+            template_values={'user':user,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/grafico.html')
             self.response.write(template.render(template_values))
             
@@ -573,7 +557,7 @@ class datos_grafico(webapp2.RequestHandler):
                 elif dato_seleccionado == 'Wind Direction':
                     datoAmostrar = dir_win;
                 
-                if contador is 80:         #Cada 80 datos obtenidos, almacenamos en la base de datos
+                if contador is 50:         #Cada 50 datos obtenidos, almacenamos en la base de datos
                     #Almacenamos los datos en el usuario con la sesión activa
                     data = model.DatosAtmosfericos()
                     
@@ -686,17 +670,11 @@ class pronostico(webapp2.RequestHandler):
     def get(self):
         
         if self.request.cookies.get("username"):
-            
-            error = ''
-            
-            try:
-                user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
-            
-            except:
-                error = 'Error accessing the database: Required more quota than is available. Come back after 24h.'
-      
+
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
+
             self.response.headers['Content-Type'] = 'text/html'
-            template_values={'user':user,'footer': footer,'head':head, 'error':error}
+            template_values={'user':user,'footer': footer,'head':head}
             template = JINJA_ENVIRONMENT.get_template('template/pronostico.html')
             self.response.write(template.render(template_values))
             

@@ -41,7 +41,8 @@ class Tests():
     def testURL(self):  
         
         urls_test = [ '/', '/logout', '/editar_perfil', '/formRegistro', '/login', '/geolocalizacion', '/coordenadas',
-              '/grafico', '/estadisticas', '/getDatosAtmosfericos', '/datos_grafico', '/pronostico', '/updateDatosDrone', '/METAR_TAF']
+              '/grafico', '/estadisticas', '/getDatosAtmosfericos', '/datos_grafico', '/pronostico', '/deleteUsuario', '/METAR_TAF', '/getUsuarios', '/usuarios', 
+	      '/deleteStatistic', '/getNearbyFlights', '/getNearbyAreas']
         
         for url in urls_test:
             response=urllib.urlopen('http://idrondataanalyzer.appspot.com' + url)
