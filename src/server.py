@@ -252,12 +252,14 @@ class editar_perfil(webapp2.RequestHandler):
                     lastname = self.request.get('apellido')
                     email = self.request.get('correo')
                     phone = self.request.get('telefono')
+                    type = self.request.get('type')
                        
                     if password != "": us.password = password   #Si no se modifica algun dato, es decir, esta vacio, se deja el dato anterior
                     if name != "": us.nombre = name
                     if lastname != "": us.apellido = lastname
                     if email != "": us.correo = email
                     if phone != "": us.telefono = phone
+                    if type != "": us.tipo = type
                          
                     us.put()
                     self.redirect('/')
