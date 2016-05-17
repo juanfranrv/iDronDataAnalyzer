@@ -112,74 +112,80 @@ class cerrar_sesion(webapp2.RequestHandler):
 class formRegistro(webapp2.RequestHandler):
     
     def get(self):
-
-        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
         
-        if user.tipo == 'admin':    #Sólo lo pueden hacer los administradores
+        if self.request.cookies.get("username"):
             
-            self.response.headers['Content-Type'] = 'text/html'
-            template_values={'message':"",'head':head}
-            template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-            self.response.write(template.render(template_values))
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            
+            if user.tipo == 'admin':    #Sólo lo pueden hacer los administradores
+                
+                self.response.headers['Content-Type'] = 'text/html'
+                template_values={'message':"",'head':head}
+                template = JINJA_ENVIRONMENT.get_template('template/registro.html')
+                self.response.write(template.render(template_values))
+            
+            else:             
+                self.redirect('/')
         
-        else:
-            
+        else:  
             self.redirect('/')
             
     #Método que registra usuario si pasa las restricciones.
 
     def post(self):
         
-        usuario_introducido = self.request.get('usuario')
-        error = ''
-        user = ''
-            
-        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-
-        if user.tipo == 'admin':    #Sólo lo pueden hacer los administradores
-            
-            #Si el usuario no existe, se introducen los datos en la base de datos
-            if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
+        if self.request.cookies.get("username"):
+        
+            usuario_introducido = self.request.get('usuario')
+            error = ''
+            user = ''
                 
-                user = model.Usuario()
-                datosRec = model.DatosRecibidos()
-            
-                token = str(uuid.uuid4())
-                
-                user.idUsuario = token
-                user.usuario = self.request.get('usuario')
-                user.password = self.request.get('password')
-                user.nombre = self.request.get('nombre')
-                user.apellido = self.request.get('apellido')
-                user.correo = self.request.get('correo')
-                user.telefono = self.request.get('telefono')
-                user.tipo = self.request.get('type')
-                            
-                user.put()
-                
-                #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
-                datosRec.idDatos = token
-                datosRec.latitud = '37.187236'
-                datosRec.longitud = '-3.779362' 
-                datosRec.altura = '0.0'
-                datosRec.velocidad = '0.0'
-                
-                datosRec.put()
-                
-                self.redirect('/usuarios')
-                
-            else:
-                 #Si el usuario existe, se muestra un mensaje de error 
-                error = 'Username is already in use'
-                
-                self.response.headers['Content-Type'] = 'text/html'
-                template_values={'message':error}
-                template = JINJA_ENVIRONMENT.get_template('template/registro.html')
-                self.response.write(template.render(template_values))
-        else:
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
     
-            self.redirect('/')
-     
+            if user.tipo == 'admin':    #Sólo lo pueden hacer los administradores
+                
+                #Si el usuario no existe, se introducen los datos en la base de datos
+                if model.Usuario.query(model.Usuario.usuario == usuario_introducido).get() is None:
+                    
+                    user = model.Usuario()
+                    datosRec = model.DatosRecibidos()
+                
+                    token = str(uuid.uuid4())
+                    
+                    user.idUsuario = token
+                    user.usuario = self.request.get('usuario')
+                    user.password = self.request.get('password')
+                    user.nombre = self.request.get('nombre')
+                    user.apellido = self.request.get('apellido')
+                    user.correo = self.request.get('correo')
+                    user.telefono = self.request.get('telefono')
+                    user.tipo = self.request.get('type')
+                                
+                    user.put()
+                    
+                    #Al registrarse el usuario inicializamos los datos recibidos del drone a 0, para que la aplicación no falle
+                    datosRec.idDatos = token
+                    datosRec.latitud = '37.187236'
+                    datosRec.longitud = '-3.779362' 
+                    datosRec.altura = '0.0'
+                    datosRec.velocidad = '0.0'
+                    
+                    datosRec.put()
+                    
+                    self.redirect('/usuarios')
+                    
+                else:
+                     #Si el usuario existe, se muestra un mensaje de error 
+                    error = 'Username is already in use'
+                    
+                    self.response.headers['Content-Type'] = 'text/html'
+                    template_values={'message':error}
+                    template = JINJA_ENVIRONMENT.get_template('template/registro.html')
+                    self.response.write(template.render(template_values))
+            else:
+        
+                self.redirect('/')
+         
 #Clase para cambiar los datos de usuario
 
 class editar_perfil(webapp2.RequestHandler):
@@ -1049,34 +1055,39 @@ class usuarios(webapp2.RequestHandler):
     
     def get(self):
 
-        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-
-        if user.tipo == 'admin':
-  
-            username = str(self.request.cookies.get("username"))
-            usuarios = []
-            error = ''
-            
-            result= model.Usuario.query()
-            
-            if result is not None:   
+        if self.request.cookies.get("username"):
                 
-                for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
-                    usuarios.append(usuario)
-                 
-            self.response.headers['Content-Type'] = 'text/html'
-            template_values={'user':user, 
-                             'footer': footer,
-                             'usuarios': usuarios,
-                             'head':head
-                            }
-            
-            template = JINJA_ENVIRONMENT.get_template('template/usuarios.html')
-            self.response.write(template.render(template_values)) 
-
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+    
+            if user.tipo == 'admin':
+      
+                username = str(self.request.cookies.get("username"))
+                usuarios = []
+                error = ''
+                
+                result= model.Usuario.query()
+                
+                if result is not None:   
+                    
+                    for usuario in result:  #Lo buscamos y lo añadimos al array de usuarios   
+                        usuarios.append(usuario)
+                     
+                self.response.headers['Content-Type'] = 'text/html'
+                template_values={'user':user, 
+                                 'footer': footer,
+                                 'usuarios': usuarios,
+                                 'head':head
+                                }
+                
+                template = JINJA_ENVIRONMENT.get_template('template/usuarios.html')
+                self.response.write(template.render(template_values)) 
+    
+            else:
+                
+                self.redirect('/')
+                
         else:
-            
-            self.redirect('/')
+             self.redirect('/')
 
 # Clase que actualiza la lista de usuarios para el administrador
 
@@ -1084,32 +1095,33 @@ class getUsuarios(webapp2.RequestHandler):
     
     def get(self):
         
-        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-
-        if user.tipo == 'admin':
-            
-            username = str(self.request.cookies.get("username"))
-            usuarios = []
-            result= model.Usuario.query()
-            
-            if result is not None:   
+        if self.request.cookies.get("username"):
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+    
+            if user.tipo == 'admin':
                 
-                for user in result:  #Lo buscamos y lo añadimos al array de usuarios   
-                    usuarios.append({'usuario': user.usuario,
-                                    'password': user.password,
-                                    'nombre': user.nombre,
-                                    'apellido': user.apellido,
-                                    'correo': user.correo,
-                                    'telefono': user.telefono,
-                                    'id': user.key.id(),
-                                    'tipo':user.tipo
-                                    })
-                                        
-            self.response.write(json.dumps(usuarios)) 
-            
-        else:
-            
-            self.redirect('/')
+                username = str(self.request.cookies.get("username"))
+                usuarios = []
+                result= model.Usuario.query()
+                
+                if result is not None:   
+                    
+                    for user in result:  #Lo buscamos y lo añadimos al array de usuarios   
+                        usuarios.append({'usuario': user.usuario,
+                                        'password': user.password,
+                                        'nombre': user.nombre,
+                                        'apellido': user.apellido,
+                                        'correo': user.correo,
+                                        'telefono': user.telefono,
+                                        'id': user.key.id(),
+                                        'tipo':user.tipo
+                                        })
+                                            
+                self.response.write(json.dumps(usuarios)) 
+                
+            else:
+                
+                self.redirect('/')
             
 #Clase para borrar usuarios por admin
 
@@ -1117,29 +1129,30 @@ class deleteUsuario(webapp2.RequestHandler):
     
     def get(self):
         
-        user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
-        idUsername = self.request.cookies.get("idUsername")
+        if self.request.cookies.get("username"):
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get()
+            idUsername = self.request.cookies.get("idUsername")
+            
+            if user.tipo == 'admin':
+                
+                deleteID = long(self.request.get("id"))
         
-        if user.tipo == 'admin':
-            
-            deleteID = long(self.request.get("id"))
+                userDelete = model.Usuario.get_by_id(deleteID) 
+                datosRecibidos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userDelete.idUsuario).get()
+                datosAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == userDelete.idUsuario)
+                
+                userDelete.key.delete()           #Borramos usuario junto con sus datos asociados
+                datosRecibidos.key.delete()
+                
+                if datosAtmos is not None:
+                    for datoAtmo in datosAtmos:
+                        datoAtmo.key.delete()
     
-            userDelete = model.Usuario.get_by_id(deleteID) 
-            datosRecibidos = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == userDelete.idUsuario).get()
-            datosAtmos = model.DatosAtmosfericos.query(model.DatosAtmosfericos.idUsuario == userDelete.idUsuario)
-            
-            userDelete.key.delete()           #Borramos usuario junto con sus datos asociados
-            datosRecibidos.key.delete()
-            
-            if datosAtmos is not None:
-                for datoAtmo in datosAtmos:
-                    datoAtmo.key.delete()
-
-            self.response.write(json.dumps("Deleted"))
-            
-        else:
-            
-            self.redirect('/')
+                self.response.write(json.dumps("Deleted"))
+                
+            else:
+                
+                self.redirect('/')
                 
 # Urls de la aplicación con sus clases asociadas.
 
