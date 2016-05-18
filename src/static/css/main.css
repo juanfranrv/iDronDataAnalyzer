@@ -47,6 +47,7 @@ hr {
 
 #warning{
     margin-top:50px;
+    text-align: center;
 }
 
 @media (max-width: 1000px) {
@@ -210,6 +211,7 @@ tbody{
   margin-top:50px;
   border: 2px;
   width: 100%;
+  text-align: center;
  
 }
 
