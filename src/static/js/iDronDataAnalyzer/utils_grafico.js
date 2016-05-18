@@ -215,10 +215,14 @@ $(function () {
           function callAjax() {
             $.ajax({
                           type: 'GET',
-                          url: '/datos_grafico?dato=' + getDato(),
+			  //Enviamos por url el dato a mostrar en el gráfico y si se ha elegido guardar para almacenar la información
+                          url: '/datos_grafico?dato=' + getDato() + '&save=' + getSave(),  
                           data: $(this).serialize(),
                           dataType: 'json',
                           success: function (data) {
+
+				  if(getSave() == true)		//Si se ha enviado la activación de Guardar, actualizamos a False para no guardar más datos
+  				  	setSave(false);
 
 				  //Si el servicio web da error, informamos al usuario, en caso contrario mostramos datos
 				  if(data == 'Chart web service is temporarily unavailable.'){	
@@ -329,7 +333,9 @@ $(function () {
 });
 
 //Servicio para enviar los datos desde el change() hasta la función Ajax del highchart y pasarle el valor como argumento a la url para poder enviar un dato u otro
+
 var tipoDatoElegido;
+var save = false;
 
 function setDato(tipoAasignar) {
   tipoDatoElegido = tipoAasignar;
@@ -338,5 +344,35 @@ function setDato(tipoAasignar) {
 function getDato() {
   return tipoDatoElegido;
 }
+
+///Servicio para guardar información cuando el usuario haya pulsado el botón "Guardar". Manda la información desde el evento "click" hasta el AJAX que realiza la petición más arriba
+
+function setSave(tipo) {
+  save = tipo;
+}
+
+function getSave() {
+  return save;
+}
+
+$(document).on('click', "#SaveButton", function () {	//Cuando el usuario pulsa "Guardar", actualizamos la variable a True
+    
+  setSave(true);
+
+  $('#dialog').dialog({					//Abrimos dialog para informar al usuario de que los datos se han guardado
+    resizable: false,
+    autoOpen: true,
+    show: "blind",
+    hide: "blind",
+    modal: true,
+    dialogClass: 'success',
+    open: function (event, ui) {
+        setTimeout(function () {
+            $('#dialog').dialog('close');
+        }, 2000);
+    }
+  });
+
+});
 
 

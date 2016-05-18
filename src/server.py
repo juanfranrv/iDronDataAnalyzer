@@ -22,10 +22,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 head = JINJA_ENVIRONMENT.get_template('template/head.html').render()
 footer = JINJA_ENVIRONMENT.get_template('template/footer.html').render()
 
-#Variables globales
-
-contador = 0                                    #Variable que lleva la cuenta para la inserción de datos en la base de datos
-
 #Clase principal
 
 class MainPage(webapp2.RequestHandler):
@@ -526,11 +522,10 @@ class datos_grafico(webapp2.RequestHandler):
         if self.request.cookies.get("username"):
                 
             try:
-                global contador
                 datoAmostrar = ''
                 Api_key = 'fffa0ba60d5357235f5782313216b8ae'    #Key para la API del gráfico de monitorización
                 idUsername = self.request.cookies.get("idUsername")               
-               
+                
                 coordenadas = model.DatosRecibidos.query(model.DatosRecibidos.idDatos == idUsername).get()
                 
                 lat = coordenadas.latitud
@@ -550,7 +545,8 @@ class datos_grafico(webapp2.RequestHandler):
                 temp = tempe - 273.15                   #conversión de kelvin a celsius
                 vel_win = vel_wind * 3.6                #conversión de m/s a km/h
         
-                dato_seleccionado = self.request.get('dato')
+                dato_seleccionado = self.request.get('dato')    #Dato a mostrar elegido por el usuario
+                save = self.request.get('save')                 #Activación de guardar información
         
                 if dato_seleccionado == 'undefined' or dato_seleccionado == 'Temperature':
                     datoAmostrar = temp;
@@ -562,11 +558,12 @@ class datos_grafico(webapp2.RequestHandler):
                     datoAmostrar = vel_win;
                 elif dato_seleccionado == 'Wind Direction':
                     datoAmostrar = dir_win;
-                
-                if contador is 50:         #Cada 50 datos obtenidos, almacenamos en la base de datos
+
+                if save == 'true':         #Si se ha seleccionado guardar
+                    
                     #Almacenamos los datos en el usuario con la sesión activa
                     data = model.DatosAtmosfericos()
-                    
+
                     data.fecha = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
                     data.date = datetime.datetime.now().strftime("%d-%m-%Y")
                     data.idUsuario = idUsername
@@ -580,11 +577,6 @@ class datos_grafico(webapp2.RequestHandler):
                     data.dir_viento = round(dir_win,2)
                     
                     data.put()
-                    
-                    contador = 0
-                
-                else:
-                    contador = contador + 1
                 
                 self.response.write(json.dumps(datoAmostrar)) 
                 

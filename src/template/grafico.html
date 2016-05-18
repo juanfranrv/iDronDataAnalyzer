@@ -9,6 +9,7 @@
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 <script type='text/javascript' src='../static/js/iDronDataAnalyzer/utils_grafico.js'></script>
 
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 
 <body class="homepage">
        <header id="header">
@@ -64,7 +65,7 @@
 	</select>
      </div>
 
-     <div class="col-md-2" class="panel panel-primary">
+     <div class="col-md-2" class="panel panel-primary" style="margin-left:1%;">
 	<select name="tipoGrafica-temp1" id="tipoGrafica-temp1" >    
 		<option value="Temperature" selected="selected">Temperature (ºC)</option>
 		<option value="Atmospheric pressure">Atmospheric pressure (hPa)</option>
@@ -72,11 +73,16 @@
 		<option value="Wind Speed">Wind Speed (km/h)</option>
 		<option value="Wind Direction">Wind Direction (º)</option>
 	</select>
-      </div>	
-      </div>	
-      <div id="fail"></div>
-
-      <div style="margin-bottom:150px;" id="container-temp-grande"></div>
+     </div>	
+     <div class="col-md-2" style="margin-left:15%;">
+	<button id="SaveButton" class="btn btn-danger" type="submit" style="font-size:15px"><i class="fa fa-floppy-o"></i></button>
+     </div>
+     </div>		
+     <div id="fail"></div>
+     <div id="dialog" style="display:none;" title="Alert">
+       <p>Weather data has been saved successfully.</p>
+     </div>
+     <div style="margin-bottom:150px;" id="container-temp-grande"></div>
    </div>
 
 {{footer|safe}}
