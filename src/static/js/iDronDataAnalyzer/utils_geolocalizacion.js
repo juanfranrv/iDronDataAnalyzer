@@ -14,6 +14,7 @@ var num_CityDetected = [], num_airportDetected = [], num_flightDetected = [];   
 var checkboxSound = false;
 
 function actualizarMapa() {
+
   $.ajax({
         type: 'GET',
         url: '/coordenadas',
@@ -152,25 +153,37 @@ function actualizarMapa() {
 	 //Recarga de datos si se entra en zona prohibida y cuando recibimos nueva información procedente del dron
 
 	 $('#recargar').html(
-	    function(){
+	    function(){		//Recarga de datos recibidos del dron
 		var content = '<div style="float:left;margin-left:5%;"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
 		content = content + '<div style="float:left; margin-left:10%"><label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].altura + ' m</span></div>';
 		content = content + '<div style="float:left; margin-left:10%;"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s</span></div>';
 		
 		if (data[0].alert == 1){	//Si se supera los 120m de altitud, informamos al usuario
-		   content = content + '<div id="warning"><div class="alert alert-danger"><label>If you are using a drone as a hobby or recreational use:<br/><b><u>You are flying above 120 m. Be careful, it is forbidden!</u></b><br/>Remember: What can not I do with my drone? </label><ul><li>I can not fly in urban areas.</li><li>I can not fly above crowds of people: parks, beaches, wedding...</li><li>I can not fly at night.</li> <li>I can not fly close to airports, aircrafts...</li></ul></div></div>';
+	           $("#freeow-trAltitude").show();
+
+		}else {				//Ocultamos alerta si se resuelve infracción
+	           $("#freeow-trAltitude").hide();
 		}
 
 		if (flightDetected == true){   //Si se entra en zona prohibida (vuelo detectado), informamos al usuario
-		   content = content + '<div id="warning"><div class="alert alert-danger"><label><u>Warning:</u> Restricted Zone - You are flying near a plane.</label></div>';
+		   $("#freeow-trFlight").show();
+
+		}else {			      //Ocultamos alerta si se resuelve infracción
+		   $("#freeow-trFlight").hide();
 		}
 
 		if (airportDetected == true){   //Si se entra en zona prohibida (aeropuerto detectado), informamos al usuario
-		   content = content + '<div id="warning"><div class="alert alert-danger"><label><u>Warning:</u> Restricted Zone - You are flying near an airport.</label></div>';
+		   $("#freeow-trAirport").show();
+
+		}else {			        //Ocultamos alerta si se resuelve infracción
+		   $("#freeow-trAirport").hide();
 		}
 
 		if (cityDetected == true){      //Si se entra en zona prohibida (ciudad detectada), informamos al usuario
-		   content = content + '<div id="warning"><div class="alert alert-danger"><label><u>Warning:</u> Restricted Zone - You are flying near a populated place.</label></div>';
+		   $("#freeow-trCity").show();
+
+		}else {			        //Ocultamos alerta si se resuelve infracción
+		   $("#freeow-trCity").hide();
 		}
 		
 		//Activa sonido cuando hay una alerta
@@ -185,7 +198,6 @@ function actualizarMapa() {
 	)
        }
    });
-
 }
 
 function initialize() {
@@ -201,7 +213,6 @@ function initialize() {
 		myLatlng = new google.maps.LatLng(data[0].latitud, data[0].longitud);
 	  }
 	});
-
 
 	var mapOptions = {
 	zoom: 13,
@@ -426,4 +437,30 @@ function activarDeteccionVuelos() {			//Activa la detección de vuelos haciendo 
       }
    });
 }
+
+$(document).ready(function() {
+	opts = {};
+	opts.classes = ["gray"];
+	opts.classes.push("notice");
+	opts.showDuration = 100;
+	opts.autoHideDelay = 100;
+	opts.autoHide = false;
+	opts.showStyle = {
+		opacity: 1,
+		left: 0
+	};
+
+	//Creamos las alertas cuando se invade una zona restringida y las ocultamos. Se activarán posteriormente cuando se produzca la infracción
+	$("#freeow-trAirport").freeow("Warning", "Restricted Zone - You are flying near an airport.", opts);
+	$("#freeow-trCity").freeow("Warning", "Restricted Zone - You are flying near an populated area.", opts);
+	$("#freeow-trFlight").freeow("Warning", "Restricted Zone - You are flying near a plane.", opts);
+	$("#freeow-trAltitude").freeow("Warning", "If you are using a drone as a hobby or recreational use: You are flying above 120 m. Be careful, it is forbidden", opts);
+
+	$("#freeow-trAirport").hide();
+	$("#freeow-trCity").hide();
+	$("#freeow-trFlight").hide();
+	$("#freeow-trAltitude").hide();
+});
+
+
 

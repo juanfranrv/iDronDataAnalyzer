@@ -363,6 +363,7 @@ $(document).on('click', "#SaveButton", function () {	//Cuando el usuario pulsa "
     resizable: false,
     autoOpen: true,
     show: "blind",
+    width: 350,
     hide: "blind",
     modal: true,
     dialogClass: 'success',
@@ -372,7 +373,6 @@ $(document).on('click', "#SaveButton", function () {	//Cuando el usuario pulsa "
         }, 2000);
     }
   });
-
 });
 
 

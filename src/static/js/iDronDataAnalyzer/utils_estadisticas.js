@@ -127,6 +127,18 @@ function loadAjax(fecha, tiempo){
 
 }
 
+//Iniciliza el freeow (alerta)
+$(document).ready(function() {
+	opts = {};
+	opts.classes = ["gray"];
+	opts.classes.push("pushpin");
+	opts.autoHide = true;
+	opts.showStyle = {
+		opacity: 1,
+		left: 0
+	};
+});
+
 $(document).on('click', ".borrarBoton", function () {
 
 	var catid = $(this).attr("data-item")
@@ -141,6 +153,9 @@ $(document).on('click', ".borrarBoton", function () {
 				loadAjax(window.fecha, window.tiempo);	
 			}
 	  	});
+
+		//Muestra alerta cuando el usuario ha borrado el dato para informarle
+		$("#freeow-tr").freeow("Alert", "Data has been deleted successfully", opts);
 	}
 });
 
@@ -430,5 +445,7 @@ $.fn.pageMe = function(opts){
 
     }
 };
+
+
 
 
