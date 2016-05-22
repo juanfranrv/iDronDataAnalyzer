@@ -451,9 +451,9 @@ $(document).ready(function() {
 	};
 
 	//Creamos las alertas cuando se invade una zona restringida y las ocultamos. Se activarán posteriormente cuando se produzca la infracción
-	$("#freeow-trAirport").freeow("Warning", "Restricted Zone - You are flying near an airport.", opts);
-	$("#freeow-trCity").freeow("Warning", "Restricted Zone - You are flying near an populated area.", opts);
-	$("#freeow-trFlight").freeow("Warning", "Restricted Zone - You are flying near a plane.", opts);
+	$("#freeow-trAirport").freeow("Warning", "Restricted area - You are flying near an airport.", opts);
+	$("#freeow-trCity").freeow("Warning", "Restricted area - You are flying near an populated area.", opts);
+	$("#freeow-trFlight").freeow("Warning", "Restricted area - You are flying near a plane.", opts);
 	$("#freeow-trAltitude").freeow("Warning", "If you are using a drone as a hobby or recreational use: You are flying above 120 m. Be careful, it is forbidden", opts);
 
 	$("#freeow-trAirport").hide();

@@ -32,18 +32,18 @@ member of the options object when calling freeow().
     width: 300px;
     z-index: 9999;
 }
-.freeow-top-right {
-    top: 10px;
-    right: 10px;
+.freeow-bottom-right2 {
+    bottom: 10px;
+    right: 350px;
 }
 .freeow-bottom-right {
     bottom: 10px;
     right: 10px;
 }
 
-.freeow-top-left {
-    top: 10px;
-    left: 10px;
+.freeow-bottom-left2 {
+    bottom: 10px;
+    left: 350px;
 }
 .freeow-bottom-left {
     bottom: 10px;
