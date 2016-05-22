@@ -29,12 +29,13 @@ member of the options object when calling freeow().
 /* Outermost Container */
 .freeow {
     position: fixed;
-    width: 300px;
+    width: 20%;
     z-index: 9999;
 }
+
 .freeow-bottom-right2 {
     bottom: 10px;
-    right: 350px;
+    right: 25%;
 }
 .freeow-bottom-right {
     bottom: 10px;
@@ -43,7 +44,7 @@ member of the options object when calling freeow().
 
 .freeow-bottom-left2 {
     bottom: 10px;
-    left: 350px;
+    left: 25%;
 }
 .freeow-bottom-left {
     bottom: 10px;
