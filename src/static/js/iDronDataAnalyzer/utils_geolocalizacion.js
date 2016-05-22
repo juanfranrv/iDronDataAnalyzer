@@ -13,6 +13,12 @@ var airportDetected = false, flightDetected = false, cityDetected = false;	//Var
 var num_CityDetected = [], num_airportDetected = [], num_flightDetected = [];   //Arrays que almacenan las zonas invadidas de cada restricción
 var checkboxSound = false;
 
+//Minimiza el sidebar cuando se pulse el boton
+$("#menu-toggle").click(function(e) {
+   e.preventDefault();
+   $("#wrapper").toggleClass("toggled");
+});
+
 function actualizarMapa() {
 
   $.ajax({
@@ -154,9 +160,9 @@ function actualizarMapa() {
 
 	 $('#recargar').html(
 	    function(){		//Recarga de datos recibidos del dron
-		var content = '<div style="float:left;margin-left:5%;"><label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].latitud + ', ' + data[0].longitud + '</span></div>';
-		content = content + '<div style="float:left; margin-left:10%"><label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].altura + ' m</span></div>';
-		content = content + '<div style="float:left; margin-left:10%;"><label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;' + data[0].velocidad + ' m/s</span></div>';
+		var content = '<li><label style="color:white" >Coord:&nbsp;</label><span style="font-size:90%;" class="label label-default">' + data[0].latitud + ', ' + data[0].longitud + '</span></div></li>';
+		content = content + '<li><label style="color:white" >Altitude:&nbsp;</label><span style="font-size:90%;" class="label label-default">' + data[0].altura + ' m</span></div></li>';
+		content = content + '<li><label style="color:white">Speed:</label><span style="font-size:90%;" class="label label-default">' + data[0].velocidad + ' m/s</span></div></li>';
 		
 		if (data[0].alert == 1){	//Si se supera los 120m de altitud, informamos al usuario
 	           $("#freeow-trAltitude").show();
@@ -451,8 +457,8 @@ $(document).ready(function() {
 	};
 
 	//Creamos las alertas cuando se invade una zona restringida y las ocultamos. Se activarán posteriormente cuando se produzca la infracción
-	$("#freeow-trAirport").freeow("Warning", "Restricted area - You are flying near an airport.", opts);
-	$("#freeow-trCity").freeow("Warning", "Restricted area - You are flying near an populated area.", opts);
+	$("#freeow-trAirport").freeow("Warning", "Restricted area - You are flying near an airport or aerodrome.", opts);
+	$("#freeow-trCity").freeow("Warning", "Restricted area - You are flying near a populated place.", opts);
 	$("#freeow-trFlight").freeow("Warning", "Restricted area - You are flying near a plane.", opts);
 	$("#freeow-trAltitude").freeow("Warning", "If you are using a drone as a hobby or recreational use: You are flying above 120 m. Be careful, it is forbidden", opts);
 

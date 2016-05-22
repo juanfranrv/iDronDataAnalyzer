@@ -10,11 +10,6 @@
   border: solid 2px;
 }
 
-#recargar{
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom:1%;
-}
 
 .table tbody tr:hover td, .table tbody tr:hover th {
     background-color: #F78181;
@@ -136,7 +131,7 @@ tbody{
 }
 
 #map-canvas{
-  height: 720px;
+  height: 550px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;

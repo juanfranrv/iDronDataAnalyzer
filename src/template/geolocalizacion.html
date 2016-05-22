@@ -11,6 +11,8 @@
 <script type="text/javascript" src="../static/js/jquery.freeow.js"></script>
 <link rel="stylesheet" type="text/css" href="../static/css/freeow.css" />
 
+<link rel="stylesheet" type="text/css" href="../static/css/simple-sidebar.css" />
+
 <body class="homepage">
        <header id="header">
         <div class="top-bar">
@@ -52,62 +54,52 @@
 		
     </header><!--/header-->
 
-    <div style="background:transparent !important" class="jumbotron">
-    <div id="border1">
-    <div id="recargar" class="row">
-	  <div style="float:left;margin-left:5%;">
-	  	<label>Coordinates:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{lat}}, {{lng}}</span>
-	  </div>
-	  <div style="float:left;margin-left:10%;">
-	   	<label>Altitude:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{alt}} m</span>
-	  </div>
-	  <div style="float:left;margin-left:10%;">
-	  	<label>Speed:&nbsp; </label><span style="font-size:80%;" class="label label-default">&nbsp;{{vel}} m/s</span>
-	  </div>
-    </div>
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li style="font-size:250%;color:white;text-align:center;margin-bottom:5%;margin-top:5%;"><p><b><u>Toolbar </u></b></p></li>
+		<div id="recargar">
+                <li><label style="color:white" >Coord:&nbsp;</label><span style="font-size:90%;" class="label label-default">{{lat}}, {{lng}}</span></li>
+		<li><label style="color:white" >Altitude:&nbsp;</label><span style="font-size:90%;" class="label label-default">{{alt}} m</span></li>
+		<li><label style="color:white">Speed:</label><span style="font-size:90%;" class="label label-default">{{vel}} m/s</span></li>
+		</div>
 
-    <hr  size="6" noshade>
+		<hr  size="6" noshade>
 
-   {% if error != '' %}
-      <div id="mensaje_error" class="alert alert-danger">{{error}}</div>
-   {% endif %}
+                <li><input type="checkbox" value="airport" id="airport" name="airport" data-toggle="toggle" data-on="Airport detection" data-off="No airport detection" data-onstyle="default"></li>
+		<li><input type="checkbox" value="city" id="city" name="city" data-toggle="toggle" data-on="Population detection" data-off="No population detection" data-onstyle="default"></li>
+		<li><input type="checkbox" value="flight" id="flight" name="flight" data-toggle="toggle" data-on="Air traffic detection" data-off="No air traffic detection" data-onstyle="default"></li>
+		<li><input type="checkbox" value="sound" id="sound" name="sound" data-toggle="toggle" data-on="Alert sound" data-off="No alert sound" data-onstyle="default"></li>
 
-    <div id="recargar" class="row">
-	<div style="margin-top:30px;">
-	  <div style="float:left;margin-left:18%;">
-	    <input type="checkbox" value="airport" id="airport" name="airport" data-toggle="toggle" data-on="Airport detection" data-off="No airport detection" data-onstyle="default">
-	  </div>
-          <div style="float:left;margin-left:10%;">
-	    <input type="checkbox" value="city" id="city" name="city" data-toggle="toggle" data-on="Population detection" data-off="No population detection" data-onstyle="default">
-	  </div>
-          <div style="float:left;margin-left:10%;">
-	    <input type="checkbox" value="flight" id="flight" name="flight" data-toggle="toggle" data-on="Air traffic detection" data-off="No air traffic detection" data-onstyle="default">
-	  </div>
+		<hr  size="6" noshade>
+
+                <li><label style="color:white"><u>Sunrise:</u> {{sunset_sunrise.results.sunrise}} UTC</label></li>
+		<li><label style="color:white"><u>Sunset:</u> {{sunset_sunrise.results.sunset}} UTC</label></li>
+            </ul>
+
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+
+		{% if error != '' %}
+		   <div id="mensaje_error" class="alert alert-danger">{{error}}</div>
+		{% endif %}
+
+		<div id="fail"></div>
+                 <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+		<div id="map-canvas"></div>
+	    </div>
 	</div>
-    </div>
-    <div id="fail"></div>
-    </div>
-   <div class="row">
-	  <div style="float:left;margin-left:10%;">
-	  	<label><u>Sunrise:</u> {{sunset_sunrise.results.sunrise}} UTC</label>
-	  </div>
-          <div style="float:left;margin-left:15%;">
-	    <input type="checkbox" value="sound" id="sound" name="sound" data-toggle="toggle" data-on="Alert sound" data-off="No alert sound" data-onstyle="default">
-	  </div>
-	  <div style="float:left;margin-left:15%;">
-	  	<label><u>Sunset:</u> {{sunset_sunrise.results.sunset}} UTC</label>
-	  </div>
-    </div>
 
-    <div id="map-canvas" class="jumbotron"></div>
-    </div>
+</div>
 
   <div id="freeow-trCity" class="freeow freeow-bottom-left2"></div>
   <div id="freeow-trAirport" class="freeow freeow-bottom-right2"></div>
   <div id="freeow-trFlight" class="freeow freeow-bottom-right"></div>
   <div id="freeow-trAltitude" class="freeow freeow-bottom-left"></div>
-
-{{footer|safe}}
 
     <!-- Libreria proyecto js -->
 

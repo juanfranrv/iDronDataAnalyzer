@@ -39,7 +39,7 @@ member of the options object when calling freeow().
 }
 .freeow-bottom-right {
     bottom: 10px;
-    right: 10px;
+    left: 10px;
 }
 
 .freeow-bottom-left2 {
@@ -48,7 +48,7 @@ member of the options object when calling freeow().
 }
 .freeow-bottom-left {
     bottom: 10px;
-    left: 10px;
+    right: 10px;
 }
 
 /* Message */
