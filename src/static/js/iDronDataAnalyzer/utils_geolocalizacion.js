@@ -17,6 +17,15 @@ var checkboxSound = false;
 $("#menu-toggle").click(function(e) {
    e.preventDefault();
    $("#wrapper").toggleClass("toggled");
+
+   if ( $('#wrapper').hasClass('toggled') ){					//Si está colapsado, cambiamos la clase a flecha derecha
+	$('#menu-toggle').removeClass('fa fa-arrow-left fa-2x');
+	$('#menu-toggle').addClass('fa fa-arrow-right fa-2x');	
+   }else{									//Si no está colapsado, cambiamos la clase a flecha izquierda
+	$('#menu-toggle').removeClass('fa fa-arrow-right fa-2x');
+	$('#menu-toggle').addClass('fa fa-arrow-left fa-2x');
+   }
+
 });
 
 function actualizarMapa() {
@@ -162,7 +171,7 @@ function actualizarMapa() {
 	    function(){		//Recarga de datos recibidos del dron
 		var content = '<li><label style="color:white" >Coord:&nbsp;</label><span style="font-size:90%;" class="label label-default">' + data[0].latitud + ', ' + data[0].longitud + '</span></div></li>';
 		content = content + '<li><label style="color:white" >Altitude:&nbsp;</label><span style="font-size:90%;" class="label label-default">' + data[0].altura + ' m</span></div></li>';
-		content = content + '<li><label style="color:white">Speed:</label><span style="font-size:90%;" class="label label-default">' + data[0].velocidad + ' m/s</span></div></li>';
+		content = content + '<li><label style="color:white">Speed:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><span style="font-size:90%;" class="label label-default">' + data[0].velocidad + ' m/s</span></div></li>';
 		
 		if (data[0].alert == 1){	//Si se supera los 120m de altitud, informamos al usuario
 	           $("#freeow-trAltitude").show();

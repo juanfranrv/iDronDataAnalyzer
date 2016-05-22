@@ -11,6 +11,7 @@
 <script type="text/javascript" src="../static/js/jquery.freeow.js"></script>
 <link rel="stylesheet" type="text/css" href="../static/css/freeow.css" />
 
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="../static/css/simple-sidebar.css" />
 
 <body class="homepage">
@@ -55,6 +56,7 @@
     </header><!--/header-->
 
     <div id="wrapper">
+
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
@@ -62,7 +64,7 @@
 		<div id="recargar">
                 <li><label style="color:white" >Coord:&nbsp;</label><span style="font-size:90%;" class="label label-default">{{lat}}, {{lng}}</span></li>
 		<li><label style="color:white" >Altitude:&nbsp;</label><span style="font-size:90%;" class="label label-default">{{alt}} m</span></li>
-		<li><label style="color:white">Speed:</label><span style="font-size:90%;" class="label label-default">{{vel}} m/s</span></li>
+		<li><label style="color:white">Speed:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><span style="font-size:90%;" class="label label-default">{{vel}} m/s</span></li>
 		</div>
 
 		<hr  size="6" noshade>
@@ -89,7 +91,7 @@
 		{% endif %}
 
 		<div id="fail"></div>
-                 <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                 <i id="menu-toggle" class="fa fa-arrow-left fa-2x" style="margin-bottom:3%;" aria-hidden="true"></i>
 		<div id="map-canvas"></div>
 	    </div>
 	</div>

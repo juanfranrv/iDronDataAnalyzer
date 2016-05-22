@@ -448,8 +448,7 @@ class getNearbyAreas(webapp2.RequestHandler):
                 
                 r = urllib2.urlopen(url)
         
-                result = json.load(r)
-                               
+                result = json.load(r)              
                 populationAreas = result["geonames"]
  
                 self.response.write(json.dumps(populationAreas))
