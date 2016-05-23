@@ -125,12 +125,11 @@ tbody{
 
 #shape_grafico{
   margin-top:0.5%;
-
   margin-left:5%;
 }
 
 #map-canvas{
-  height: 650px;
+  height: 100%;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
