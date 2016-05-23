@@ -10,7 +10,6 @@
   border: solid 2px;
 }
 
-
 .table tbody tr:hover td, .table tbody tr:hover th {
     background-color: #F78181;
 }
@@ -131,7 +130,7 @@ tbody{
 }
 
 #map-canvas{
-  height: 550px;
+  height: 650px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;

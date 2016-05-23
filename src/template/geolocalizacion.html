@@ -4,7 +4,7 @@
 {{head|safe}}
 
 <!--/Toggle button Bootstrap-->
-<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<link href="../static/css/bootstrap-toggle.min.css" rel="stylesheet">
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
 <!--Freeow javascript alert-->
@@ -60,21 +60,21 @@
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
-                <li style="font-size:250%;color:white;text-align:center;margin-bottom:5%;margin-top:5%;"><p><b><u>Toolbar </u></b></p></li>
+                <li style="margin-bottom:10%;margin-top:10%;"></li>
 		<div id="recargar">
                 <li><label style="color:white" >Coord:&nbsp;</label><span style="font-size:90%;" class="label label-default">{{lat}}, {{lng}}</span></li>
 		<li><label style="color:white" >Altitude:&nbsp;</label><span style="font-size:90%;" class="label label-default">{{alt}} m</span></li>
 		<li><label style="color:white">Speed:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><span style="font-size:90%;" class="label label-default">{{vel}} m/s</span></li>
 		</div>
 
-		<hr  size="6" noshade>
+		<hr style="margin-bottom:10%;margin-top:10%;" size="6" noshade>
 
                 <li><input type="checkbox" value="airport" id="airport" name="airport" data-toggle="toggle" data-on="Airport detection" data-off="No airport detection" data-onstyle="default"></li>
-		<li><input type="checkbox" value="city" id="city" name="city" data-toggle="toggle" data-on="Population detection" data-off="No population detection" data-onstyle="default"></li>
-		<li><input type="checkbox" value="flight" id="flight" name="flight" data-toggle="toggle" data-on="Air traffic detection" data-off="No air traffic detection" data-onstyle="default"></li>
-		<li><input type="checkbox" value="sound" id="sound" name="sound" data-toggle="toggle" data-on="Alert sound" data-off="No alert sound" data-onstyle="default"></li>
+		<li><input  style="display: none;" type="checkbox" value="city" id="city" name="city" data-toggle="toggle" data-on="Population detection" data-off="No population detection" data-onstyle="default"></li>
+		<li><input  style="display: none;" type="checkbox" value="flight" id="flight" name="flight" data-toggle="toggle" data-on="Air traffic detection" data-off="No air traffic detection" data-onstyle="default"></li>
+		<li><input  style="display: none;" type="checkbox" value="sound" id="sound" name="sound" data-toggle="toggle" data-on="Alert sound" data-off="No alert sound" data-onstyle="default"></li>
 
-		<hr  size="6" noshade>
+		<hr style="margin-bottom:10%;margin-top:10%;" size="6" noshade>
 
                 <li><label style="color:white"><u>Sunrise:</u> {{sunset_sunrise.results.sunrise}} UTC</label></li>
 		<li><label style="color:white"><u>Sunset:</u> {{sunset_sunrise.results.sunset}} UTC</label></li>

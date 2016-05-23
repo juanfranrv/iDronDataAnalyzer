@@ -4,7 +4,7 @@
 
 var coordenadas;
 var marker;
-var map;
+var map,center;
 var markers = [], markersFlight = [], markersCity = [];				//Array para almacenar cada uno de los marker de las zonas detectadas
 var markersCityCircle = [], markersFlightCircle = [], markersCircle = [];	//Array para almacenar las áreas de círculos que simbolizan las zonas prohibidas
 var totalResults = 0;								//Variable contador para llevar el número de marker que borraremos al seleccionarlo
@@ -21,11 +21,14 @@ $("#menu-toggle").click(function(e) {
    if ( $('#wrapper').hasClass('toggled') ){					//Si está colapsado, cambiamos la clase a flecha derecha
 	$('#menu-toggle').removeClass('fa fa-arrow-left fa-2x');
 	$('#menu-toggle').addClass('fa fa-arrow-right fa-2x');	
+
    }else{									//Si no está colapsado, cambiamos la clase a flecha izquierda
 	$('#menu-toggle').removeClass('fa fa-arrow-right fa-2x');
 	$('#menu-toggle').addClass('fa fa-arrow-left fa-2x');
    }
 
+   //Recargamos mapa
+   initialize();
 });
 
 function actualizarMapa() {
@@ -51,6 +54,7 @@ function actualizarMapa() {
 		 
 		  service.nearbySearch(request, function(results, status) {	//Actualizamos aeropuertos a medida que el drone va avanzando
 		     if (status === google.maps.places.PlacesServiceStatus.OK) {
+
 		       for (var i = 0; i < results.length; i++) {
 			  if((markers.length + markersCircle.length) != (results.length + totalResults)){
 			     crearMarcador(results[i]);
@@ -85,6 +89,7 @@ function actualizarMapa() {
 
 	  if(checkboxCity == true){	//Si el checkbox de ciudad está activo, comprobamos si el drone está contenido en el área para informar al usuario
 	       for (var i = 0; i < markersCityCircle.length; i++) {
+
 		   if(markersCityCircle[i].getBounds().contains(latlng)){
 			cityDetected = true;
 			if(num_CityDetected[i] != i)
@@ -113,6 +118,7 @@ function actualizarMapa() {
 
 	  if(checkboxAirport == true){  //Si el checkbox de aeropuerto está activo, comprobamos si el drone está contenido en el área para informar al usuario
 	       for (var i = 0; i < markersCircle.length; i++) {
+
 		   if(markersCircle[i].getBounds().contains(latlng)){
 			airportDetected = true;
 			if(num_airportDetected[i] != i)
@@ -140,6 +146,7 @@ function actualizarMapa() {
 
 	  if(checkboxFlight == true){ //Si el checkbox de detección de aviones está activo, comprobamos si el drone está contenido en el área para informar al usuario
 	       for (var i = 0; i < markersFlightCircle.length; i++) {
+
 		   if(markersFlightCircle[i].getBounds().contains(latlng)){
 			flightDetected = true;
 			if(num_flightDetected[i] != i)
@@ -252,6 +259,11 @@ function initialize() {
 	// Lanza la elevación del terreno al dar click a una zona
 	map.addListener('click', function(event) {
 		displayLocationElevation(event.latLng, elevator, infowindow);
+	});
+
+	//Recarga el mapa cuando se cambia el viewport
+	google.maps.event.addListener(map, "idle", function(){
+		google.maps.event.trigger(map, 'resize'); 
 	});
 
 	google.maps.event.addDomListener(window, 'load', initialize);
