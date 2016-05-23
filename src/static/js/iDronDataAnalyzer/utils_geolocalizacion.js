@@ -26,9 +26,6 @@ $("#menu-toggle").click(function(e) {
 	$('#menu-toggle').removeClass('fa fa-arrow-right fa-2x');
 	$('#menu-toggle').addClass('fa fa-arrow-left fa-2x');
    }
-
-   //Recargamos mapa
-   initialize();
 });
 
 function actualizarMapa() {
@@ -86,6 +83,9 @@ function actualizarMapa() {
 		  markers = [];					//Reset de los array 
 		  markersCircle = [];
           }
+
+	  //Recargamos mapa
+	  google.maps.event.trigger(map, 'resize'); 
 
 	  if(checkboxCity == true){	//Si el checkbox de ciudad está activo, comprobamos si el drone está contenido en el área para informar al usuario
 	       for (var i = 0; i < markersCityCircle.length; i++) {
