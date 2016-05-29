@@ -29,13 +29,15 @@ La aplicación tendrá que cumplir los siguientes requisitos:
 
 ### Aplicación Android ###
 
-Para que el servidor obtenga toda la telemetría procedente del dron, es necesario una aplicación Android que haga de "proxy" entre el dron y el servidor. Esta aplicación va a gestionar todo lo relacionado con el drone (conexión, telemetría...) y la va a mandar al servidor donde será procesada en tiempo real. 
+Para que el servidor obtenga toda la telemetría procedente del dron, es necesario una aplicación Android que haga de "proxy" entre el dron y el servidor. Esta aplicación va a gestionar todo lo relacionado con el drone (conexión, telemetría...) y la va a enviar al servidor donde será procesada en tiempo real. 
 
 Por otro lado, el servidor permanecerá ajeno de todo lo relacionado con el drone. Se encargará de recibir la información mandada por la aplicación de Android y utilizarla para cada una de sus funcionalidades.
 
 La aplicación utiliza la API de [Dronekit](http://dronekit.io/). Esta librería ha sido creada hace menos de un año y permite desarrollar software para cualquier dron cuyo protocolo de comunicación sea MAVLINK. Por lo tanto, con esta librería podemos generalizar nuestra aplicación para que sea válida para cualquier dron fabricado por las grandes empresas del sector.
 
-Para descargar la apk de la aplicación Android pincha [aquí](https://drive.google.com/open?id=0B2i9UMs9qffmQ212V3h2MDJkUXM)
+Para descargar la apk de la aplicación Android, pincha [aquí](https://drive.google.com/open?id=0B2i9UMs9qffmQ212V3h2MDJkUXM)
+
+Enlace al repositorio de la aplicación Android, pincha [aquí](https://github.com/juanfranrv/iDronDataAnalyzer_AndroidApp)
 
 Con esta aplicación podemos conectarnos a nuestro dron tanto por USB como por UDP y obtener toda la telemetría (coordenadas GPS, velocidad, altura a la que circula...). Esta información se irá mandando al servidor constantemente, por lo que podremos acceder a la aplicación web y gestionar todas las funcionalidades con los datos que vayamos obteniendo.
 
