@@ -63,7 +63,7 @@ function actualizarMapa() {
 			 	      fillOpacity: 0.35,
 			 	      map: map,
 			 	      center: results[i].geometry.location,
-			 	      radius:500
+			 	      radius:1500
 			      });
 
 			      markersCircle.push(cityCircle);	 //Almacenamos los círculos en un array para borrarlos cuando se desee
