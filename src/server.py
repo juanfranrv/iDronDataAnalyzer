@@ -540,9 +540,15 @@ class datos_grafico(webapp2.RequestHandler):
                 hum = result["main"]["humidity"]        #humedad
                 vel_wind = result["wind"]["speed"]      #velocidad del viento
                 dir_win = result["wind"]["deg"]         #direccion del viento
+                temp_max = result["main"]["temp_max"]   #temperatura maxima
+                temp_min = result["main"]["temp_min"]   #temperatura minima
+                descripcion = result["weather"][0]["description"]  #descripcion del tiempo actual
+                ciudad = result["name"]                 #ciudad por la que va el dron
                 
                 temp = tempe - 273.15                   #conversión de kelvin a celsius
                 vel_win = vel_wind * 3.6                #conversión de m/s a km/h
+                max_tem = temp_max - 273.15              #conversión de kelvin a celsius
+                min_tem = temp_min - 273.15              #conversión de kelvin a celsius
         
                 dato_seleccionado = self.request.get('dato')    #Dato a mostrar elegido por el usuario
                 save = self.request.get('save')                 #Activación de guardar información
@@ -568,8 +574,14 @@ class datos_grafico(webapp2.RequestHandler):
                     data.idUsuario = idUsername
                     data.dia = datetime.date.today().strftime("%V")        #Obtiene el número de la semana 
                     data.mes = datetime.date.today().strftime("%m")
-                    data.anio = datetime.date.today().strftime("%Y")  
+                    data.anio = datetime.date.today().strftime("%Y") 
+                    data.latitud = str(lat)
+                    data.longitud = str(lng)
+                    data.ciudad = ciudad
                     data.temperatura = round(temp,2)
+                    data.max_temp = round(max_tem,2)
+                    data.min_temp = round(min_tem,2)
+                    data.description = descripcion
                     data.pres_atmos = round(pres,2)
                     data.humedad = hum
                     data.vel_viento = round(vel_win,2)
@@ -596,6 +608,28 @@ class deleteStatistic(webapp2.RequestHandler):
         weatherData.key.delete()
         
         self.response.write(json.dumps("Deleted")) 
+        
+#Clase para visualizar los detalles del dato elegido de la vista estadisticas
+
+class detailStatistic(webapp2.RequestHandler):
+    
+    def get(self):
+        
+        if self.request.cookies.get("username"):
+            
+            user = model.Usuario.query(model.Usuario.usuario == self.request.cookies.get("username")).get() 
+
+            detailID = long(self.request.get("id"))
+            weatherData = model.DatosAtmosfericos.get_by_id(detailID)   #Seleccionamos el dato elegido por el usuario
+        
+            self.response.headers['Content-Type'] = 'text/html'
+            template_values={'user':user,'footer': footer,'head':head, 'weatherData':weatherData}
+            template = JINJA_ENVIRONMENT.get_template('template/detallesEstadisticas.html')
+            self.response.write(template.render(template_values))
+        
+        else:
+            
+            self.redirect('/login') 
                  
 #Clase que gestiona las estadisticas de la monitorización de datos atmosféricos obtenida
 
@@ -1165,6 +1199,7 @@ urls = [('/', MainPage),
         ('/getNearbyAreas', getNearbyAreas),
         ('/getNearbyFlights', getNearbyFlights),
         ('/deleteStatistic', deleteStatistic),
+        ('/detailStatistic', detailStatistic),
         ('/usuarios', usuarios),
         ('/getUsuarios', getUsuarios),
         ('/deleteUsuario', deleteUsuario),

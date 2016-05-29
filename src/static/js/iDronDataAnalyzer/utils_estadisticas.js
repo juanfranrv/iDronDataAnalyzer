@@ -72,7 +72,7 @@ function loadAjax(fecha, tiempo){
 	  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la página
 		 $('#paginador').html(
 		    function(){
-			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>A. Pressure</th><th>Wind</th><th>Humidity</th><th><p style="visibility:hidden">Delete</p></th></tr></thead><tbody id="myTableBody">';
+			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>Atm. P.</th><th>Humidity</th><th>Wind</th><th><p style="visibility:hidden">Delete</p></th></tr></thead><tbody id="myTableBody">';
 
 			if(data.length == 0)
 				content = content + '<tr><td>No data found.</td><td></td><td></td><td></td><td></td>';
@@ -81,9 +81,9 @@ function loadAjax(fecha, tiempo){
 			      content = content+'<tr><td style="font-size:14px;">' + data[i].fecha + ' UTC</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].temperatura + ' ºC</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].presion + ' hPa</td>';
-			      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].humedad + '%</td>';
-			      content = content + '<td><button id="button-' + data[i].id + '" class="btn btn-danger borrarBoton" data-item="' + data[i].id + '" type="submit"><i class="fa fa-trash"></i> Delete</button></td>';
+			      content = content + '<td style="font-size:16px;">' + data[i].vel_viento + ' kph - ' + data[i].dir_viento + ' º</td>';
+			      content = content + '<td><button id="button-' + data[i].id + '" class="btn btn-warning detailsBoton" data-item="' + data[i].id + '" type="submit"><i class="fa fa-search"></i></button><button style="margin-left:5%;" id="button-' + data[i].id + '" class="btn btn-danger borrarBoton" data-item="' + data[i].id + '" type="submit"><i class="fa fa-trash"></i></button></td>';
 
 			      myFechas.push([data[i].fecha]);
 
@@ -157,6 +157,13 @@ $(document).on('click', ".borrarBoton", function () {
 		//Muestra alerta cuando el usuario ha borrado el dato para informarle
 		$("#freeow-tr").freeow("Alert", "Data has been deleted successfully", opts);
 	}
+});
+
+//Redireccionamos pasando el id del dato a visualizar detalles
+$(document).on('click', ".detailsBoton", function () {
+
+	var detailID = $(this).attr("data-item")
+	location.href= '/detailStatistic?id=' + detailID;
 });
 
 //Si la checkbox cambia, dependiendo de si está seleccionada o no, vamos a proceder a mostrar el gráfico y su select asociado

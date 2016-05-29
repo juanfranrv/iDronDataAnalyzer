@@ -3,12 +3,6 @@
 
 {{head|safe}}
 
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-
-<!--Freeow javascript alert-->
-<script type="text/javascript" src="../static/js/jquery.freeow.js"></script>
-<link rel="stylesheet" type="text/css" href="../static/css/freeow.css" />
-
 <body class="homepage">
        <header id="header">
         <div class="top-bar">
@@ -16,7 +10,8 @@
                     <a href="http://www.ugr.es"><img id="logo-ugr" name="logo-ugr" src="../static/images/logo_ugr.png" alt="logo"></a>
                     <div id="mensaje_bienvenida" class="alert alert-success">Welcome: <b>{{user.usuario}}</b></div>
                     <input id="boton-cerrar" name="boton-cerrar" type="button" value="Log out" onclick="location.href='/logout';" class="btn btn-warning" />
- 		    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Edit profile" onclick="location.href='/editar_perfil';" class="btn btn-warning" />
+		    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Edit profile" onclick="location.href='/editar_perfil';" class="btn btn-warning" />
+
 		    {% if user.tipo == 'admin' %}
  		    <input id="boton-cerrar" name="boton-cerrar" type="button" value="Users" onclick="location.href='/usuarios';" class="btn btn-warning" />
 		    {% endif %}
@@ -42,7 +37,7 @@
 			<li><a href="/pronostico">Forecast</a></li>
                         <li><a href="/estadisticas">Statistics</a></li>
                         <li><a href="/geolocalizacion">Geolocation</a></li>
-                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>                     
+                        <li><a href="/METAR_TAF">METAR-TAFOR</a></li>                   
                     </ul>
                 </div>
             </div><!--/.container-->
@@ -52,49 +47,45 @@
 
    <div style="background:transparent !important" class="jumbotron">
 
-    <!-- Libreria proyecto js -->
+	   <div class="panel panel-primary">
+	      <h2 class="panel-heading"><b> Details from data with ID - {{weatherData.key.id()}}</b></h2>
+	      <div class="panel-body">
+	      <div style="font-size:80%">
+	      <dl class="dl-horizontal">
+		<label>Data was obtained: {{weatherData.fecha}} UTC</label><br/>
+		<dt>Week number: </dt>
+		<dd>{{weatherData.dia}}</dd>
+		<dt>Month: </dt>
+		<dd>{{weatherData.mes}}</dd>
+		<dt>Year: </dt>
+		<dd>{{weatherData.anio}}</dd>
+		<dt>Coordinates:</dt>
+		<dd>{{weatherData.latitud}}, {{weatherData.longitud}}</dd>
+		<dt>City: </dt>
+		<dd>{{weatherData.ciudad}}</dd>
+		<dt>Temperature:</dt>
+		<dd>{{weatherData.temperatura}} ºC</dd>
+		<dt>Max. temperature:</dt>
+		<dd>{{weatherData.max_temp}} ºC</dd>
+		<dt>Min. temperature:</dt>
+		<dd>{{weatherData.min_temp}} ºC</dd>
+		<dt>Description:</dt>
+		<dd>{{weatherData.description}}</dd>
+		<dt>Atm. pressure: </dt>
+		<dd>{{weatherData.pres_atmos}} hPa</dd>
+		<dt>Humidity: </dt>
+		<dd>{{weatherData.humedad}} %</dd>
+		<dt>Wind speed: </dt>
+		<dd>{{weatherData.vel_viento}} km/h</dd>
+		<dt>Wind direction: </dt>
+		<dd>{{weatherData.dir_viento}} º</dd>
 
-    <script type='text/javascript' src='../static/js/iDronDataAnalyzer/utils_usuarios.js'></script>
+	      </dl>
+	     </div>
+	     </div>
 
-    <button class="btn btn-success" onclick="location.href='/formRegistro';" type="submit"> New user</button>
-
-    <div id="paginador">
-	<table class="table table-striped table-hover">
-
-	<thead><tr>
-	<th>User Information</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr></thead>
-	<tbody id="myTableBody">
-
-		  {% for user in usuarios %}
-
-		  <tr>
-		      <td style="font-size:14px;"><b>{{user.usuario}}</b></td>
-		      <td style="font-size:16px;">{{user.password}}</td>
-		      <td style="font-size:16px;">{{user.nombre}}</td>
-		      <td style="font-size:16px;">{{user.apellido}}</td>
-		      <td style="font-size:16px;">{{user.correo}}</td>
-		      <td style="font-size:16px;">{{user.telefono}}</td>
-		      <td style="font-size:16px;">{{user.tipo}}</td>
-		      <td><button id="{{user.id}}" class="btn btn-warning editarBoton" data-item="{{user.id}}" type="submit"> <i class="fa-pencil-square-o"></i> Edit</button><button style="margin-left:5%;" id="{{user.id}}" class="btn btn-danger borrarBoton" data-item="{{user.id}}" type="submit"><i class="fa fa-trash"></i></button></td>
-		  </tr>
-
-		  {% endfor %}
-
-	</tbody>
-	</table>
-
-	<div class="col-md-12 text-center">
-	    <ul class="pagination pagination-lg pager" id="myPager"></ul>
-	</div>
-   </div>
-   </div>
-
-</div>
-
-</div>
-</div>
-
-<div id="freeow-tr" class="freeow freeow-bottom-right"></div>
+	   </div>
+  </div>
 
 {{footer|safe}}
 
