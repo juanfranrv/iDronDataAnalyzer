@@ -355,24 +355,25 @@ function getSave() {
   return save;
 }
 
+//Iniciliza el freeow (alerta)
+$(document).ready(function() {
+	opts = {};
+	opts.classes = ["gray"];
+	opts.classes.push("pushpin");
+	opts.autoHide = true;
+	opts.showStyle = {
+		opacity: 1,
+		left: 0
+	};
+});
+
 $(document).on('click', "#SaveButton", function () {	//Cuando el usuario pulsa "Guardar", actualizamos la variable a True
     
   setSave(true);
 
-  $('#dialog').dialog({					//Abrimos dialog para informar al usuario de que los datos se han guardado
-    resizable: false,
-    autoOpen: true,
-    show: "blind",
-    width: 350,
-    hide: "blind",
-    modal: true,
-    dialogClass: 'success',
-    open: function (event, ui) {
-        setTimeout(function () {
-            $('#dialog').dialog('close');
-        }, 2000);
-    }
-  });
+  //Muestra alerta cuando el usuario ha borrado el dato para informarle
+  $("#freeow-tr").freeow("Alert", "Weather data has been saved successfully", opts);
+
 });
 
 

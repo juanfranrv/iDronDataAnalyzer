@@ -131,7 +131,7 @@ function loadAjax(fecha, tiempo){
 $(document).ready(function() {
 	opts = {};
 	opts.classes = ["gray"];
-	opts.classes.push("pushpin");
+	opts.classes.push("error");
 	opts.autoHide = true;
 	opts.showStyle = {
 		opacity: 1,

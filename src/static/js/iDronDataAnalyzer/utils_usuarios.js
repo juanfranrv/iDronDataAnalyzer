@@ -2,7 +2,7 @@
 $(document).ready(function() {
 	opts = {};
 	opts.classes = ["gray"];
-	opts.classes.push("pushpin");
+	opts.classes.push("error");
 	opts.autoHide = true;
 	opts.showStyle = {
 		opacity: 1,
@@ -26,7 +26,7 @@ $(document).on('click', ".borrarBoton", function () {
 	  	});
 
 		//Muestra alerta cuando el usuario ha borrado el dato para informarle
-		$("#freeow-tr").freeow("Alert", "User has been deleted successfully", opts)
+		$("#freeow-tr").freeow("Alert", "User has been deleted successfully", opts);
 	}	
 });
 
