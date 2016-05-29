@@ -72,7 +72,7 @@ function loadAjax(fecha, tiempo){
 	  success: function (data) {		//Recarga dinámica de contenido HTML sin actualizar la página
 		 $('#paginador').html(
 		    function(){
-			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>Atm. P.</th><th>Humidity</th><th>Wind</th><th><p style="visibility:hidden">Delete</p></th></tr></thead><tbody id="myTableBody">';
+			var content = '<table class="table table-striped"><thead><tr><th>Date</th><th>Temp.</th><th>Atm. Press.</th><th>Humidity</th><th>Wind</th><th><p style="visibility:hidden">Delete</p></th></tr></thead><tbody id="myTableBody">';
 
 			if(data.length == 0)
 				content = content + '<tr><td>No data found.</td><td></td><td></td><td></td><td></td>';
