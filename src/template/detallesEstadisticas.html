@@ -3,6 +3,8 @@
 
 {{head|safe}}
 
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeg7_wBHhNsW24D8To6ywYLweM-83sN7E&sensor=true"> </script>
+
 <body class="homepage">
        <header id="header">
         <div class="top-bar">
@@ -50,8 +52,9 @@
 	   <div class="panel panel-primary">
 	      <h2 class="panel-heading"><b> Details from data with ID - {{weatherData.key.id()}}</b></h2>
 	      <div class="panel-body">
+    <div id="map_canvas" style="float:right;width:400px;height:300px;border:solid 2px;"></div>
 	      <div style="font-size:80%">
-	      <dl class="dl-horizontal">
+	      <dl class="dl-horizontal" style="float:left;">
 		<label>Data was obtained: {{weatherData.fecha}} UTC</label><br/>
 		<dt>Week number: </dt>
 		<dd>{{weatherData.dia}}</dd>
@@ -79,13 +82,34 @@
 		<dd>{{weatherData.vel_viento}} km/h</dd>
 		<dt>Wind direction: </dt>
 		<dd>{{weatherData.dir_viento}} º</dd>
-
+	
 	      </dl>
 	     </div>
 	     </div>
 
 	   </div>
   </div>
+
+<script>
+
+function initialize() {
+  var myLatlng = new google.maps.LatLng({{weatherData.latitud}}, {{weatherData.longitud}});
+  var mapOptions = {
+    zoom: 11,
+    center: myLatlng
+  }
+  map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+  marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      title: 'Drone',
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
 
 {{footer|safe}}
 

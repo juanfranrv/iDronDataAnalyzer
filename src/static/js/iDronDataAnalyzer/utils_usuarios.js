@@ -59,7 +59,7 @@ function loadAjaxUsuarios(){
 			      content = content + '<td style="font-size:16px;">' + data[i].correo + '</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].telefono + '</td>';
 			      content = content + '<td style="font-size:16px;">' + data[i].tipo + '</td>';
-			      content = content + '<td><button id="button-' + data[i].id + '" class="btn btn-warning editarBoton" data-item="' + data[i].id + '" type="submit"><i class="fa-pencil-square-o"></i> Edit</button><button style="margin-left:5%;" id="button-' + data[i].id + '" class="btn btn-danger borrarBoton" data-item="' + data[i].id + '" type="submit"><i class="fa fa-trash"></i></button></td>';
+			      content = content + '<td><button id="button-' + data[i].id + '" class="btn btn-warning editarBoton" data-item="' + data[i].id + '" type="submit">Edit</button><button style="margin-left:5%;" id="button-' + data[i].id + '" class="btn btn-danger borrarBoton" data-item="' + data[i].id + '" type="submit"><i class="fa fa-trash"></i></button></td>';
 			}
 
 			content = content + '</tr></tbody></table>';
