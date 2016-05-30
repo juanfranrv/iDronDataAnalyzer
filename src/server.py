@@ -853,7 +853,7 @@ def parseoMETAR(result_metar):
      
     velocidad_viento = result_metar["Wind-Speed"] + ' KT'
     if velocidad_viento == '00 KT':                #No hay viento
-        velocidad_viento = 'There is not wind'
+        velocidad_viento = 'No wind'
      
     if len(array_nubes) is 0:
         array_nubes.append('No data')
