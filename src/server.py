@@ -476,7 +476,7 @@ class getNearbyFlights(webapp2.RequestHandler):
                 lat = coordenadas.latitud
                 lng = coordenadas.longitud
                 
-                url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/" + str(lat) + "/" + str(lng) +"/50?appId=3f8a0b42&appKey=bf48b6de9b12bbb5ccb59c09834c4302&maxFlights=10"
+                url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flightsNear/" + str(lat) + "/" + str(lng) +"/50?appId=29999b09&appKey=a91db5862d03107e45c006683242bbd1&maxFlights=10"
                 
                 r = urllib2.urlopen(url)
         
